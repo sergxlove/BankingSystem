@@ -6,4 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankingSystemApplication\BankingSystemApplication.csproj" />
+    <ProjectReference Include="..\BankingSystemCore\BankingSystemCore.csproj" />
+    <ProjectReference Include="..\BankingSystemDataAccess.Postgres\BankingSystemDataAccess.Postgres.csproj" />
+  </ItemGroup>
+
 </Project>
