@@ -21,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Abstractions\" />
+    <ProjectReference Include="..\BankingSystemCore\BankingSystemCore.csproj" />
   </ItemGroup>
 
 </Project>
