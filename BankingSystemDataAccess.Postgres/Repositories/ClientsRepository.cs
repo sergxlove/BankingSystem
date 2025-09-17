@@ -1,10 +1,11 @@
 ﻿using BankingSystemCore.Models;
+using BankingSystemDataAccess.Postgres.Abstractions;
 using BankingSystemDataAccess.Postgres.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystemDataAccess.Postgres.Repositories
 {
-    public class ClientsRepository
+    public class ClientsRepository : IClientsRepository
     {
         private readonly BankingSystemDbContext _context;
 
@@ -55,7 +56,7 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                 .SetProperty(s => s.PhoneNumber, clients.PhoneNumber)
                 .SetProperty(s => s.EmailAddress, clients.EmailAddress)
                 .SetProperty(s => s.AddressRegistration, clients.AddressRegistration)
-                .SetProperty(s => s.DateRegistration, clients.DateRegistration), token); 
+                .SetProperty(s => s.DateRegistration, clients.DateRegistration), token);
         }
 
         public async Task<int> DeleteAsync(Guid id, CancellationToken token)
@@ -66,7 +67,7 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                 .ExecuteDeleteAsync(token);
         }
 
-        public async Task<Guid> GetIdAsync(string passportSeries, string passportNumber, 
+        public async Task<Guid> GetIdAsync(string passportSeries, string passportNumber,
             CancellationToken token)
         {
             var client = await _context.Clients
@@ -77,7 +78,7 @@ namespace BankingSystemDataAccess.Postgres.Repositories
             return client.Id;
         }
 
-        public async Task<Clients?> GetAsync(string passportSeries, string passportNumber, 
+        public async Task<Clients?> GetAsync(string passportSeries, string passportNumber,
             CancellationToken token)
         {
             var client = await _context.Clients
