@@ -31,7 +31,7 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                     IsActive = account.IsActive,
                 };
                 await _context.AddAsync(accountsEntity, token);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(token);
                 return accountsEntity.Id;
             }
             catch
@@ -40,39 +40,39 @@ namespace BankingSystemDataAccess.Postgres.Repositories
             }
         }
 
-        public async Task<int> UpdateBalanceAsync(Guid id, decimal newBalance)
+        public async Task<int> UpdateBalanceAsync(Guid id, decimal newBalance, CancellationToken token)
         {
             return await _context.Accounts
                 .AsNoTracking()
                 .Where(a => a.Id == id)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.Balance, newBalance));
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.Balance, newBalance), token);
         }
 
-        public async Task<Accounts?> GetAsync(Guid id)
+        public async Task<Accounts?> GetAsync(Guid id, CancellationToken token)
         {
             var account = await _context.Accounts
                 .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id, token);
             if (account is null) return null;
             return Accounts.Create(account.Id, account.ClientsId, account.AccountType,
                 account.AccountNumber, account.Balance, account.CurrencyCode, account.OpenDate,
                 account.CloseDate, account.IsActive).Value!;
         }
 
-        public async Task<int> ChangeActiveAsync(Guid id, bool isActive)
+        public async Task<int> ChangeActiveAsync(Guid id, bool isActive, CancellationToken token)
         {
             return await _context.Accounts
                 .AsNoTracking()
                 .Where(a => a.Id == id)
-                .ExecuteUpdateAsync(s => s.SetProperty(s => s.IsActive, isActive));
+                .ExecuteUpdateAsync(s => s.SetProperty(s => s.IsActive, isActive), token);
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id, CancellationToken token)
         {
             return await _context.Accounts
                 .AsNoTracking()
                 .Where(a => a.Id == id)
-                .ExecuteDeleteAsync();
+                .ExecuteDeleteAsync(token);
         }
     }
 }
