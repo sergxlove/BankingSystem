@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BankingSystemCore\BankingSystemCore.csproj" />
+    <ProjectReference Include="..\BankingSystemDataAccess.Postgres\BankingSystemDataAccess.Postgres.csproj" />
+  </ItemGroup>
+
 </Project>
