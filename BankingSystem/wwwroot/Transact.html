@@ -1,0 +1,458 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевод средств</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+            input:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.75em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .success-message {
+            color: #2ecc71;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section-title {
+            font-size: 1.2em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .account-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+            .account-info p {
+                margin: 5px 0;
+                color: #555;
+            }
+
+        .account-number {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .account-balance {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .account-type {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .transfer-icon {
+            text-align: center;
+            font-size: 2em;
+            margin: 15px 0;
+            color: #667eea;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Перевод средств</h1>
+
+        <form id="transferForm">
+            <div class="form-section">
+                <div class="form-section-title">Счет отправителя</div>
+                <div class="form-group">
+                    <label for="senderAccount">Выберите счет отправителя *</label>
+                    <select id="senderAccount" name="senderAccount" required>
+                        <option value="">Выберите счет</option>
+                        <option value="acc-001">4081 7810 0000 0000 0001 (Расчетный) - 15 000 руб.</option>
+                        <option value="acc-002">4081 7810 0000 0000 0002 (Сберегательный) - 50 000 руб.</option>
+                    </select>
+                    <div class="error-message" id="senderAccountError">Выберите счет отправителя</div>
+                </div>
+
+                <div class="account-info" id="senderAccountInfo" style="display: none;">
+                    <p><strong>Номер счета:</strong> <span class="account-number" id="senderAccountNumber"></span></p>
+                    <p><strong>Тип счета:</strong> <span class="account-type" id="senderAccountType"></span></p>
+                    <p><strong>Баланс:</strong> <span class="account-balance" id="senderAccountBalance"></span></p>
+                    <p><strong>Валюта:</strong> <span id="senderAccountCurrency"></span></p>
+                </div>
+            </div>
+
+            <div class="transfer-icon">↓</div>
+
+            <div class="form-section">
+                <div class="form-section-title">Счет получателя</div>
+                <div class="form-group">
+                    <label for="receiverAccount">Номер счета получателя *</label>
+                    <input type="text" id="receiverAccount" name="receiverAccount" placeholder="Введите 20-значный номер счета" required>
+                    <div class="error-message" id="receiverAccountError">Введите корректный номер счета</div>
+                </div>
+
+                <div class="account-info" id="receiverAccountInfo" style="display: none;">
+                    <p><strong>Номер счета:</strong> <span class="account-number" id="receiverAccountNumber"></span></p>
+                    <p><strong>Владелец:</strong> <span id="receiverAccountOwner"></span></p>
+                    <p><strong>Тип счета:</strong> <span class="account-type" id="receiverAccountType"></span></p>
+                    <p><strong>Валюта:</strong> <span id="receiverAccountCurrency"></span></p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Сумма перевода</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transferAmount">Сумма *</label>
+                        <input type="number" id="transferAmount" name="transferAmount" min="1" step="0.01" required>
+                        <div class="error-message" id="amountError">Введите корректную сумму</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transferComment">Комментарий к переводу</label>
+                        <input type="text" id="transferComment" name="transferComment" placeholder="Назначение платежа">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Выполнить перевод</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            Перевод успешно выполнен!
+        </div>
+
+        <a href="#" class="back-link">← Назад на главную</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('transferForm');
+            const successMessage = document.getElementById('successMessage');
+            const senderAccountSelect = document.getElementById('senderAccount');
+            const senderAccountInfo = document.getElementById('senderAccountInfo');
+            const receiverAccountInput = document.getElementById('receiverAccount');
+            const receiverAccountInfo = document.getElementById('receiverAccountInfo');
+            const transferAmountInput = document.getElementById('transferAmount');
+
+            // Имитация базы данных счетов
+            const accountsDatabase = [
+                {
+                    id: 'acc-001',
+                    number: '4081 7810 0000 0000 0001',
+                    type: 'Расчетный',
+                    balance: 15000,
+                    currency: 'RUB',
+                    owner: 'Иван Петров Сергеевич'
+                },
+                {
+                    id: 'acc-002',
+                    number: '4081 7810 0000 0000 0002',
+                    type: 'Сберегательный',
+                    balance: 50000,
+                    currency: 'RUB',
+                    owner: 'Иван Петров Сергеевич'
+                },
+                {
+                    id: 'acc-003',
+                    number: '4081 7810 0000 0000 0003',
+                    type: 'Расчетный',
+                    balance: 25000,
+                    currency: 'RUB',
+                    owner: 'Мария Иванова Александровна'
+                },
+                {
+                    id: 'acc-004',
+                    number: '4081 7810 0000 0000 0004',
+                    type: 'Расчетный',
+                    balance: 100000,
+                    currency: 'RUB',
+                    owner: 'Алексей Сидоров Владимирович'
+                }
+            ];
+
+            // Обновление информации о счете отправителя
+            senderAccountSelect.addEventListener('change', function() {
+                const accountId = this.value;
+
+                if (accountId) {
+                    const account = accountsDatabase.find(acc => acc.id === accountId);
+
+                    if (account) {
+                        document.getElementById('senderAccountNumber').textContent = account.number;
+                        document.getElementById('senderAccountType').textContent = account.type;
+                        document.getElementById('senderAccountBalance').textContent = account.balance.toLocaleString('ru-RU') + ' ' + account.currency;
+                        document.getElementById('senderAccountCurrency').textContent = account.currency;
+
+                        senderAccountInfo.style.display = 'block';
+
+                        // Установка максимальной суммы перевода
+                        transferAmountInput.max = account.balance;
+                    }
+                } else {
+                    senderAccountInfo.style.display = 'none';
+                }
+            });
+
+            // Валидация номера счета получателя
+            receiverAccountInput.addEventListener('blur', function() {
+                const accountNumber = this.value.replace(/\s/g, '');
+
+                if (accountNumber.length === 20 && /^\d+$/.test(accountNumber)) {
+                    // Форматирование номера счета
+                    this.value = accountNumber.replace(/(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4 $5');
+
+                    // Поиск счета в базе (имитация)
+                    const foundAccount = accountsDatabase.find(acc =>
+                        acc.number.replace(/\s/g, '') === accountNumber
+                    );
+
+                    if (foundAccount) {
+                        document.getElementById('receiverAccountNumber').textContent = foundAccount.number;
+                        document.getElementById('receiverAccountOwner').textContent = foundAccount.owner;
+                        document.getElementById('receiverAccountType').textContent = foundAccount.type;
+                        document.getElementById('receiverAccountCurrency').textContent = foundAccount.currency;
+
+                        receiverAccountInfo.style.display = 'block';
+                        document.getElementById('receiverAccountError').style.display = 'none';
+                    } else {
+                        // Если счет не найден в нашей базе, все равно показываем форматированный номер
+                        document.getElementById('receiverAccountNumber').textContent = this.value;
+                        document.getElementById('receiverAccountOwner').textContent = 'Внешний клиент';
+                        document.getElementById('receiverAccountType').textContent = 'Неизвестно';
+                        document.getElementById('receiverAccountCurrency').textContent = 'RUB'; // Предполагаем рубль по умолчанию
+
+                        receiverAccountInfo.style.display = 'block';
+                        document.getElementById('receiverAccountError').style.display = 'none';
+                    }
+                } else if (accountNumber.length > 0) {
+                    document.getElementById('receiverAccountError').style.display = 'block';
+                    receiverAccountInfo.style.display = 'none';
+                } else {
+                    document.getElementById('receiverAccountError').style.display = 'none';
+                    receiverAccountInfo.style.display = 'none';
+                }
+            });
+
+            // Автоматическое форматирование номера счета при вводе
+            receiverAccountInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (value.length > 20) {
+                    value = value.substring(0, 20);
+                }
+
+                if (value.length > 0) {
+                    // Форматирование с пробелами каждые 4 цифры
+                    value = value.replace(/(\d{4})/g, '$1 ').trim();
+                }
+
+                e.target.value = value;
+            });
+
+            // Проверка суммы перевода
+            transferAmountInput.addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                const senderAccountId = senderAccountSelect.value;
+
+                if (senderAccountId) {
+                    const senderAccount = accountsDatabase.find(acc => acc.id === senderAccountId);
+
+                    if (senderAccount && amount > senderAccount.balance) {
+                        document.getElementById('amountError').textContent = 'Недостаточно средств на счете';
+                        document.getElementById('amountError').style.display = 'block';
+                    } else if (amount <= 0) {
+                        document.getElementById('amountError').textContent = 'Введите корректную сумму';
+                        document.getElementById('amountError').style.display = 'block';
+                    } else {
+                        document.getElementById('amountError').style.display = 'none';
+                    }
+                }
+            });
+
+            // Валидация формы перевода
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                let isValid = true;
+
+                // Проверяем счет отправителя
+                if (!senderAccountSelect.value) {
+                    document.getElementById('senderAccountError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('senderAccountError').style.display = 'none';
+                }
+
+                // Проверяем счет получателя
+                const receiverAccount = receiverAccountInput.value.replace(/\s/g, '');
+                if (receiverAccount.length !== 20 || !/^\d+$/.test(receiverAccount)) {
+                    document.getElementById('receiverAccountError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('receiverAccountError').style.display = 'none';
+                }
+
+                // Проверяем сумму перевода
+                const amount = parseFloat(transferAmountInput.value) || 0;
+                const senderAccount = accountsDatabase.find(acc => acc.id === senderAccountSelect.value);
+
+                if (!amount || amount <= 0) {
+                    document.getElementById('amountError').textContent = 'Введите корректную сумму';
+                    document.getElementById('amountError').style.display = 'block';
+                    isValid = false;
+                } else if (senderAccount && amount > senderAccount.balance) {
+                    document.getElementById('amountError').textContent = 'Недостаточно средств на счете';
+                    document.getElementById('amountError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('amountError').style.display = 'none';
+                }
+
+                // Если форма валидна, показываем успешное сообщение
+                if (isValid) {
+                    // В реальном приложении здесь был бы AJAX-запрос к серверу
+                    successMessage.innerHTML = `
+                        Перевод успешно выполнен!<br>
+                        Сумма: <strong>${amount.toLocaleString('ru-RU')} руб.</strong><br>
+                        Со счета: <strong>${document.getElementById('senderAccountNumber').textContent}</strong><br>
+                        На счет: <strong>${receiverAccountInput.value}</strong>
+                    `;
+
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    senderAccountInfo.style.display = 'none';
+                    receiverAccountInfo.style.display = 'none';
+
+                    // Прокручиваем к сообщению об успехе
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+
+                    // Скрыть сообщение через 5 секунд
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
