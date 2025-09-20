@@ -12,6 +12,11 @@ namespace BankingSystem.Endpoints
     {
         public static IEndpointRouteBuilder MapBankingOperationsEndpoints(this IEndpointRouteBuilder app)
         {
+            app.MapGet("/", () =>
+            {
+                return Results.Redirect("/login");
+            });
+
             app.MapGet("/index", async (HttpContext context) =>
             {
                 context.Response.ContentType = "text/html; charset=utf-8";
@@ -115,6 +120,8 @@ namespace BankingSystem.Endpoints
                 CancellationToken token) =>
             {
                 if (request is null) return Results.BadRequest("request is empty");
+                string numberCard = 
+                var acccount = Accounts.Create(Guid.NewGuid(), request.ClientsId, request.AccountType)
 
             }).RequireAuthorization("OnlyForAuthUser");
 
