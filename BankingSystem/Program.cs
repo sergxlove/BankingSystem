@@ -35,6 +35,8 @@ namespace BankingSystem
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IJwtProviderService, JwtProviderService>();
             builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+            builder.Services.AddScoped<ISystemTableRepository, SystemTableRepository>();
+            builder.Services.AddScoped<ISystemTableService, SystemTableService>();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
