@@ -2,6 +2,7 @@
 using BankingSystemDataAccess.Postgres.Abstractions;
 using BankingSystemDataAccess.Postgres.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace BankingSystemDataAccess.Postgres.Repositories
 {
@@ -57,6 +58,21 @@ namespace BankingSystemDataAccess.Postgres.Repositories
             return Accounts.Create(account.Id, account.ClientsId, account.AccountType,
                 account.AccountNumber, account.Balance, account.CurrencyCode, account.OpenDate,
                 account.CloseDate, account.IsActive).Value!;
+        }
+
+        public async Task<List<Accounts>> GetListAsync(Guid idClient,  CancellationToken token)
+        {
+            var accounts = await _context.Accounts
+                .AsNoTracking()
+                .Where (a => a.ClientsId == idClient)
+                .ToListAsync(token);
+            List<Accounts> result = new List<Accounts>();
+            foreach(var ak in accounts)
+            {
+                result.Add(Accounts.Create(ak.Id, ak.ClientsId, ak.AccountType, ak.AccountNumber, 
+                    ak.Balance, ak.CurrencyCode, ak.OpenDate, ak.CloseDate, ak.IsActive).Value);
+            }
+            return result;
         }
 
         public async Task<int> ChangeActiveAsync(Guid id, bool isActive, CancellationToken token)

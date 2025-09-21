@@ -117,13 +117,29 @@ namespace BankingSystem.Endpoints
             app.MapPost("/regAccount", async (HttpContext context, 
                 [FromBody] RegAccountRequest request, 
                 [FromServices] IAccountsService accountsService,
+                [FromServices] ISystemTableService systemTableService,
                 CancellationToken token) =>
             {
                 if (request is null) return Results.BadRequest("request is empty");
-                string numberCard = 
-                var acccount = Accounts.Create(Guid.NewGuid(), request.ClientsId, request.AccountType)
+                string numberCard = await systemTableService.GetAndIncrementAsync();
+                var account = Accounts.Create(Guid.NewGuid(), request.ClientsId, 
+                    request.AccountType, numberCard, request.Balance, request.CurrencyCode,
+                    DateOnly.FromDateTime(DateTime.Now), DateOnly.MaxValue, true);
+                if (!account.IsSuccess) return Results.BadRequest(account.Error);
+                var result = await accountsService.CreateAsync(account.Value, token);
+                return Results.Ok();
 
             }).RequireAuthorization("OnlyForAuthUser");
+
+            app.MapPost("/regCredit", async (HttpContext context) =>
+            {
+
+            });
+
+            app.MapPost("regDeposit", async (HttpContext context) =>
+            {
+
+            });
 
             app.MapGet("/logout", (HttpContext context) =>
             {

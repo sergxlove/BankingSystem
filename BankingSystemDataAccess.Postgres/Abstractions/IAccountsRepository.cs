@@ -9,5 +9,6 @@ namespace BankingSystemDataAccess.Postgres.Abstractions
         Task<int> DeleteAsync(Guid id, CancellationToken token);
         Task<Accounts?> GetAsync(Guid id, CancellationToken token);
         Task<int> UpdateBalanceAsync(Guid id, decimal newBalance, CancellationToken token);
+        Task<List<Accounts>> GetListAsync(Guid idClient, CancellationToken token);
     }
 }

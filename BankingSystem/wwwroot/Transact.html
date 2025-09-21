@@ -182,20 +182,16 @@
             <div class="form-section">
                 <div class="form-section-title">Счет отправителя</div>
                 <div class="form-group">
-                    <label for="senderAccount">Выберите счет отправителя *</label>
-                    <select id="senderAccount" name="senderAccount" required>
-                        <option value="">Выберите счет</option>
-                        <option value="acc-001">4081 7810 0000 0000 0001 (Расчетный) - 15 000 руб.</option>
-                        <option value="acc-002">4081 7810 0000 0000 0002 (Сберегательный) - 50 000 руб.</option>
-                    </select>
-                    <div class="error-message" id="senderAccountError">Выберите счет отправителя</div>
+                    <label for="receiverAccount">Номер счета отправителя *</label>
+                    <input type="text" id="receiverAccount" name="receiverAccount" placeholder="Введите 16-значный номер счета" required>
+                    <div class="error-message" id="receiverAccountError">Введите корректный номер счета</div>
                 </div>
 
-                <div class="account-info" id="senderAccountInfo" style="display: none;">
-                    <p><strong>Номер счета:</strong> <span class="account-number" id="senderAccountNumber"></span></p>
-                    <p><strong>Тип счета:</strong> <span class="account-type" id="senderAccountType"></span></p>
-                    <p><strong>Баланс:</strong> <span class="account-balance" id="senderAccountBalance"></span></p>
-                    <p><strong>Валюта:</strong> <span id="senderAccountCurrency"></span></p>
+                <div class="account-info" id="receiverAccountInfo" style="display: none;">
+                    <p><strong>Номер счета:</strong> <span class="account-number" id="receiverAccountNumber"></span></p>
+                    <p><strong>Владелец:</strong> <span id="receiverAccountOwner"></span></p>
+                    <p><strong>Тип счета:</strong> <span class="account-type" id="receiverAccountType"></span></p>
+                    <p><strong>Валюта:</strong> <span id="receiverAccountCurrency"></span></p>
                 </div>
             </div>
 
@@ -205,7 +201,7 @@
                 <div class="form-section-title">Счет получателя</div>
                 <div class="form-group">
                     <label for="receiverAccount">Номер счета получателя *</label>
-                    <input type="text" id="receiverAccount" name="receiverAccount" placeholder="Введите 20-значный номер счета" required>
+                    <input type="text" id="receiverAccount" name="receiverAccount" placeholder="Введите 16-значный номер счета" required>
                     <div class="error-message" id="receiverAccountError">Введите корректный номер счета</div>
                 </div>
 
