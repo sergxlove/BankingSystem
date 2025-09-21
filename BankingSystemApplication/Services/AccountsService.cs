@@ -32,5 +32,9 @@ namespace BankingSystemApplication.Services
         {
             return await _repository.UpdateBalanceAsync(id, newBalance, token);
         }
+        public async Task<List<Accounts>> GetListAsync(Guid idClient, CancellationToken token)
+        {
+            return await _repository.GetListAsync(idClient, token);
+        }
     }
 }
