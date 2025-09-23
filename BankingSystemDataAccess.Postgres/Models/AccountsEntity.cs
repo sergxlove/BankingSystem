@@ -13,9 +13,7 @@
         public bool IsActive {  get; set; }
 
         public virtual ClientsEntity? Clients { get; set; }
-
         public virtual List<CreditsEntity> Credits { get; set; } = new();
-
         public virtual List<DepositsEntity> Deposits { get; set; } = new();
     }
 }
