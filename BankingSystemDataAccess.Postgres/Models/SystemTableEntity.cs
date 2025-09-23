@@ -6,6 +6,5 @@ namespace BankingSystemDataAccess.Postgres.Models
     {
         public int Id { get; set; } 
         public string NumberCardLast { get; set; } = string.Empty;    
-
     }
 }

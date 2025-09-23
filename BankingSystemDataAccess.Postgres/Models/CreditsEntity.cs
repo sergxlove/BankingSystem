@@ -14,7 +14,6 @@
         public bool IsActive { get; set; }
 
         public virtual ClientsEntity? Clients { get; set; }
-
         public virtual AccountsEntity? Accounts { get; set; }
     }
 }

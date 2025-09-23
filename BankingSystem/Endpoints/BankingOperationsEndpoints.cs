@@ -134,12 +134,32 @@ namespace BankingSystem.Endpoints
             app.MapPost("/regCredit", async (HttpContext context) =>
             {
 
-            });
+            }).RequireAuthorization("OnlyForAuthUser");
 
-            app.MapPost("regDeposit", async (HttpContext context) =>
+            app.MapPost("/regDeposit", async (HttpContext context) =>
             {
 
-            });
+            }).RequireAuthorization("OnlyForAuthUser");
+
+            app.MapPost("/getProfile", async (HttpContext context) =>
+            {
+
+            }).RequireAuthorization("OnlyForAuthUser");
+
+            app.MapDelete("/deleteAccount", async (HttpContext context) =>
+            {
+
+            }).RequireAuthorization("OnlyForAuthUser");
+
+            app.MapDelete("/deleteDeposit", async (HttpContext context) =>
+            {
+
+            }).RequireAuthorization("OnlyForAuthUser");
+
+            app.MapPost("/transact", async (HttpContext context) =>
+            {
+
+            }).RequireAuthorization("OnlyForAuthUser");
 
             app.MapGet("/logout", (HttpContext context) =>
             {
