@@ -251,7 +251,6 @@
             const receiverAccountInfo = document.getElementById('receiverAccountInfo');
             const transferAmountInput = document.getElementById('transferAmount');
 
-            // Имитация базы данных счетов
             const accountsDatabase = [
                 {
                     id: 'acc-001',
@@ -287,7 +286,6 @@
                 }
             ];
 
-            // Обновление информации о счете отправителя
             senderAccountSelect.addEventListener('change', function() {
                 const accountId = this.value;
 
@@ -302,7 +300,6 @@
 
                         senderAccountInfo.style.display = 'block';
 
-                        // Установка максимальной суммы перевода
                         transferAmountInput.max = account.balance;
                     }
                 } else {
@@ -310,15 +307,12 @@
                 }
             });
 
-            // Валидация номера счета получателя
             receiverAccountInput.addEventListener('blur', function() {
                 const accountNumber = this.value.replace(/\s/g, '');
 
                 if (accountNumber.length === 20 && /^\d+$/.test(accountNumber)) {
-                    // Форматирование номера счета
                     this.value = accountNumber.replace(/(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4 $5');
 
-                    // Поиск счета в базе (имитация)
                     const foundAccount = accountsDatabase.find(acc =>
                         acc.number.replace(/\s/g, '') === accountNumber
                     );
@@ -332,11 +326,10 @@
                         receiverAccountInfo.style.display = 'block';
                         document.getElementById('receiverAccountError').style.display = 'none';
                     } else {
-                        // Если счет не найден в нашей базе, все равно показываем форматированный номер
                         document.getElementById('receiverAccountNumber').textContent = this.value;
                         document.getElementById('receiverAccountOwner').textContent = 'Внешний клиент';
                         document.getElementById('receiverAccountType').textContent = 'Неизвестно';
-                        document.getElementById('receiverAccountCurrency').textContent = 'RUB'; // Предполагаем рубль по умолчанию
+                        document.getElementById('receiverAccountCurrency').textContent = 'RUB'; 
 
                         receiverAccountInfo.style.display = 'block';
                         document.getElementById('receiverAccountError').style.display = 'none';
@@ -350,7 +343,6 @@
                 }
             });
 
-            // Автоматическое форматирование номера счета при вводе
             receiverAccountInput.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
 
@@ -359,14 +351,12 @@
                 }
 
                 if (value.length > 0) {
-                    // Форматирование с пробелами каждые 4 цифры
                     value = value.replace(/(\d{4})/g, '$1 ').trim();
                 }
 
                 e.target.value = value;
             });
 
-            // Проверка суммы перевода
             transferAmountInput.addEventListener('input', function() {
                 const amount = parseFloat(this.value) || 0;
                 const senderAccountId = senderAccountSelect.value;
@@ -386,12 +376,10 @@
                 }
             });
 
-            // Валидация формы перевода
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 let isValid = true;
 
-                // Проверяем счет отправителя
                 if (!senderAccountSelect.value) {
                     document.getElementById('senderAccountError').style.display = 'block';
                     isValid = false;
@@ -399,7 +387,6 @@
                     document.getElementById('senderAccountError').style.display = 'none';
                 }
 
-                // Проверяем счет получателя
                 const receiverAccount = receiverAccountInput.value.replace(/\s/g, '');
                 if (receiverAccount.length !== 20 || !/^\d+$/.test(receiverAccount)) {
                     document.getElementById('receiverAccountError').style.display = 'block';
@@ -408,7 +395,6 @@
                     document.getElementById('receiverAccountError').style.display = 'none';
                 }
 
-                // Проверяем сумму перевода
                 const amount = parseFloat(transferAmountInput.value) || 0;
                 const senderAccount = accountsDatabase.find(acc => acc.id === senderAccountSelect.value);
 
@@ -424,9 +410,7 @@
                     document.getElementById('amountError').style.display = 'none';
                 }
 
-                // Если форма валидна, показываем успешное сообщение
                 if (isValid) {
-                    // В реальном приложении здесь был бы AJAX-запрос к серверу
                     successMessage.innerHTML = `
                         Перевод успешно выполнен!<br>
                         Сумма: <strong>${amount.toLocaleString('ru-RU')} руб.</strong><br>
@@ -439,10 +423,8 @@
                     senderAccountInfo.style.display = 'none';
                     receiverAccountInfo.style.display = 'none';
 
-                    // Прокручиваем к сообщению об успехе
                     successMessage.scrollIntoView({ behavior: 'smooth' });
 
-                    // Скрыть сообщение через 5 секунд
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 5000);

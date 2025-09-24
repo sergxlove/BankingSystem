@@ -257,14 +257,12 @@
         <div class="account-info" id="accountInfo">
             <h3>Информация о счете</h3>
             <div class="account-details" id="accountDetails">
-                <!-- Данные счета будут загружены здесь -->
             </div>
         </div>
 
         <div class="requirements-list" id="requirementsList" style="display: none;">
             <h4>⚠️ Требования для закрытия счета:</h4>
             <ul id="requirementsItems">
-                <!-- Требования будут добавлены динамически -->
             </ul>
         </div>
 
@@ -338,7 +336,6 @@
 
             let currentAccount = null;
 
-            // Функция для получения JWT токена из куки
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
@@ -346,7 +343,6 @@
                 return null;
             }
 
-            // Функция для выполнения авторизованных запросов
             async function makeAuthenticatedRequest(url, method = 'GET', data = null) {
                 const token = getCookie('jwt');
 
@@ -375,7 +371,6 @@
                 return await response.json();
             }
 
-            // Форматирование номера счета
             accountNumberInput.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
 
@@ -390,13 +385,11 @@
                 e.target.value = value;
             });
 
-            // Валидация номера счета
             function validateAccountNumber(number) {
                 const cleanNumber = number.replace(/\s/g, '');
                 return cleanNumber.length === 16 && /^\d+$/.test(cleanNumber);
             }
 
-            // Проверка возможности закрытия счета
             function checkAccountClosable(account) {
                 const requirements = [];
 
@@ -422,7 +415,6 @@
                 };
             }
 
-            // Отображение информации о счете
             function displayAccountInfo(account) {
                 const balanceClass = account.balance > 0 ? 'balance-positive' :
                                    account.balance < 0 ? 'balance-negative' : 'balance-zero';
@@ -457,7 +449,6 @@
                 accountInfo.style.display = 'block';
             }
 
-            // Отображение требований для закрытия
             function displayRequirements(requirements) {
                 if (requirements.length > 0) {
                     requirementsItems.innerHTML = requirements.map(req =>
@@ -474,7 +465,6 @@
                 }
             }
 
-            // Поиск счета
             findAccountBtn.addEventListener('click', async function() {
                 const accountNumber = accountNumberInput.value;
 
@@ -487,17 +477,15 @@
                 loading.style.display = 'block';
 
                 try {
-                    // Имитация запроса к API
                     setTimeout(() => {
-                        // В реальном приложении:
-                        // const accountData = await makeAuthenticatedRequest(`/api/accounts/${accountNumber}`);
+
 
                         const cleanAccountNumber = accountNumber.replace(/\s/g, '');
                         const accountData = {
                             id: 'acc-' + cleanAccountNumber.slice(-4),
                             accountNumber: accountNumber,
                             accountType: 'Расчетный',
-                            balance: 15000, // Можно изменить на 0 для тестирования успешного закрытия
+                            balance: 0, 
                             currency: 'RUB',
                             status: 'Активный',
                             openDate: '2023-01-15',
@@ -523,12 +511,10 @@
                 }
             });
 
-            // Активация кнопки при подтверждении
             confirmationCheckbox.addEventListener('change', function() {
                 closeAccountBtn.disabled = !this.checked;
             });
 
-            // Закрытие счета
             closeAccountBtn.addEventListener('click', async function() {
                 const reason = document.getElementById('closingReason').value;
 
@@ -548,17 +534,8 @@
                 loading.style.display = 'block';
 
                 try {
-                    // Имитация запроса на закрытие счета
                     setTimeout(() => {
-                        // В реальном приложении:
-                        // const result = await makeAuthenticatedRequest(
-                        //     `/api/accounts/${currentAccount.id}/close`,
-                        //     'POST',
-                        //     {
-                        //         reason: reason,
-                        //         comments: document.getElementById('closingComments').value
-                        //     }
-                        // );
+
 
                         loading.style.display = 'none';
                         closeAccountSection.style.display = 'none';

@@ -20,6 +20,12 @@
             return ResultModel<Credits>.Success(new Credits(id, clientId, accountId, sumCredit, termMonth, startDate, endDate, paymentMonth, leftCredit, isActive));
         }
 
+        public static decimal GetPaymentsMonth(decimal sumCredit, int termMonth)
+        {
+            decimal percentMonth = sumCredit / 100;
+            return decimal.Round(sumCredit / termMonth + percentMonth, 2);
+        }
+
         private Credits(Guid id, Guid clientId, Guid accountId, decimal sumCredit, int termMonth,
             DateOnly startDate, DateOnly endDate, decimal paymentMonth, decimal leftCredit, 
             bool isActive)

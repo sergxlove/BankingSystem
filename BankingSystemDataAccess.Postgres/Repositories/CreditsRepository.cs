@@ -54,6 +54,22 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                 credit.LeftCreadit, credit.IsActive).Value!;
         }
 
+        public async Task<List<Credits>> GetListAsync(Guid clientId, CancellationToken token)
+        {
+            var credits = await _context.Credits
+                .AsNoTracking()
+                .Where (a => a.ClientId == clientId)
+                .ToListAsync();
+            List<Credits> result = new List<Credits>();
+            foreach(var cr in credits)
+            {
+                result.Add(Credits.Create(cr.Id, cr.ClientId, cr.AccountId, cr.SumCredit,
+                    cr.TermMonth, cr.StartDate, cr.EndDate, cr.PaymentMonth,
+                    cr.LeftCreadit, cr.IsActive).Value!);
+            }
+            return result;
+        }
+
         public async Task<int> ChangeActiveAsync(Guid id, bool isActive, CancellationToken token)
         {
             return await _context.Credits
