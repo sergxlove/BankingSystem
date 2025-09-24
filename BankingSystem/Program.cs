@@ -7,10 +7,12 @@ using BankingSystemDataAccess.Postgres;
 using BankingSystemDataAccess.Postgres.Abstractions;
 using BankingSystemDataAccess.Postgres.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace BankingSystem
 {
@@ -73,10 +75,39 @@ namespace BankingSystem
                     policy.RequireClaim(ClaimTypes.Role, "user");
                 });
             });
-            
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("GeneralPolicy", opt =>
+                {
+                    opt.PermitLimit = 100; 
+                    opt.Window = TimeSpan.FromMinutes(1); 
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 10;
+                });
+                options.AddFixedWindowLimiter("LoginPolicy", opt =>
+                {
+                    opt.PermitLimit = 5;  
+                    opt.Window = TimeSpan.FromMinutes(1);
+                });
+                options.AddTokenBucketLimiter("UploadPolicy", opt =>
+                {
+                    opt.TokenLimit = 10;    
+                    opt.ReplenishmentPeriod = TimeSpan.FromMinutes(1);
+                    opt.TokensPerPeriod = 2;   
+                    opt.AutoReplenishment = true;
+                });
+            });
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
             var app = builder.Build();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseRateLimiter();
             app.MapAllEndpoints();
             app.Run();
         }

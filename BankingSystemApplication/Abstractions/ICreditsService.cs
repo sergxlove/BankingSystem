@@ -8,6 +8,7 @@ namespace BankingSystemApplication.Abstractions
         Task<Guid> CreateAsync(Credits credit, CancellationToken token);
         Task<int> DeleteAsync(Guid id, CancellationToken token);
         Task<Credits?> GetAsync(Guid id, CancellationToken token);
+        Task<List<Credits>> GetListAsync(Guid clientId, CancellationToken token);
         Task<int> UpdateLeftCreditAsync(Guid id, decimal newLeftCredit, CancellationToken token);
     }
 }

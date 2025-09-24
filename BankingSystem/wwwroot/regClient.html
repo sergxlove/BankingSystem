@@ -236,7 +236,6 @@
             const form = document.getElementById('registrationForm');
             const successMessage = document.getElementById('successMessage');
 
-            // Получаем все элементы для валидации
             const firstNameInput = document.getElementById('firstName');
             const lastNameInput = document.getElementById('lastName');
             const birthDateInput = document.getElementById('birthDate');
@@ -246,12 +245,10 @@
             const emailInput = document.getElementById('emailAddress');
             const addressInput = document.getElementById('addressRegistration');
 
-            // Функция для валидации имени/фамилии
             function validateName(name) {
                 return name.length >= 2 && /^[a-zA-Zа-яА-ЯёЁ\s\-]+$/.test(name);
             }
 
-            // Функция для валидации даты рождения
             function validateBirthDate(date) {
                 const birthDate = new Date(date);
                 const today = new Date();
@@ -261,7 +258,6 @@
                 return birthDate <= today && birthDate >= minDate;
             }
 
-            // Функция для валидации паспортных данных
             function validatePassportSeries(series) {
                 return /^\d{4}$/.test(series);
             }
@@ -270,22 +266,18 @@
                 return /^\d{6}$/.test(number);
             }
 
-            // Функция для валидации телефона
             function validatePhone(phone) {
                 return /^(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/.test(phone);
             }
 
-            // Функция для валидации email
             function validateEmail(email) {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
 
-            // Функция для валидации адреса
             function validateAddress(address) {
                 return address.length >= 10;
             }
 
-            // Маска для телефона
             phoneNumberInput.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
 
@@ -310,7 +302,6 @@
                 e.target.value = value;
             });
 
-            // Ограничение ввода для паспортных данных
             passportSeriesInput.addEventListener('input', function(e) {
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
             });
@@ -319,12 +310,10 @@
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
             });
 
-            // Валидация формы
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 let isValid = true;
 
-                // Валидация имени
                 if (!validateName(firstNameInput.value)) {
                     document.getElementById('firstNameError').style.display = 'block';
                     isValid = false;
@@ -332,7 +321,6 @@
                     document.getElementById('firstNameError').style.display = 'none';
                 }
 
-                // Валидация фамилии
                 if (!validateName(lastNameInput.value)) {
                     document.getElementById('lastNameError').style.display = 'block';
                     isValid = false;
@@ -340,7 +328,6 @@
                     document.getElementById('lastNameError').style.display = 'none';
                 }
 
-                // Валидация даты рождения
                 if (!validateBirthDate(birthDateInput.value)) {
                     document.getElementById('birthDateError').style.display = 'block';
                     isValid = false;
@@ -348,7 +335,6 @@
                     document.getElementById('birthDateError').style.display = 'none';
                 }
 
-                // Валидация серии паспорта
                 if (!validatePassportSeries(passportSeriesInput.value)) {
                     document.getElementById('passportSeriesError').style.display = 'block';
                     isValid = false;
@@ -356,7 +342,6 @@
                     document.getElementById('passportSeriesError').style.display = 'none';
                 }
 
-                // Валидация номера паспорта
                 if (!validatePassportNumber(passportNumberInput.value)) {
                     document.getElementById('passportNumberError').style.display = 'block';
                     isValid = false;
@@ -364,7 +349,6 @@
                     document.getElementById('passportNumberError').style.display = 'none';
                 }
 
-                // Валидация телефона
                 if (!validatePhone(phoneNumberInput.value)) {
                     document.getElementById('phoneNumberError').style.display = 'block';
                     isValid = false;
@@ -372,7 +356,6 @@
                     document.getElementById('phoneNumberError').style.display = 'none';
                 }
 
-                // Валидация email
                 if (!validateEmail(emailInput.value)) {
                     document.getElementById('emailError').style.display = 'block';
                     isValid = false;
@@ -380,7 +363,6 @@
                     document.getElementById('emailError').style.display = 'none';
                 }
 
-                // Валидация адреса
                 if (!validateAddress(addressInput.value)) {
                     document.getElementById('addressError').style.display = 'block';
                     isValid = false;
@@ -388,12 +370,10 @@
                     document.getElementById('addressError').style.display = 'none';
                 }
 
-                // Если форма валидна, показать сообщение об успехе
                 if (isValid) {
                     successMessage.style.display = 'block';
                     form.reset();
 
-                    // Скрыть сообщение через 3 секунды
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 3000);

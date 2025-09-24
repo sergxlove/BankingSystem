@@ -20,6 +20,11 @@
             return ResultModel<Deposits>.Success(new Deposits(id, clientId, accountId, sumDeposit, 
                 termMonth, startDate, endDate, percentYear, isActive));
         }
+
+        public static int GetCurrentPercentYear()
+        {
+            return 15;
+        }
         private Deposits(Guid id, Guid clientId, Guid accountId, decimal sumDeposit, int termMonth,
             DateOnly startDate, DateOnly endDate, int percentYear, bool isActive)
         {

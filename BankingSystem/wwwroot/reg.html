@@ -165,7 +165,6 @@
             const togglePassword = document.getElementById('togglePassword');
             const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
 
-            // Функция для переключения видимости пароля
             function setupPasswordToggle(toggleElement, inputElement) {
                 toggleElement.addEventListener('click', function() {
                     if (inputElement.type === 'password') {
@@ -178,16 +177,13 @@
                 });
             }
 
-            // Настройка переключения видимости паролей
             setupPasswordToggle(togglePassword, passwordInput);
             setupPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
 
-            // Валидация формы
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 let isValid = true;
 
-                // Валидация логина
                 if (usernameInput.value.length < 4) {
                     usernameError.style.display = 'block';
                     isValid = false;
@@ -195,7 +191,6 @@
                     usernameError.style.display = 'none';
                 }
 
-                // Валидация пароля
                 if (passwordInput.value.length < 6) {
                     passwordError.style.display = 'block';
                     isValid = false;
@@ -203,7 +198,6 @@
                     passwordError.style.display = 'none';
                 }
 
-                // Проверка совпадения паролей
                 if (passwordInput.value !== confirmPasswordInput.value) {
                     confirmPasswordError.style.display = 'block';
                     isValid = false;
@@ -211,19 +205,16 @@
                     confirmPasswordError.style.display = 'none';
                 }
 
-                // Если форма валидна, показать сообщение об успехе
                 if (isValid) {
                     successMessage.style.display = 'block';
                     form.reset();
 
-                    // Скрыть сообщение через 3 секунды
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 3000);
                 }
             });
 
-            // Скрывать сообщения об ошибках при вводе
             usernameInput.addEventListener('input', function() {
                 if (usernameInput.value.length >= 4) {
                     usernameError.style.display = 'none';

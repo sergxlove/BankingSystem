@@ -44,6 +44,21 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                 deposit.PercentYear, deposit.IsActive).Value!;
         }
 
+        public async Task<List<Deposits>> GetListAsync(Guid clientId, CancellationToken token)
+        {
+            var deposits = await _context.Deposits
+                .AsNoTracking()
+                .Where(a => a.ClientId == clientId)
+                .ToListAsync();
+            List<Deposits> result = new List<Deposits>();
+            foreach (var dp in deposits)
+            {
+                result.Add(Deposits.Create(dp.Id, dp.ClientId, dp.AccountId, dp.SumDeposit,
+                    dp.TermMonth, dp.StartDate, dp.EndDate, dp.PercentYear, dp.IsActive).Value!);
+            }
+            return result;
+        }
+
         public async Task<int> ChangeActiveAsync(Guid id, bool isActive, CancellationToken token)
         {
             return await _context.Deposits

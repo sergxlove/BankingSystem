@@ -244,7 +244,6 @@
                 <div class="form-section">
                     <div class="form-section-title">Выбор счета для кредита</div>
                     <div id="accountsList">
-                        <!-- Счета будут добавлены динамически -->
                     </div>
                     <div class="error-message" id="accountError">Выберите счет для кредитования</div>
                 </div>
@@ -308,21 +307,18 @@
             const totalPaymentElement = document.getElementById('totalPayment');
             const termValueElement = document.getElementById('termValue');
 
-            // Получаем элементы для поиска клиента
             const passportSeriesInput = document.getElementById('passportSeries');
             const passportNumberInput = document.getElementById('passportNumber');
             const clientIdSpan = document.getElementById('clientId');
             const clientNameSpan = document.getElementById('clientName');
             const clientBirthDateSpan = document.getElementById('clientBirthDate');
 
-            // Получаем элементы для данных кредита
             const creditAmountInput = document.getElementById('creditAmount');
             const creditTermInput = document.getElementById('creditTerm');
 
             let selectedAccountId = null;
             let currentClientId = null;
 
-            // Ограничение ввода для паспортных данных
             passportSeriesInput.addEventListener('input', function(e) {
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
             });
@@ -331,23 +327,19 @@
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
             });
 
-            // Обновление значения срока кредита
             creditTermInput.addEventListener('input', function() {
                 termValueElement.textContent = this.value;
                 calculatePayments();
             });
 
-            // Пересчет платежей при изменении суммы кредита
             creditAmountInput.addEventListener('input', calculatePayments);
 
-            // Функция для расчета платежей
             function calculatePayments() {
                 const amount = parseFloat(creditAmountInput.value) || 0;
                 const term = parseInt(creditTermInput.value);
 
                 if (amount > 0 && term > 0) {
-                    // Простой расчет аннуитетного платежа (процентная ставка 12% годовых)
-                    const monthlyRate = 0.12 / 12; // Месячная процентная ставка
+                    const monthlyRate = 0.12 / 12; 
                     const annuityRatio = monthlyRate * Math.pow(1 + monthlyRate, term) / (Math.pow(1 + monthlyRate, term) - 1);
                     const monthlyPayment = amount * annuityRatio;
                     const totalPayment = monthlyPayment * term;
@@ -360,7 +352,6 @@
                 }
             }
 
-            // Функция для валидации паспортных данных
             function validatePassportSeries(series) {
                 return /^\d{4}$/.test(series);
             }
@@ -369,7 +360,6 @@
                 return /^\d{6}$/.test(number);
             }
 
-            // Имитация базы данных клиентов
             const clientsDatabase = [
                 {
                     id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
@@ -411,7 +401,6 @@
                 }
             ];
 
-            // Функция для отображения счетов клиента
             function displayAccounts(accounts) {
                 accountsList.innerHTML = '';
 
@@ -430,12 +419,10 @@
                     `;
 
                     accountElement.addEventListener('click', function() {
-                        // Снимаем выделение со всех счетов
                         document.querySelectorAll('.account-card').forEach(card => {
                             card.classList.remove('selected');
                         });
 
-                        // Выделяем выбранный счет
                         this.classList.add('selected');
                         selectedAccountId = account.id;
                     });
@@ -444,12 +431,10 @@
                 });
             }
 
-            // Поиск клиента по паспортным данным
             findClientBtn.addEventListener('click', function() {
                 const series = passportSeriesInput.value;
                 const number = passportNumberInput.value;
 
-                // Валидация паспортных данных
                 if (!validatePassportSeries(series)) {
                     document.getElementById('passportSeriesError').style.display = 'block';
                     return;
@@ -464,47 +449,39 @@
                     document.getElementById('passportNumberError').style.display = 'none';
                 }
 
-                // Поиск клиента в "базе данных"
                 const client = clientsDatabase.find(c =>
                     c.passportSeries === series && c.passportNumber === number
                 );
 
                 if (client) {
-                    // Отображаем информацию о клиенте
                     currentClientId = client.id;
                     clientIdSpan.textContent = client.id;
                     clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
 
-                    // Форматируем дату рождения
                     const birthDate = new Date(client.birthDate);
                     const formattedDate = birthDate.toLocaleDateString('ru-RU');
                     clientBirthDateSpan.textContent = formattedDate;
 
-                    // Отображаем счета клиента
                     displayAccounts(client.accounts);
 
                     clientInfo.style.display = 'block';
                     creditDetails.style.display = 'block';
 
-                    // Прокручиваем к данным кредита
                     creditDetails.scrollIntoView({ behavior: 'smooth' });
                 } else {
                     alert('Клиент с указанными паспортными данными не найден!');
                 }
             });
 
-            // Валидация формы оформления кредита
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 let isValid = true;
 
-                // Проверяем, что клиент найден
                 if (!currentClientId) {
                     alert('Сначала найдите клиента по паспортным данным!');
                     return;
                 }
 
-                // Проверяем, что выбран счет
                 if (!selectedAccountId) {
                     document.getElementById('accountError').style.display = 'block';
                     isValid = false;
@@ -512,7 +489,6 @@
                     document.getElementById('accountError').style.display = 'none';
                 }
 
-                // Валидация суммы кредита
                 if (!creditAmountInput.value || parseFloat(creditAmountInput.value) < 1000) {
                     document.getElementById('amountError').style.display = 'block';
                     isValid = false;
@@ -520,9 +496,7 @@
                     document.getElementById('amountError').style.display = 'none';
                 }
 
-                // Если форма валидна, показываем успешное сообщение
                 if (isValid) {
-                    // В реальном приложении здесь был бы AJAX-запрос к серверу
                     successMessage.innerHTML = `
                         Кредит успешно оформлен!<br>
                         ID клиента: <strong>${currentClientId}</strong><br>
@@ -538,15 +512,12 @@
                     selectedAccountId = null;
                     currentClientId = null;
 
-                    // Сбрасываем отображение платежей
                     monthlyPaymentElement.textContent = '—';
                     totalPaymentElement.textContent = '—';
                     termValueElement.textContent = '12';
 
-                    // Прокручиваем к сообщению об успехе
                     successMessage.scrollIntoView({ behavior: 'smooth' });
 
-                    // Скрыть сообщение через 5 секунд
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 5000);

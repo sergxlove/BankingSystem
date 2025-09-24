@@ -272,7 +272,6 @@
                 <div class="form-section">
                     <div class="form-section-title">Выбор счета для вклада</div>
                     <div id="accountsList">
-                        <!-- Счета будут добавлены динамически -->
                     </div>
                     <div class="error-message" id="accountError">Выберите счет для открытия вклада</div>
                 </div>
@@ -328,21 +327,18 @@
             const interestRateElement = document.getElementById('interestRate');
             const termValueElement = document.getElementById('termValue');
 
-            // Получаем элементы для поиска клиента
             const passportSeriesInput = document.getElementById('passportSeries');
             const passportNumberInput = document.getElementById('passportNumber');
             const clientIdSpan = document.getElementById('clientId');
             const clientNameSpan = document.getElementById('clientName');
             const clientBirthDateSpan = document.getElementById('clientBirthDate');
 
-            // Получаем элементы для данных вклада
             const depositAmountInput = document.getElementById('depositAmount');
             const depositTermInput = document.getElementById('depositTerm');
 
             let selectedAccountId = null;
             let currentClientId = null;
 
-            // Ограничение ввода для паспортных данных
             passportSeriesInput.addEventListener('input', function(e) {
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
             });
@@ -351,40 +347,35 @@
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
             });
 
-            // Обновление значения срока вклада
             depositTermInput.addEventListener('input', function() {
                 termValueElement.textContent = this.value;
                 updateInterestRate();
                 calculateDeposit();
             });
 
-            // Пересчет дохода при изменении суммы вклада
             depositAmountInput.addEventListener('input', calculateDeposit);
 
-            // Функция для обновления процентной ставки в зависимости от срока
             function updateInterestRate() {
                 const term = parseInt(depositTermInput.value);
-                let rate = 5.0; // Базовая ставка
+                let rate = 5.0;
 
                 if (term >= 24) {
-                    rate = 6.5; // Для вкладов от 2 лет
+                    rate = 6.5; 
                 } else if (term >= 12) {
-                    rate = 6.0; // Для вкладов от 1 года
+                    rate = 6.0; 
                 } else if (term >= 6) {
-                    rate = 5.5; // Для вкладов от 6 месяцев
+                    rate = 5.5; 
                 }
 
                 interestRateElement.textContent = rate + '%';
             }
 
-            // Функция для расчета дохода по вкладу
             function calculateDeposit() {
                 const amount = parseFloat(depositAmountInput.value) || 0;
                 const term = parseInt(depositTermInput.value);
                 const rate = parseFloat(interestRateElement.textContent) / 100;
 
                 if (amount > 0 && term > 0) {
-                    // Расчет дохода по формуле простых процентов
                     const income = amount * rate * (term / 12);
                     const total = amount + income;
 
@@ -396,7 +387,6 @@
                 }
             }
 
-            // Функция для валидации паспортных данных
             function validatePassportSeries(series) {
                 return /^\d{4}$/.test(series);
             }
@@ -405,7 +395,6 @@
                 return /^\d{6}$/.test(number);
             }
 
-            // Имитация базы данных клиентов
             const clientsDatabase = [
                 {
                     id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
@@ -447,7 +436,6 @@
                 }
             ];
 
-            // Функция для отображения счетов клиента
             function displayAccounts(accounts) {
                 accountsList.innerHTML = '';
 
@@ -456,7 +444,6 @@
                     return;
                 }
 
-                // Фильтруем только рублевые счета для вклада
                 const rubAccounts = accounts.filter(acc => acc.currency === 'RUB');
 
                 if (rubAccounts.length === 0) {
@@ -474,16 +461,13 @@
                     `;
 
                     accountElement.addEventListener('click', function() {
-                        // Снимаем выделение со всех счетов
                         document.querySelectorAll('.account-card').forEach(card => {
                             card.classList.remove('selected');
                         });
 
-                        // Выделяем выбранный счет
                         this.classList.add('selected');
                         selectedAccountId = account.id;
 
-                        // Устанавливаем максимальную сумму вклада (не более баланса счета)
                         depositAmountInput.max = account.balance;
                     });
 
@@ -491,12 +475,10 @@
                 });
             }
 
-            // Поиск клиента по паспортным данным
             findClientBtn.addEventListener('click', function() {
                 const series = passportSeriesInput.value;
                 const number = passportNumberInput.value;
 
-                // Валидация паспортных данных
                 if (!validatePassportSeries(series)) {
                     document.getElementById('passportSeriesError').style.display = 'block';
                     return;
@@ -511,51 +493,41 @@
                     document.getElementById('passportNumberError').style.display = 'none';
                 }
 
-                // Поиск клиента в "базе данных"
                 const client = clientsDatabase.find(c =>
                     c.passportSeries === series && c.passportNumber === number
                 );
 
                 if (client) {
-                    // Отображаем информацию о клиенте
                     currentClientId = client.id;
                     clientIdSpan.textContent = client.id;
                     clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
 
-                    // Форматируем дату рождения
                     const birthDate = new Date(client.birthDate);
                     const formattedDate = birthDate.toLocaleDateString('ru-RU');
                     clientBirthDateSpan.textContent = formattedDate;
 
-                    // Отображаем счета клиента
                     displayAccounts(client.accounts);
 
-                    // Обновляем процентную ставку и расчет
                     updateInterestRate();
                     calculateDeposit();
 
                     clientInfo.style.display = 'block';
                     depositDetails.style.display = 'block';
 
-                    // Прокручиваем к данным вклада
                     depositDetails.scrollIntoView({ behavior: 'smooth' });
                 } else {
                     alert('Клиент с указанными паспортными данными не найден!');
                 }
             });
 
-            // Валидация формы оформления вклада
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 let isValid = true;
-
-                // Проверяем, что клиент найден
                 if (!currentClientId) {
                     alert('Сначала найдите клиента по паспортным данным!');
                     return;
                 }
 
-                // Проверяем, что выбран счет
                 if (!selectedAccountId) {
                     document.getElementById('accountError').style.display = 'block';
                     isValid = false;
@@ -563,7 +535,6 @@
                     document.getElementById('accountError').style.display = 'none';
                 }
 
-                // Валидация суммы вклада
                 if (!depositAmountInput.value || parseFloat(depositAmountInput.value) < 1000) {
                     document.getElementById('amountError').style.display = 'block';
                     isValid = false;
@@ -571,9 +542,7 @@
                     document.getElementById('amountError').style.display = 'none';
                 }
 
-                // Если форма валидна, показываем успешное сообщение
                 if (isValid) {
-                    // В реальном приложении здесь был бы AJAX-запрос к серверу
                     const amount = parseFloat(depositAmountInput.value);
                     const term = parseInt(depositTermInput.value);
                     const rate = parseFloat(interestRateElement.textContent);
@@ -597,15 +566,12 @@
                     selectedAccountId = null;
                     currentClientId = null;
 
-                    // Сбрасываем отображение дохода
                     depositIncomeElement.textContent = '—';
                     totalAmountElement.textContent = '—';
                     termValueElement.textContent = '12';
 
-                    // Прокручиваем к сообщению об успехе
                     successMessage.scrollIntoView({ behavior: 'smooth' });
 
-                    // Скрыть сообщение через 5 секунд
                     setTimeout(function() {
                         successMessage.style.display = 'none';
                     }, 5000);

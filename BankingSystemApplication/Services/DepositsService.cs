@@ -29,5 +29,9 @@ namespace BankingSystemApplication.Services
         {
             return await _repository.GetAsync(id, token);
         }
+        public async Task<List<Deposits>> GetListAsync(Guid clientId, CancellationToken token)
+        {
+            return await _repository.GetListAsync(clientId, token);
+        }
     }
 }

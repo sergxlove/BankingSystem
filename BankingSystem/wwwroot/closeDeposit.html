@@ -319,7 +319,6 @@
         <div class="deposit-info" id="depositInfo">
             <h3>Информация о вкладе</h3>
             <div class="deposit-details" id="depositDetails">
-                <!-- Данные вклада будут загружены здесь -->
             </div>
         </div>
 
@@ -351,7 +350,6 @@
         <div class="requirements-list" id="requirementsList" style="display: none;">
             <h4>⚠️ Требования для закрытия вклада:</h4>
             <ul id="requirementsItems">
-                <!-- Требования будут добавлены динамически -->
             </ul>
         </div>
 
@@ -377,7 +375,6 @@
                     <label for="destinationAccount">Счет для зачисления средств *</label>
                     <select id="destinationAccount" name="destinationAccount" required>
                         <option value="">Выберите счет</option>
-                        <!-- Счета будут загружены динамически -->
                     </select>
                     <div class="error-message" id="accountError">Выберите счет для зачисления</div>
                 </div>
@@ -445,7 +442,6 @@
             let currentDeposit = null;
             let clientAccounts = [];
 
-            // Функция для получения JWT токена из куки
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
@@ -453,7 +449,6 @@
                 return null;
             }
 
-            // Функция для выполнения авторизованных запросов
             async function makeAuthenticatedRequest(url, method = 'GET', data = null) {
                 const token = getCookie('jwt');
 
@@ -482,7 +477,6 @@
                 return await response.json();
             }
 
-            // Проверка возможности закрытия вклада
             function checkDepositClosable(deposit) {
                 const requirements = [];
 
@@ -500,7 +494,6 @@
                 };
             }
 
-            // Расчет суммы при закрытии вклада
             function calculateClosingAmount(deposit, isEarly = false) {
                 const principal = deposit.amount;
                 const interestRate = deposit.interestRate;
@@ -508,21 +501,17 @@
                 const endDate = new Date(deposit.endDate);
                 const currentDate = new Date();
 
-                // Расчет количества дней
                 const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
                 const passedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
 
-                // Расчет процентов
                 let interest = 0;
                 let penalty = 0;
 
                 if (isEarly) {
-                    // При досрочном закрытии - проценты по ставке до востребования
-                    const demandRate = 0.01; // 1% годовых
+                    const demandRate = 0.01;
                     interest = principal * demandRate * (passedDays / 365);
                     penalty = principal * (interestRate / 100) * (passedDays / 365) - interest;
                 } else {
-                    // При закрытии в срок - все начисленные проценты
                     interest = principal * (interestRate / 100) * (totalDays / 365);
                 }
 
@@ -539,7 +528,6 @@
                 };
             }
 
-            // Отображение информации о вкладе
             function displayDepositInfo(deposit) {
                 const today = new Date();
                 const endDate = new Date(deposit.endDate);
@@ -582,7 +570,6 @@
 
                 depositInfo.style.display = 'block';
 
-                // Показываем информацию о статусе
                 if (isMatured) {
                     infoMessage.style.display = 'block';
                     infoMessage.textContent = 'Срок вклада истек. Вы можете закрыть вклад без штрафных санкций.';
@@ -592,7 +579,6 @@
                 }
             }
 
-            // Отображение расчетов
             function displayCalculations(calculation) {
                 document.getElementById('principalAmount').textContent = `${calculation.principal.toLocaleString('ru-RU')} руб.`;
                 document.getElementById('interestAmount').textContent = `${calculation.interest.toLocaleString('ru-RU')} руб.`;
@@ -609,7 +595,6 @@
                 }
             }
 
-            // Отображение требований для закрытия
             function displayRequirements(requirements) {
                 if (requirements.length > 0) {
                     requirementsItems.innerHTML = requirements.map(req =>
@@ -626,10 +611,8 @@
                 }
             }
 
-            // Загрузка счетов клиента
             async function loadClientAccounts(clientId) {
                 try {
-                    // Имитация загрузки счетов
                     const accounts = [
                         { id: 'acc-001', number: '4081 7810 0000 0000 0001', balance: 15000, currency: 'RUB' },
                         { id: 'acc-002', number: '4081 7810 0000 0000 0002', balance: 50000, currency: 'RUB' }
@@ -647,7 +630,6 @@
                 }
             }
 
-            // Поиск вклада
             findDepositBtn.addEventListener('click', async function() {
                 const depositNumber = depositNumberInput.value.trim();
 
@@ -660,10 +642,7 @@
                 loading.style.display = 'block';
 
                 try {
-                    // Имитация запроса к API
                     setTimeout(() => {
-                        // В реальном приложении:
-                        // const depositData = await makeAuthenticatedRequest(`/api/deposits/${depositNumber}`);
 
                         const depositData = {
                             id: 'dep-' + depositNumber,
@@ -683,14 +662,11 @@
 
                         displayDepositInfo(depositData);
 
-                        // Загрузка счетов клиента
                         loadClientAccounts(depositData.clientId);
 
-                        // Проверка возможности закрытия
                         const closableCheck = checkDepositClosable(depositData);
                         displayRequirements(closableCheck.requirements);
 
-                        // Расчет суммы закрытия
                         const today = new Date();
                         const endDate = new Date(depositData.endDate);
                         const isEarly = today < endDate;
@@ -707,12 +683,10 @@
                 }
             });
 
-            // Активация кнопки при подтверждении
             confirmationCheckbox.addEventListener('change', function() {
                 closeDepositBtn.disabled = !this.checked;
             });
 
-            // Закрытие вклада
             closeDepositBtn.addEventListener('click', async function() {
                 const reason = document.getElementById('closingReason').value;
                 const destinationAccount = destinationAccountSelect.value;
@@ -739,18 +713,7 @@
                 loading.style.display = 'block';
 
                 try {
-                    // Имитация запроса на закрытие вклада
                     setTimeout(() => {
-                        // В реальном приложении:
-                        // const result = await makeAuthenticatedRequest(
-                        //     `/api/deposits/${currentDeposit.id}/close`,
-                        //     'POST',
-                        //     {
-                        //         reason: reason,
-                        //         destinationAccount: destinationAccount,
-                        //         comments: document.getElementById('closingComments').value
-                        //     }
-                        // );
 
                         loading.style.display = 'none';
                         closeDepositSection.style.display = 'none';
