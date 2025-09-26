@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль клиента</title>
+    <link rel="stylesheet" href="../Styles/profile.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Профиль клиента</h1>
+
+        <div class="form-section">
+            <div class="form-section-title">Поиск клиента</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="passportSeries">Серия паспорта *</label>
+                    <input type="text" id="passportSeries" name="passportSeries" maxlength="4" required>
+                    <div class="error-message" id="passportSeriesError">Серия должна содержать 4 цифры</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passportNumber">Номер паспорта *</label>
+                    <input type="text" id="passportNumber" name="passportNumber" maxlength="6" required>
+                    <div class="error-message" id="passportNumberError">Номер должен содержать 6 цифр</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="text-align: center;">
+                    <button type="button" id="findClientBtn">Найти клиента</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="client-info" id="clientInfo">
+            <h3>Информация о клиенте</h3>
+            <div class="client-details" id="clientDetails">
+            </div>
+        </div>
+
+        <div class="info-section" id="accountsSection" style="display: none;">
+            <h3>Счета</h3>
+            <div id="accountsList">
+            </div>
+        </div>
+
+        <div class="info-section" id="creditsSection" style="display: none;">
+            <h3>Кредиты</h3>
+            <div id="creditsList">
+            </div>
+        </div>
+
+        <div class="info-section" id="depositsSection" style="display: none;">
+            <h3>Вклады</h3>
+            <div id="depositsList">
+            </div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            Загрузка данных...
+        </div>
+
+        <a href="index.html" class="back-link">← Назад на главную</a>
+    </div>
+
+    <script src="../Scripts/profile.js"></script>
+</body>
+</html>

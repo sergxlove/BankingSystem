@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Закрытие счета</title>
+    <link rel="stylesheet" href="../Styles/closeAccounts.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Закрытие счета</h1>
+
+        <div class="form-section">
+            <div class="form-section-title">Поиск счета</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="accountNumber">Номер счета *</label>
+                    <input type="text" id="accountNumber" name="accountNumber" placeholder="Введите 16-значный номер счета" required>
+                    <div class="error-message" id="accountNumberError">Введите корректный номер счета</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="text-align: center;">
+                    <button type="button" id="findAccountBtn">Найти счет</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="account-info" id="accountInfo">
+            <h3>Информация о счете</h3>
+            <div class="account-details" id="accountDetails">
+            </div>
+        </div>
+
+        <div class="requirements-list" id="requirementsList" style="display: none;">
+            <h4>⚠️ Требования для закрытия счета:</h4>
+            <ul id="requirementsItems">
+            </ul>
+        </div>
+
+        <div class="form-section" id="closeAccountSection" style="display: none;">
+            <div class="form-section-title">Закрытие счета</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="closingReason">Причина закрытия *</label>
+                    <select id="closingReason" name="closingReason" required>
+                        <option value="">Выберите причину</option>
+                        <option value="personal">Личные причины</option>
+                        <option value="service">Недовольство обслуживанием</option>
+                        <option value="relocation">Переезд</option>
+                        <option value="other">Другая причина</option>
+                    </select>
+                    <div class="error-message" id="reasonError">Выберите причину закрытия</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="closingComments">Комментарий</label>
+                    <textarea id="closingComments" name="closingComments" rows="3" placeholder="Дополнительная информация..."></textarea>
+                </div>
+            </div>
+
+            <div class="confirmation-checkbox">
+                <input type="checkbox" id="confirmationCheckbox" name="confirmationCheckbox">
+                <label for="confirmationCheckbox">Я подтверждаю, что ознакомлен с условиями закрытия счета и хочу продолжить</label>
+            </div>
+            <div class="error-message" id="confirmationError">Необходимо подтверждение</div>
+
+            <div class="form-row">
+                <div class="form-group" style="text-align: center;">
+                    <button type="button" id="closeAccountBtn" disabled>Закрыть счет</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning-message" id="warningMessage">
+            Невозможно закрыть счет
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            Выполнение операции...
+        </div>
+
+        <div class="success-message" id="successMessage">
+            Счет успешно закрыт!
+        </div>
+
+        <a href="index.html" class="back-link">← Назад на главную</a>
+    </div>
+
+    <script src="../Scripts/closeAccounts.js"></script>
+</body>
+</html>

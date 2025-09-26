@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Закрытие вклада</title>
+    <link rel="stylesheet" href="../Styles/closeDeposit.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Закрытие вклада</h1>
+
+        <div class="form-section">
+            <div class="form-section-title">Поиск вклада</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="depositNumber">Номер вклада *</label>
+                    <input type="text" id="depositNumber" name="depositNumber" placeholder="Введите номер вклада" required>
+                    <div class="error-message" id="depositNumberError">Введите корректный номер вклада</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="text-align: center;">
+                    <button type="button" id="findDepositBtn">Найти вклад</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="deposit-info" id="depositInfo">
+            <h3>Информация о вкладе</h3>
+            <div class="deposit-details" id="depositDetails">
+            </div>
+        </div>
+
+        <div class="calculation-results" id="calculationResults">
+            <h4>Расчет при закрытии</h4>
+            <div class="calculation-item">
+                <span class="calculation-label">Основная сумма:</span>
+                <span class="calculation-value" id="principalAmount">0 руб.</span>
+            </div>
+            <div class="calculation-item">
+                <span class="calculation-label">Начисленные проценты:</span>
+                <span class="calculation-value" id="interestAmount">0 руб.</span>
+            </div>
+            <div class="calculation-item">
+                <span class="calculation-label">Штраф за досрочное закрытие:</span>
+                <span class="calculation-value" id="penaltyAmount">0 руб.</span>
+            </div>
+            <div class="calculation-item" style="border-top: 1px solid #2ecc71; padding-top: 10px;">
+                <span class="calculation-label">Итого к выплате:</span>
+                <span class="calculation-value" id="totalAmount">0 руб.</span>
+            </div>
+        </div>
+
+        <div class="penalty-warning" id="penaltyWarning">
+            <h4>⚠️ Внимание!</h4>
+            <p>При досрочном закрытии вклада применяется штраф в размере <span id="penaltyPercent">0%</span> от начисленных процентов.</p>
+        </div>
+
+        <div class="requirements-list" id="requirementsList" style="display: none;">
+            <h4>⚠️ Требования для закрытия вклада:</h4>
+            <ul id="requirementsItems">
+            </ul>
+        </div>
+
+        <div class="form-section" id="closeDepositSection" style="display: none;">
+            <div class="form-section-title">Закрытие вклада</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="closingReason">Причина закрытия *</label>
+                    <select id="closingReason" name="closingReason" required>
+                        <option value="">Выберите причину</option>
+                        <option value="maturity">Окончание срока</option>
+                        <option value="early">Досрочное закрытие</option>
+                        <option value="financial">Финансовая необходимость</option>
+                        <option value="other">Другая причина</option>
+                    </select>
+                    <div class="error-message" id="reasonError">Выберите причину закрытия</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="destinationAccount">Счет для зачисления средств *</label>
+                    <select id="destinationAccount" name="destinationAccount" required>
+                        <option value="">Выберите счет</option>
+                    </select>
+                    <div class="error-message" id="accountError">Выберите счет для зачисления</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="closingComments">Комментарий</label>
+                    <textarea id="closingComments" name="closingComments" rows="3" placeholder="Дополнительная информация..."></textarea>
+                </div>
+            </div>
+
+            <div class="confirmation-checkbox">
+                <input type="checkbox" id="confirmationCheckbox" name="confirmationCheckbox">
+                <label for="confirmationCheckbox">Я подтверждаю, что ознакомлен с условиями закрытия вклада и хочу продолжить</label>
+            </div>
+            <div class="error-message" id="confirmationError">Необходимо подтверждение</div>
+
+            <div class="form-row">
+                <div class="form-group" style="text-align: center;">
+                    <button type="button" id="closeDepositBtn" disabled>Закрыть вклад</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning-message" id="warningMessage">
+            Невозможно закрыть вклад
+        </div>
+
+        <div class="info-message" id="infoMessage">
+            Информация о вкладе
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            Выполнение операции...
+        </div>
+
+        <div class="success-message" id="successMessage">
+            Вклад успешно закрыт!
+        </div>
+
+        <a href="index.html" class="back-link">← Назад на главную</a>
+    </div>
+
+    <script src="../Scripts/closeDeposit.js"></script>
+</body>
+</html>
