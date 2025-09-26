@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="../Styles/reg.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация</h1>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" name="username" required>
+                <div class="error-message" id="usernameError">Логин должен содержать не менее 4 символов</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+                <span class="password-toggle" id="togglePassword">Показать</span>
+                <div class="error-message" id="passwordError">Пароль должен содержать не менее 6 символов</div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Повторите пароль:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <span class="password-toggle" id="toggleConfirmPassword">Показать</span>
+                <div class="error-message" id="confirmPasswordError">Пароли не совпадают</div>
+            </div>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            Регистрация прошла успешно!
+        </div>
+
+        <a href="index.html" class="back-link">← Назад на главную</a>
+    </div>
+
+    <script src="../Scripts/reg.js"></script>
+</body>
+</html>
