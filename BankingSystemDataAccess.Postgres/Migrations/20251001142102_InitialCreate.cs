@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -21,7 +22,7 @@ namespace BankingSystemDataAccess.Postgres.Migrations
                     LastName = table.Column<string>(type: "text", nullable: false),
                     BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
                     PassportSeries = table.Column<string>(type: "text", nullable: false),
-                    PasswordNumber = table.Column<string>(type: "text", nullable: false),
+                    PassportNumber = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     EmailAddress = table.Column<string>(type: "text", nullable: false),
                     AddressRegistration = table.Column<string>(type: "text", nullable: false),
@@ -43,6 +44,19 @@ namespace BankingSystemDataAccess.Postgres.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OperationsTransactions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemTable",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NumberCardLast = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemTable", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,6 +184,16 @@ namespace BankingSystemDataAccess.Postgres.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "OperationsTransactions",
+                columns: new[] { "Id", "Description", "TypeOperation" },
+                values: new object[] { new Guid("123e4567-e89b-12d3-a456-426614174000"), "", "Transfer" });
+
+            migrationBuilder.InsertData(
+                table: "SystemTable",
+                columns: new[] { "Id", "NumberCardLast" },
+                values: new object[] { 1, "2200100000000000" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_ClientsId",
                 table: "Accounts",
@@ -209,6 +233,9 @@ namespace BankingSystemDataAccess.Postgres.Migrations
 
             migrationBuilder.DropTable(
                 name: "Deposits");
+
+            migrationBuilder.DropTable(
+                name: "SystemTable");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

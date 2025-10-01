@@ -90,11 +90,11 @@ namespace BankingSystemDataAccess.Postgres.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PassportSeries")
+                    b.Property<string>("PassportNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordNumber")
+                    b.Property<string>("PassportSeries")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -209,6 +209,38 @@ namespace BankingSystemDataAccess.Postgres.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OperationsTransactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("123e4567-e89b-12d3-a456-426614174000"),
+                            Description = "",
+                            TypeOperation = "Transfer"
+                        });
+                });
+
+            modelBuilder.Entity("BankingSystemDataAccess.Postgres.Models.SystemTableEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NumberCardLast")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemTable");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            NumberCardLast = "2200100000000000"
+                        });
                 });
 
             modelBuilder.Entity("BankingSystemDataAccess.Postgres.Models.TransactionsEntity", b =>

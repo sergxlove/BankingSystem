@@ -21,20 +21,20 @@ namespace BankingSystem.Endpoints
             app.MapGet("/index", async (HttpContext context) =>
             {
                 context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.SendFileAsync("wwwroot/index.html");
+                await context.Response.SendFileAsync("wwwroot/Pages/index.html");
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
 
             app.MapGet("/login", async (HttpContext context) =>
             {
                 context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.SendFileAsync("wwwroot/login.html");
+                await context.Response.SendFileAsync("wwwroot/Pages/login.html");
             }).RequireRateLimiting("GeneralPolicy");
 
             app.MapGet("/reg", async (HttpContext context) =>
             {
                 context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.SendFileAsync("wwwroot/reg.html");
+                await context.Response.SendFileAsync("wwwroot/Pages/reg.html");
             }).RequireRateLimiting("GeneralPolicy");
 
             app.MapPost("/login", async (HttpContext context,

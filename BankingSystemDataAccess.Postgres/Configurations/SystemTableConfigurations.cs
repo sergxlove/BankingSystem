@@ -9,7 +9,7 @@ namespace BankingSystemDataAccess.Postgres.Configurations
         public void Configure(EntityTypeBuilder<SystemTableEntity> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasData(new SystemTableEntity() { Id = 1, NumberCardLast = "2200100000000000" });
+            builder.HasData(new SystemTableEntity() { Id = 77, NumberCardLast = "2200100000000000" });
         }
     }
 }
