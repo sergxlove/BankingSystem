@@ -293,7 +293,7 @@ namespace BankingSystem.Endpoints
 
             app.MapPost("/transact", async (HttpContext context, 
                 [FromBody] TransactRequest request, 
-                [FromServices] ITransactionsService transactionsService,
+                [FromServices] ITransactMoneyService transactionMoneyService,
                 CancellationToken token) =>
             {
                 try
@@ -303,7 +303,7 @@ namespace BankingSystem.Endpoints
                         request.ConsumerAccount, Guid.Parse("123e4567-e89b-12d3-a456-426614174000"),
                         request.Amount, request.Description, DateOnly.FromDateTime(DateTime.Now));
                     if (!trnsact.IsSuccess) return Results.BadRequest(trnsact.Error);
-                    var result = await transactionsService.CreateAsync(trnsact.Value, token);
+                    var result = await transactionMoneyService.ExecuteTransactAsync(trnsact.Value, token);
                     return Results.Ok();
                 }
                 catch
