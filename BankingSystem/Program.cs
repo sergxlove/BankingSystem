@@ -5,6 +5,7 @@ using BankingSystemCore.Abstractions;
 using BankingSystemCore.Services;
 using BankingSystemDataAccess.Postgres;
 using BankingSystemDataAccess.Postgres.Abstractions;
+using BankingSystemDataAccess.Postgres.Infrastructure;
 using BankingSystemDataAccess.Postgres.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
@@ -23,6 +24,7 @@ namespace BankingSystem
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<BankingSystemDbContext>(options =>
                 options.UseNpgsql("User ID=postgres;Password=123;Host=localhost;Port=5432;Database=db;"));
+            builder.Services.AddScoped<ITransactionsWork, TransactionsWork>();
             builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
             builder.Services.AddScoped<IAccountsService, AccountsService>();
             builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
@@ -39,6 +41,7 @@ namespace BankingSystem
             builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             builder.Services.AddScoped<ISystemTableRepository, SystemTableRepository>();
             builder.Services.AddScoped<ISystemTableService, SystemTableService>();
+            builder.Services.AddScoped<ITransactMoneyService, TransactMoneyService>();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

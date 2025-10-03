@@ -10,5 +10,7 @@ namespace BankingSystemApplication.Abstractions
         Task<Accounts?> GetAsync(Guid id, CancellationToken token);
         Task<int> UpdateBalanceAsync(Guid id, decimal newBalance, CancellationToken token);
         Task<List<Accounts>> GetListAsync(Guid idClient, CancellationToken token);
+        Task<decimal> GetCurrentBalanceAsync(Guid id, CancellationToken token);
+        Task<bool> CheckAsync(Guid id, CancellationToken token);
     }
 }

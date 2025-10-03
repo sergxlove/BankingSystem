@@ -2,6 +2,7 @@
 using BankingSystemDataAccess.Postgres.Abstractions;
 using BankingSystemDataAccess.Postgres.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 
 namespace BankingSystemDataAccess.Postgres.Repositories
@@ -47,6 +48,24 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                 .AsNoTracking()
                 .Where(a => a.Id == id)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.Balance, newBalance), token);
+        }
+
+        public async Task<decimal> GetCurrentBalanceAsync(Guid id, CancellationToken token)
+        {
+            var account = await _context.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id, token);
+            if (account is null) return 0;
+            return account.Balance;
+        }
+
+        public async Task<bool> CheckAsync(Guid id, CancellationToken token)
+        {
+            var account = await _context.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id, token);
+            if (account is null) return false;
+            return true;
         }
 
         public async Task<Accounts?> GetAsync(Guid id, CancellationToken token)
