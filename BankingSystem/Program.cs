@@ -110,6 +110,7 @@ namespace BankingSystem
             }
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles();
             app.UseRateLimiter();
             app.MapAllEndpoints();
             app.Run();
