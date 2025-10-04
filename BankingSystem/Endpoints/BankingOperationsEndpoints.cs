@@ -304,6 +304,7 @@ namespace BankingSystem.Endpoints
                         request.Amount, request.Description, DateOnly.FromDateTime(DateTime.Now));
                     if (!trnsact.IsSuccess) return Results.BadRequest(trnsact.Error);
                     var result = await transactionMoneyService.ExecuteTransactAsync(trnsact.Value, token);
+                    if (result != string.Empty) return Results.BadRequest(result);
                     return Results.Ok();
                 }
                 catch
