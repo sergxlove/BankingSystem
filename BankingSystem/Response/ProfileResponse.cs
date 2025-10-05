@@ -1,8 +1,8 @@
 ﻿using BankingSystemCore.Models;
 
-namespace BankingSystem.Responce
+namespace BankingSystem.Response
 {
-    public class ProfileResponce
+    public class ProfileResponse
     {
         public Clients? Client {  get; set; }
         public List<Accounts> Accounts { get; set; } = [];

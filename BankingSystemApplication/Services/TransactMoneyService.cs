@@ -23,9 +23,9 @@ namespace BankingSystemApplication.Services
             try
             {
                 await _transactionsWork.BeginTransactionAsync();
-                if (await _accountRepository.CheckAsync(transaction.ConsumerAccount, token))
+                if (!await _accountRepository.CheckAsync(transaction.ConsumerAccount, token))
                     throw new Exception("consumer account is not found");
-                if (await _accountRepository.CheckAsync(transaction.ProducerAccount, token))
+                if (!await _accountRepository.CheckAsync(transaction.ProducerAccount, token))
                     throw new Exception("producer account is not fount");
                 decimal balanceProducer = await _accountRepository
                     .GetCurrentBalanceAsync(transaction.ProducerAccount, token);

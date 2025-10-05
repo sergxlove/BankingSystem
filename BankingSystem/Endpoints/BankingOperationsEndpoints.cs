@@ -1,5 +1,5 @@
 ﻿using BankingSystem.Requests;
-using BankingSystem.Responce;
+using BankingSystem.Response;
 using BankingSystemApplication.Abstractions;
 using BankingSystemApplication.Requests;
 using BankingSystemCore.Abstractions;
@@ -146,6 +146,33 @@ namespace BankingSystem.Endpoints
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
 
+            app.MapPost("/getShortClient", async (HttpContext context,
+                [FromBody] GetClientRequest request,
+                [FromServices] IClientsService clientService,
+                CancellationToken token) =>
+            {
+                try
+                {
+                    if (request.PassportSeries == string.Empty || request.PassportNumber == string.Empty)
+                        return Results.BadRequest("passport data is empty");
+                    var client = await clientService.GetAsync(request.PassportSeries,
+                        request.PassportNumber, token);
+                    if (client is null) return Results.BadRequest("client is not found");
+                    ShortClientResponse shortClient = new()
+                    {
+                        Id = client.Id,
+                        Name = client.FirstName + " " + client.SecondName + " " + client.LastName,
+                        DateBirth = client.BirthDate
+                    };
+                    return Results.Ok(shortClient);
+                }
+                catch
+                {
+                    return Results.InternalServerError();
+                }
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
+
             app.MapPost("/regAccount", async (HttpContext context, 
                 [FromBody] RegAccountRequest request, 
                 [FromServices] IAccountsService accountsService,
@@ -237,7 +264,7 @@ namespace BankingSystem.Endpoints
                     var accounts = await accountsService.GetListAsync(idClient, token);
                     var deposits = await depositService.GetListAsync(idClient, token);
                     var credits = await creditService.GetListAsync(idClient, token);
-                    ProfileResponce profile = new()
+                    ProfileResponse profile = new()
                     {
                         Client = client,
                         Accounts = accounts,

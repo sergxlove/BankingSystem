@@ -82,3 +82,38 @@ button:hover {
 .back-link:hover {
     text-decoration: underline;
 }
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spinner {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.message {
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message {
+    animation: fadeIn 0.3s ease;
+}
+
+input.error {
+    border-color: #e74c3c !important;
+    background-color: #fdf2f2;
+}

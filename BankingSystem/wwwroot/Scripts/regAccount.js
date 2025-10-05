@@ -79,25 +79,30 @@
             document.getElementById('passportNumberError').style.display = 'none';
         }
 
-        const client = clientsDatabase.find(c =>
-            c.passportSeries === series && c.passportNumber === number
-        );
+        const response = await fetch("/getShortClient", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                PassportSeries: passportSeriesInput,
+                PassportNumber: passportNumberInput
+            })
+        });
 
-        if (client) {
-            clientIdSpan.textContent = client.id;
-            clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
-
-            const birthDate = new Date(client.birthDate);
-            const formattedDate = birthDate.toLocaleDateString('ru-RU');
-            clientBirthDateSpan.textContent = formattedDate;
-
-            clientInfo.style.display = 'block';
-            accountDetails.style.display = 'block';
-
-            accountDetails.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            alert('Клиент с указанными паспортными данными не найден!');
+        if (!response.ok) {
+            alert(response.text)
         }
+        else {
+            const dataResponse = response.json();
+            clientIdSpan.textContent = dataResponse.id;
+            clientNameSpan.textContent = dataResponse.name;
+            clientBirthDateSpan.textContent = dataResponse.dateBirth;
+        }
+
+
+
+        
     });
 
     function generateAccountNumber() {
