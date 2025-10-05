@@ -3,6 +3,7 @@
     const successMessage = document.getElementById('successMessage');
 
     const firstNameInput = document.getElementById('firstName');
+    const secondNameInput = document.getElementById('secondName');
     const lastNameInput = document.getElementById('lastName');
     const birthDateInput = document.getElementById('birthDate');
     const passportSeriesInput = document.getElementById('passportSeries');
@@ -78,71 +79,40 @@
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();
-        let isValid = true;
+        
+        try {
+            const response = await fetch("/regClient", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    FirstName: firstNameInput,
+                    SecondName: secondNameInput,
+                    LastName: lastNameInput,
+                    BirthDate: birthDateInput,
+                    PassportSeries: passportSeriesInput,
+                    PassportNumber: passportNumberInput,
+                    PhoneNumber: phoneNumberInput,
+                    EmailAddres: emailInput,
+                    AddressRegistration: addressInput
+                })
+            });
 
-        if (!validateName(firstNameInput.value)) {
-            document.getElementById('firstNameError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('firstNameError').style.display = 'none';
+            switch (response.status) {
+                case 200:
+                    alert('Клиент успешно доавлен');
+                    break;
+                case 400:
+                    alert(await response.text())
+                    break;
+                default:
+                    alert('Произошла ошибка');
+                    break;
+            }
         }
-
-        if (!validateName(lastNameInput.value)) {
-            document.getElementById('lastNameError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('lastNameError').style.display = 'none';
-        }
-
-        if (!validateBirthDate(birthDateInput.value)) {
-            document.getElementById('birthDateError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('birthDateError').style.display = 'none';
-        }
-
-        if (!validatePassportSeries(passportSeriesInput.value)) {
-            document.getElementById('passportSeriesError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('passportSeriesError').style.display = 'none';
-        }
-
-        if (!validatePassportNumber(passportNumberInput.value)) {
-            document.getElementById('passportNumberError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('passportNumberError').style.display = 'none';
-        }
-
-        if (!validatePhone(phoneNumberInput.value)) {
-            document.getElementById('phoneNumberError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('phoneNumberError').style.display = 'none';
-        }
-
-        if (!validateEmail(emailInput.value)) {
-            document.getElementById('emailError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('emailError').style.display = 'none';
-        }
-
-        if (!validateAddress(addressInput.value)) {
-            document.getElementById('addressError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('addressError').style.display = 'none';
-        }
-
-        if (isValid) {
-            successMessage.style.display = 'block';
-            form.reset();
-
-            setTimeout(function () {
-                successMessage.style.display = 'none';
-            }, 3000);
+        catch (error) {
+            alert('Ошибка соединения с сервером');
         }
     });
 });
