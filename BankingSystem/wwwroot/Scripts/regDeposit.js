@@ -77,48 +77,6 @@
     function validatePassportNumber(number) {
         return /^\d{6}$/.test(number);
     }
-
-    const clientsDatabase = [
-        {
-            id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-            firstName: 'Иван',
-            lastName: 'Петров',
-            secondName: 'Сергеевич',
-            birthDate: '1985-05-15',
-            passportSeries: '1234',
-            passportNumber: '567890',
-            accounts: [
-                { id: 'acc-001', number: '40817810000000000001', balance: 15000, type: 'Расчетный', currency: 'RUB' },
-                { id: 'acc-002', number: '40817810000000000002', balance: 50000, type: 'Сберегательный', currency: 'RUB' }
-            ]
-        },
-        {
-            id: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
-            firstName: 'Мария',
-            lastName: 'Иванова',
-            secondName: 'Александровна',
-            birthDate: '1990-12-22',
-            passportSeries: '4321',
-            passportNumber: '098765',
-            accounts: [
-                { id: 'acc-003', number: '40817810000000000003', balance: 25000, type: 'Расчетный', currency: 'RUB' }
-            ]
-        },
-        {
-            id: 'c3d4e5f6-g7h8-9012-cdef-345678901234',
-            firstName: 'Алексей',
-            lastName: 'Сидоров',
-            secondName: 'Владимирович',
-            birthDate: '1978-08-03',
-            passportSeries: '1111',
-            passportNumber: '222222',
-            accounts: [
-                { id: 'acc-004', number: '40817810000000000004', balance: 100000, type: 'Расчетный', currency: 'RUB' },
-                { id: 'acc-005', number: '40817810000000000005', balance: 5000, type: 'Сберегательный', currency: 'USD' }
-            ]
-        }
-    ];
-
     function displayAccounts(accounts) {
         accountsList.innerHTML = '';
 
@@ -139,7 +97,7 @@
             accountElement.className = 'account-card';
             accountElement.innerHTML = `
                         <div class="account-number">${account.number}</div>
-                        <div class="account-type">${account.type} • ${account.currency}</div>
+                        <div class="account-type">${account.typeAccount} • ${account.currency}</div>
                         <div class="account-balance">Баланс: ${account.balance.toLocaleString('ru-RU')} ${account.currency}</div>
                     `;
 
@@ -158,7 +116,7 @@
         });
     }
 
-    findClientBtn.addEventListener('click', function () {
+    findClientBtn.addEventListener('click', async function () {
         const series = passportSeriesInput.value;
         const number = passportNumberInput.value;
 
@@ -176,31 +134,80 @@
             document.getElementById('passportNumberError').style.display = 'none';
         }
 
-        const client = clientsDatabase.find(c =>
-            c.passportSeries === series && c.passportNumber === number
-        );
+        const response = await fetch('/getShortClient', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                passportSeries: series,
+                passportNumber: number
+            })
+        });
 
-        if (client) {
-            currentClientId = client.id;
-            clientIdSpan.textContent = client.id;
-            clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
-
-            const birthDate = new Date(client.birthDate);
-            const formattedDate = birthDate.toLocaleDateString('ru-RU');
-            clientBirthDateSpan.textContent = formattedDate;
-
-            displayAccounts(client.accounts);
-
-            updateInterestRate();
-            calculateDeposit();
-
-            clientInfo.style.display = 'block';
-            depositDetails.style.display = 'block';
-
-            depositDetails.scrollIntoView({ behavior: 'smooth' });
-        } else {
+        if (!response.ok) {
             alert('Клиент с указанными паспортными данными не найден!');
         }
+        const responseData = await response.json();
+
+        const responseAccount = await fetch('/getShortAccounts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Id: responseData.id
+            })
+        });
+
+        if (!responseAccount.ok) {
+            alert('Не удалось найти счета клиента!');
+        }
+
+        const responseAccountData = await responseAccount.json();
+
+
+        currentClientId = responseData.id;
+        clientIdSpan.textContent = responseData.id;
+        clientNameSpan.textContent = responseData.name;
+        clientBirthDateSpan.textContent = responseData.dateBirth;
+
+
+        displayAccounts(responseAccountData);
+
+        updateInterestRate();
+        calculateDeposit();
+
+        clientInfo.style.display = 'block';
+        depositDetails.style.display = 'block';
+
+        depositDetails.scrollIntoView({ behavior: 'smooth' });
+
+        //const client = clientsDatabase.find(c =>
+        //    c.passportSeries === series && c.passportNumber === number
+        //);
+
+        //if (client) {
+        //    currentClientId = client.id;
+        //    clientIdSpan.textContent = client.id;
+        //    clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
+
+        //    const birthDate = new Date(client.birthDate);
+        //    const formattedDate = birthDate.toLocaleDateString('ru-RU');
+        //    clientBirthDateSpan.textContent = formattedDate;
+
+        //    displayAccounts(client.accounts);
+
+        //    updateInterestRate();
+        //    calculateDeposit();
+
+        //    clientInfo.style.display = 'block';
+        //    depositDetails.style.display = 'block';
+
+        //    depositDetails.scrollIntoView({ behavior: 'smooth' });
+        //} else {
+        //    alert('Клиент с указанными паспортными данными не найден!');
+        //}
     });
 
     form.addEventListener('submit', function (event) {
@@ -211,12 +218,12 @@
             return;
         }
 
-        if (!selectedAccountId) {
-            document.getElementById('accountError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('accountError').style.display = 'none';
-        }
+        //if (!selectedAccountId) {
+        //    document.getElementById('accountError').style.display = 'block';
+        //    isValid = false;
+        //} else {
+        //    document.getElementById('accountError').style.display = 'none';
+        //}
 
         if (!depositAmountInput.value || parseFloat(depositAmountInput.value) < 1000) {
             document.getElementById('amountError').style.display = 'block';
