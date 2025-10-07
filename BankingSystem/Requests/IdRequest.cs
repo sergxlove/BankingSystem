@@ -1,6 +1,6 @@
 ﻿namespace BankingSystem.Requests
 {
-    public class DeleteRequest
+    public class IdRequest
     {
         public Guid Id { get; set; }
     }

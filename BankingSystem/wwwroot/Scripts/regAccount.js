@@ -61,7 +61,7 @@
         }
     ];
 
-    findClientBtn.addEventListener('click', function () {
+    findClientBtn.addEventListener('click', async function () {
         const series = passportSeriesInput.value;
         const number = passportNumberInput.value;
 
@@ -79,30 +79,31 @@
             document.getElementById('passportNumberError').style.display = 'none';
         }
 
-        const response = await fetch("/getShortClient", {
+        const response = await fetch('/getShortClient', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                PassportSeries: passportSeriesInput,
-                PassportNumber: passportNumberInput
+                passportSeries: series,
+                passportNumber: number
             })
         });
+        if (response.ok) {
+            const responseData = await response.json();
+            clientIdSpan.textContent = responseData.id;
+            clientNameSpan.textContent = responseData.name;
 
-        if (!response.ok) {
-            alert(response.text)
+            clientBirthDateSpan.textContent = responseData.dateBirth;
+
+            clientInfo.style.display = 'block';
+            accountDetails.style.display = 'block';
+
+            accountDetails.scrollIntoView({ behavior: 'smooth' });
         }
         else {
-            const dataResponse = response.json();
-            clientIdSpan.textContent = dataResponse.id;
-            clientNameSpan.textContent = dataResponse.name;
-            clientBirthDateSpan.textContent = dataResponse.dateBirth;
+            alert(await response.text());
         }
-
-
-
-        
     });
 
     function generateAccountNumber() {
@@ -111,7 +112,7 @@
         return prefix + random.toString().substring(0, 17);
     }
 
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', async function (event) {
         event.preventDefault();
         let isValid = true;
 
@@ -144,25 +145,36 @@
         if (isValid) {
             const accountNumber = generateAccountNumber();
 
-            successMessage.innerHTML = `
-                        Счет успешно открыт!<br>
-                        Номер счета: <strong>${accountNumber}</strong><br>
-                        Тип счета: <strong>${accountTypeSelect.options[accountTypeSelect.selectedIndex].text}</strong><br>
-                        Валюта: <strong>${currencyCodeSelect.value}</strong><br>
-                        Баланс: <strong>${parseFloat(initialBalanceInput.value).toFixed(2)}</strong>
-                    `;
+            const response = await fetch('/regAccount', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ClientsId: clientIdSpan.textContent,
+                    AccountType: accountTypeSelect.options[accountTypeSelect.selectedIndex].text,
+                    Balance: parseFloat(initialBalanceInput.value).toFixed(2),
+                    CurrencyCode: currencyCodeSelect.value
+                })
+            });
 
-            successMessage.style.display = 'block';
-            form.reset();
-            clientInfo.style.display = 'none';
-            accountDetails.style.display = 'none';
+            if (response.ok) {
+                const successAlert =
+                    "✅ СЧЕТ УСПЕШНО ОТКРЫТ!\n\n" +
+                    `📋 Номер счета: ${accountNumber}\n` +
+                    `📊 Тип счета: ${accountTypeSelect.options[accountTypeSelect.selectedIndex].text}\n` +
+                    `💰 Валюта: ${currencyCodeSelect.value}\n` +
+                    `💳 Начальный баланс: ${parseFloat(initialBalanceInput.value).toFixed(2)}`;
 
-            successMessage.scrollIntoView({ behavior: 'smooth' });
+                alert(successAlert);
+                form.reset();
+                clientInfo.style.display = 'none';
+                accountDetails.style.display = 'none';
+            }
+            else {
+                alert(await response.text);
+            }
 
-
-            setTimeout(function () {
-                successMessage.style.display = 'none';
-            }, 5000);
         }
     });
 });

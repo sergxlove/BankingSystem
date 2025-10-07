@@ -198,6 +198,23 @@ namespace BankingSystem.Endpoints
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
 
+            app.MapPost("/getShortAccounts", async (HttpContext context,
+                [FromBody] IdRequest request,
+                [FromServices] IAccountsService accountService,
+                CancellationToken token) =>
+            {
+                try
+                {
+                    if (request is null) return Results.BadRequest("request is empty");
+                    return Results.Ok();
+                }
+                catch
+                {
+                    return Results.InternalServerError();
+                }
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
+
             app.MapPost("/regCredit", async (HttpContext context, 
                 [FromBody] RegCreditRequest request, 
                 [FromServices] ICreditsService creditService,
@@ -281,7 +298,7 @@ namespace BankingSystem.Endpoints
             .RequireRateLimiting("GeneralPolicy");
 
             app.MapDelete("/deleteAccount", async (HttpContext context, 
-                [FromBody] DeleteRequest request, 
+                [FromBody] IdRequest request, 
                 [FromServices] IAccountsService accountsService,
                 CancellationToken token) =>
             {
@@ -300,7 +317,7 @@ namespace BankingSystem.Endpoints
             .RequireRateLimiting("GeneralPolicy");
 
             app.MapDelete("/deleteDeposit", async (HttpContext context, 
-                [FromBody] DeleteRequest request,
+                [FromBody] IdRequest request,
                 [FromServices] IDepositsService depositService,
                 CancellationToken token) =>
             {
