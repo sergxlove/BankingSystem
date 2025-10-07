@@ -2,6 +2,7 @@
 using BankingSystem.Response;
 using BankingSystemApplication.Abstractions;
 using BankingSystemApplication.Requests;
+using BankingSystemApplication.Services;
 using BankingSystemCore.Abstractions;
 using BankingSystemCore.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,30 +14,6 @@ namespace BankingSystem.Endpoints
     {
         public static IEndpointRouteBuilder MapBankingOperationsEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/", () =>
-            {
-                return Results.Redirect("/login");
-            }).RequireRateLimiting("GeneralPolicy");
-
-            app.MapGet("/index", async (HttpContext context) =>
-            {
-                context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.SendFileAsync("wwwroot/Pages/index.html");
-            }).RequireAuthorization("OnlyForAuthUser")
-            .RequireRateLimiting("GeneralPolicy");
-
-            app.MapGet("/login", async (HttpContext context) =>
-            {
-                context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.SendFileAsync("wwwroot/Pages/login.html");
-            }).RequireRateLimiting("GeneralPolicy");
-
-            app.MapGet("/reg", async (HttpContext context) =>
-            {
-                context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.SendFileAsync("wwwroot/Pages/reg.html");
-            }).RequireRateLimiting("GeneralPolicy");
-
             app.MapPost("/login", async (HttpContext context,
                 [FromBody] LoginRequest request,
                 [FromServices] IUsersService userService,
@@ -198,6 +175,24 @@ namespace BankingSystem.Endpoints
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
 
+            app.MapPost("/getAccount", async (HttpContext context,
+                [FromBody] IdRequest request, 
+                [FromServices] IAccountsService accountsService, 
+                CancellationToken token) =>
+            {
+                try
+                {
+                    if (request is null) return Results.BadRequest("request is empty");
+                    var account = await accountsService.GetAsync(request.Id, token);
+                    if (account is null) return Results.BadRequest("no found account");
+                    return Results.Ok(account);
+                }
+                catch
+                {
+                    return Results.InternalServerError();
+                }
+            });
+
             app.MapPost("/getShortAccounts", async (HttpContext context,
                 [FromBody] IdRequest request,
                 [FromServices] IAccountsService accountService,
@@ -206,7 +201,19 @@ namespace BankingSystem.Endpoints
                 try
                 {
                     if (request is null) return Results.BadRequest("request is empty");
-                    return Results.Ok();
+                    var accounts = await accountService.GetListAsync(request.Id, token);
+                    List<ShortAccountsResponse> shortAccounts = new();
+                    foreach (var account in accounts) 
+                    {
+                        shortAccounts.Add(new()
+                        {
+                            Number = account.AccountNumber,
+                            TypeAccount = account.AccountNumber,
+                            Currency = account.CurrencyCode,
+                            Balance = account.Balance,
+                        });
+                    }
+                    return Results.Ok(shortAccounts);
                 }
                 catch
                 {
@@ -261,6 +268,24 @@ namespace BankingSystem.Endpoints
                 }
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
+
+            app.MapPost("/getDeposit", async (HttpContext context,
+                [FromBody] IdRequest request,
+                [FromServices] IDepositsService depositService,
+                CancellationToken token) =>
+            {
+                try
+                {
+                    if (request is null) return Results.BadRequest("request is empty");
+                    var deposit = await depositService.GetAsync(request.Id, token);
+                    if (deposit is null) return Results.BadRequest("no found deposit");
+                    return Results.Ok(deposit);
+                }
+                catch
+                {
+                    return Results.InternalServerError();
+                }
+            });
 
             app.MapPost("/getProfile", async (HttpContext context, 
                 [FromBody] GetClientRequest request, 

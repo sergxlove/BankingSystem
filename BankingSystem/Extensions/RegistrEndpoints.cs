@@ -7,6 +7,7 @@ namespace BankingSystem.Extensions
         public static IEndpointRouteBuilder MapAllEndpoints(this IEndpointRouteBuilder app)
         {
             app.MapBankingOperationsEndpoints();
+            app.MapGetPagesEndpoints();
             return app;
         }
     }

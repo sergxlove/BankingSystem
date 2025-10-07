@@ -156,32 +156,56 @@
         loading.style.display = 'block';
 
         try {
-            setTimeout(() => {
+            const cleanAccountNumber = accountNumber.replace(/\s/g, '');
+
+            const response = await fetch('/deleteAccount', {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    Id: cleanAccountNumber,
+                })
+            });
+
+            if (!response.ok) {
+                alert('Не удалось найти счет по данном Id!');
+            }
+            const responseData = await response.json();
+
+            displayAccountInfo(responseData);
+
+            const closableCheck = checkAccountClosable(accountData);
+            displayRequirements(closableCheck.requirements);
+
+            loading.style.display = 'none';
+
+            //setTimeout(() => {
 
 
-                const cleanAccountNumber = accountNumber.replace(/\s/g, '');
-                const accountData = {
-                    id: 'acc-' + cleanAccountNumber.slice(-4),
-                    accountNumber: accountNumber,
-                    accountType: 'Расчетный',
-                    balance: 0,
-                    currency: 'RUB',
-                    status: 'Активный',
-                    openDate: '2023-01-15',
-                    hasActiveLoans: false,
-                    hasActiveDeposits: false,
-                    hasPendingTransactions: false
-                };
+            //    const cleanAccountNumber = accountNumber.replace(/\s/g, '');
+            //    const accountData = {
+            //        id: 'acc-' + cleanAccountNumber.slice(-4),
+            //        accountNumber: accountNumber,
+            //        accountType: 'Расчетный',
+            //        balance: 0,
+            //        currency: 'RUB',
+            //        status: 'Активный',
+            //        openDate: '2023-01-15',
+            //        hasActiveLoans: false,
+            //        hasActiveDeposits: false,
+            //        hasPendingTransactions: false
+            //    };
 
-                currentAccount = accountData;
+            //    currentAccount = accountData;
 
-                displayAccountInfo(accountData);
+            //    displayAccountInfo(accountData);
 
-                const closableCheck = checkAccountClosable(accountData);
-                displayRequirements(closableCheck.requirements);
+            //    const closableCheck = checkAccountClosable(accountData);
+            //    displayRequirements(closableCheck.requirements);
 
-                loading.style.display = 'none';
-            }, 1000);
+            //    loading.style.display = 'none';
+            //}, 1000);
 
         } catch (error) {
             console.error('Error:', error);
