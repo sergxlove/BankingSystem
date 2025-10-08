@@ -135,21 +135,17 @@
         creditsList.innerHTML = credits.map(credit => `
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Кредит №${credit.creditNumber}</div>
-                            <div class="card-badge">${credit.status}</div>
+                            <div class="card-title">Кредит №${credit.accountId}</div>
+                            <div class="card-badge">${credit.paymentMonth}</div>
                         </div>
                         <div class="card-content">
                             <div class="card-item">
                                 <div class="card-label">Сумма кредита</div>
-                                <div class="card-value">${credit.amount.toLocaleString('ru-RU')} руб.</div>
+                                <div class="card-value">${credit.sumCredit.toLocaleString('ru-RU')} руб.</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Остаток долга</div>
-                                <div class="card-value">${credit.remainingAmount.toLocaleString('ru-RU')} руб.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Процентная ставка</div>
-                                <div class="card-value">${credit.interestRate}%</div>
+                                <div class="card-value">${credit.LeftCredit.toLocaleString('ru-RU')} руб.</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Срок</div>
@@ -157,7 +153,7 @@
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Ежемесячный платеж</div>
-                                <div class="card-value">${credit.monthlyPayment.toLocaleString('ru-RU')} руб.</div>
+                                <div class="card-value">${credit.paymentMonth.toLocaleString('ru-RU')} руб.</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Дата открытия</div>
@@ -179,25 +175,21 @@
         depositsList.innerHTML = deposits.map(deposit => `
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Вклад №${deposit.depositNumber}</div>
+                            <div class="card-title">Вклад №${deposit.id}</div>
                             <div class="card-badge">${deposit.depositType}</div>
                         </div>
                         <div class="card-content">
                             <div class="card-item">
                                 <div class="card-label">Сумма вклада</div>
-                                <div class="card-value positive">${deposit.amount.toLocaleString('ru-RU')} руб.</div>
+                                <div class="card-value positive">${deposit.sumDeposit.toLocaleString('ru-RU')} руб.</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Процентная ставка</div>
-                                <div class="card-value">${deposit.interestRate}%</div>
+                                <div class="card-value">${deposit.percentYear}%</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Срок</div>
-                                <div class="card-value">${deposit.termMonths} мес.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Начисленный доход</div>
-                                <div class="card-value positive">${deposit.earnedInterest.toLocaleString('ru-RU')} руб.</div>
+                                <div class="card-value">${deposit.termMonth} мес.</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">Дата открытия</div>
@@ -238,88 +230,111 @@
         creditsSection.style.display = 'none';
         depositsSection.style.display = 'none';
 
-        try {
+        const response = await fetch('/getProfile', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                passportSeries: series,
+                passportNumber: number
+            })
+        });
 
-            setTimeout(async () => {
-                try {
-
-                    const clientData = {
-                        id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-                        firstName: 'Иван',
-                        lastName: 'Петров',
-                        secondName: 'Сергеевич',
-                        birthDate: '1985-05-15',
-                        passportSeries: series,
-                        passportNumber: number,
-                        phoneNumber: '+7 (912) 345-67-89',
-                        emailAddress: 'ivan.petrov@example.com',
-                        addressRegistration: 'г. Москва, ул. Примерная, д. 123, кв. 45'
-                    };
-
-                    const accountsData = [
-                        {
-                            id: 'acc-001',
-                            accountNumber: '40817810000000000001',
-                            accountType: 'Расчетный',
-                            balance: 15000,
-                            currencyCode: 'RUB',
-                            isActive: true
-                        },
-                        {
-                            id: 'acc-002',
-                            accountNumber: '40817810000000000002',
-                            accountType: 'Сберегательный',
-                            balance: 50000,
-                            currencyCode: 'RUB',
-                            isActive: true
-                        }
-                    ];
-
-                    const creditsData = [
-                        {
-                            id: 'credit-001',
-                            creditNumber: 'CR20240001',
-                            amount: 100000,
-                            remainingAmount: 75000,
-                            interestRate: 12.5,
-                            termMonths: 24,
-                            monthlyPayment: 4583.33,
-                            startDate: '2024-01-15',
-                            status: 'Активный'
-                        }
-                    ];
-
-                    const depositsData = [
-                        {
-                            id: 'deposit-001',
-                            depositNumber: 'DP20240001',
-                            depositType: 'Накопительный',
-                            amount: 50000,
-                            interestRate: 6.5,
-                            termMonths: 12,
-                            earnedInterest: 1625.00,
-                            startDate: '2024-03-01',
-                            endDate: '2025-03-01'
-                        }
-                    ];
-
-                    displayClientData(clientData);
-                    displayAccounts(accountsData);
-                    displayCredits(creditsData);
-                    displayDeposits(depositsData);
-
-                } catch (error) {
-                    console.error('Error loading data:', error);
-                    alert('Ошибка при загрузке данных: ' + error.message);
-                } finally {
-                    loading.style.display = 'none';
-                }
-            }, 1000);
-
-        } catch (error) {
-            console.error('Error:', error);
-            loading.style.display = 'none';
-            alert('Ошибка: ' + error.message);
+        if (!response.ok) {
+            alert('Клиента не найден');
         }
+
+        const responseData = await response.json();
+
+        displayClientData(responseData.client);
+        displayAccounts(response.accounts);
+        displayCredits(response.credits);
+        displayDeposits(response.deposits);
+
+
+        //try {
+
+        //    setTimeout(async () => {
+        //        try {
+
+        //            const clientData = {
+        //                id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+        //                firstName: 'Иван',
+        //                lastName: 'Петров',
+        //                secondName: 'Сергеевич',
+        //                birthDate: '1985-05-15',
+        //                passportSeries: series,
+        //                passportNumber: number,
+        //                phoneNumber: '+7 (912) 345-67-89',
+        //                emailAddress: 'ivan.petrov@example.com',
+        //                addressRegistration: 'г. Москва, ул. Примерная, д. 123, кв. 45'
+        //            };
+
+        //            const accountsData = [
+        //                {
+        //                    id: 'acc-001',
+        //                    accountNumber: '40817810000000000001',
+        //                    accountType: 'Расчетный',
+        //                    balance: 15000,
+        //                    currencyCode: 'RUB',
+        //                    isActive: true
+        //                },
+        //                {
+        //                    id: 'acc-002',
+        //                    accountNumber: '40817810000000000002',
+        //                    accountType: 'Сберегательный',
+        //                    balance: 50000,
+        //                    currencyCode: 'RUB',
+        //                    isActive: true
+        //                }
+        //            ];
+
+        //            const creditsData = [
+        //                {
+        //                    id: 'credit-001',
+        //                    creditNumber: 'CR20240001',
+        //                    amount: 100000,
+        //                    remainingAmount: 75000,
+        //                    interestRate: 12.5,
+        //                    termMonths: 24,
+        //                    monthlyPayment: 4583.33,
+        //                    startDate: '2024-01-15',
+        //                    status: 'Активный'
+        //                }
+        //            ];
+
+        //            const depositsData = [
+        //                {
+        //                    id: 'deposit-001',
+        //                    depositNumber: 'DP20240001',
+        //                    depositType: 'Накопительный',
+        //                    amount: 50000,
+        //                    interestRate: 6.5,
+        //                    termMonths: 12,
+        //                    earnedInterest: 1625.00,
+        //                    startDate: '2024-03-01',
+        //                    endDate: '2025-03-01'
+        //                }
+        //            ];
+
+        //            displayClientData(clientData);
+        //            displayAccounts(accountsData);
+        //            displayCredits(creditsData);
+        //            displayDeposits(depositsData);
+
+        //        } catch (error) {
+        //            console.error('Error loading data:', error);
+        //            alert('Ошибка при загрузке данных: ' + error.message);
+        //        } finally {
+        //            loading.style.display = 'none';
+        //        }
+        //    }, 1000);
+
+        //} catch (error) {
+        //    console.error('Error:', error);
+        //    loading.style.display = 'none';
+        //    alert('Ошибка: ' + error.message);
+        //}
     });
 });
