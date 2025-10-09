@@ -150,6 +150,21 @@ namespace BankingSystem.Endpoints
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
 
+            app.MapPost("/getFullClient", async (HttpContext context, 
+                [FromBody] GetClientRequest request, 
+                [FromServices] IClientsService clientService, 
+                CancellationToken token) =>
+            {
+                if (request.PassportSeries == string.Empty || request.PassportNumber == string.Empty)
+                    return Results.BadRequest("passport data is empty");
+                var client = await clientService.GetAsync(request.PassportSeries,
+                    request.PassportNumber, token);
+                if (client is null) return Results.BadRequest("client is not found");
+                return Results.Ok(client);
+
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
+
             app.MapPost("/regAccount", async (HttpContext context, 
                 [FromBody] RegAccountRequest request, 
                 [FromServices] IAccountsService accountsService,
