@@ -91,10 +91,9 @@
     function displayAccounts(accounts) {
         if (accounts.length === 0) {
             accountsList.innerHTML = '<div class="no-data">Счета не найдены</div>';
-            return;
         }
-
-        accountsList.innerHTML = accounts.map(account => `
+        else {
+            accountsList.innerHTML = accounts.map(account => `
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Счет №${account.accountNumber}</div>
@@ -122,87 +121,85 @@
                         </div>
                     </div>
                 `).join('');
-
+        }
         accountsSection.style.display = 'block';
     }
 
     function displayCredits(credits) {
         if (credits.length === 0) {
             creditsList.innerHTML = '<div class="no-data">Кредиты не найдены</div>';
-            return;
         }
-
-        creditsList.innerHTML = credits.map(credit => `
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Кредит №${credit.accountId}</div>
-                            <div class="card-badge">${credit.paymentMonth}</div>
+        else {
+            creditsList.innerHTML = credits.map(credit => `
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Кредит №${credit.id}</div>
+                                <div class="card-badge">${credit.paymentMonth}</div>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-item">
+                                    <div class="card-label">Сумма кредита</div>
+                                    <div class="card-value">${credit.sumCredit.toLocaleString('ru-RU')} руб.</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Остаток долга</div>
+                                    <div class="card-value">${credit.leftCredit.toLocaleString('ru-RU')} руб.</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Срок</div>
+                                    <div class="card-value">${credit.termMonths} мес.</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Ежемесячный платеж</div>
+                                    <div class="card-value">${credit.paymentMonth.toLocaleString('ru-RU')} руб.</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Дата открытия</div>
+                                    <div class="card-value">${new Date(credit.startDate).toLocaleDateString('ru-RU')}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <div class="card-item">
-                                <div class="card-label">Сумма кредита</div>
-                                <div class="card-value">${credit.sumCredit.toLocaleString('ru-RU')} руб.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Остаток долга</div>
-                                <div class="card-value">${credit.LeftCredit.toLocaleString('ru-RU')} руб.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Срок</div>
-                                <div class="card-value">${credit.termMonths} мес.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Ежемесячный платеж</div>
-                                <div class="card-value">${credit.paymentMonth.toLocaleString('ru-RU')} руб.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Дата открытия</div>
-                                <div class="card-value">${new Date(credit.startDate).toLocaleDateString('ru-RU')}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
+                    `).join('');
+        }
         creditsSection.style.display = 'block';
     }
 
     function displayDeposits(deposits) {
         if (deposits.length === 0) {
             depositsList.innerHTML = '<div class="no-data">Вклады не найдены</div>';
-            return;
         }
-
-        depositsList.innerHTML = deposits.map(deposit => `
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Вклад №${deposit.id}</div>
-                            <div class="card-badge">${deposit.depositType}</div>
+        else {
+            depositsList.innerHTML = deposits.map(deposit => `
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Вклад №${deposit.id}</div>
+                                <div class="card-badge">${deposit.depositType}</div>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-item">
+                                    <div class="card-label">Сумма вклада</div>
+                                    <div class="card-value positive">${deposit.sumDeposit.toLocaleString('ru-RU')} руб.</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Процентная ставка</div>
+                                    <div class="card-value">${deposit.percentYear}%</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Срок</div>
+                                    <div class="card-value">${deposit.termMonth} мес.</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Дата открытия</div>
+                                    <div class="card-value">${new Date(deposit.startDate).toLocaleDateString('ru-RU')}</div>
+                                </div>
+                                <div class="card-item">
+                                    <div class="card-label">Дата закрытия</div>
+                                    <div class="card-value">${deposit.endDate ? new Date(deposit.endDate).toLocaleDateString('ru-RU') : 'Не определено'}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <div class="card-item">
-                                <div class="card-label">Сумма вклада</div>
-                                <div class="card-value positive">${deposit.sumDeposit.toLocaleString('ru-RU')} руб.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Процентная ставка</div>
-                                <div class="card-value">${deposit.percentYear}%</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Срок</div>
-                                <div class="card-value">${deposit.termMonth} мес.</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Дата открытия</div>
-                                <div class="card-value">${new Date(deposit.startDate).toLocaleDateString('ru-RU')}</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Дата закрытия</div>
-                                <div class="card-value">${deposit.endDate ? new Date(deposit.endDate).toLocaleDateString('ru-RU') : 'Не определено'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
+                    `).join('');
+        }
         depositsSection.style.display = 'block';
     }
 
@@ -243,98 +240,16 @@
 
         if (!response.ok) {
             alert('Клиента не найден');
+            loading.style.display = 'none';
+            return;
         }
 
         const responseData = await response.json();
 
         displayClientData(responseData.client);
-        displayAccounts(response.accounts);
-        displayCredits(response.credits);
-        displayDeposits(response.deposits);
-
-
-        //try {
-
-        //    setTimeout(async () => {
-        //        try {
-
-        //            const clientData = {
-        //                id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-        //                firstName: 'Иван',
-        //                lastName: 'Петров',
-        //                secondName: 'Сергеевич',
-        //                birthDate: '1985-05-15',
-        //                passportSeries: series,
-        //                passportNumber: number,
-        //                phoneNumber: '+7 (912) 345-67-89',
-        //                emailAddress: 'ivan.petrov@example.com',
-        //                addressRegistration: 'г. Москва, ул. Примерная, д. 123, кв. 45'
-        //            };
-
-        //            const accountsData = [
-        //                {
-        //                    id: 'acc-001',
-        //                    accountNumber: '40817810000000000001',
-        //                    accountType: 'Расчетный',
-        //                    balance: 15000,
-        //                    currencyCode: 'RUB',
-        //                    isActive: true
-        //                },
-        //                {
-        //                    id: 'acc-002',
-        //                    accountNumber: '40817810000000000002',
-        //                    accountType: 'Сберегательный',
-        //                    balance: 50000,
-        //                    currencyCode: 'RUB',
-        //                    isActive: true
-        //                }
-        //            ];
-
-        //            const creditsData = [
-        //                {
-        //                    id: 'credit-001',
-        //                    creditNumber: 'CR20240001',
-        //                    amount: 100000,
-        //                    remainingAmount: 75000,
-        //                    interestRate: 12.5,
-        //                    termMonths: 24,
-        //                    monthlyPayment: 4583.33,
-        //                    startDate: '2024-01-15',
-        //                    status: 'Активный'
-        //                }
-        //            ];
-
-        //            const depositsData = [
-        //                {
-        //                    id: 'deposit-001',
-        //                    depositNumber: 'DP20240001',
-        //                    depositType: 'Накопительный',
-        //                    amount: 50000,
-        //                    interestRate: 6.5,
-        //                    termMonths: 12,
-        //                    earnedInterest: 1625.00,
-        //                    startDate: '2024-03-01',
-        //                    endDate: '2025-03-01'
-        //                }
-        //            ];
-
-        //            displayClientData(clientData);
-        //            displayAccounts(accountsData);
-        //            displayCredits(creditsData);
-        //            displayDeposits(depositsData);
-
-        //        } catch (error) {
-        //            console.error('Error loading data:', error);
-        //            alert('Ошибка при загрузке данных: ' + error.message);
-        //        } finally {
-        //            loading.style.display = 'none';
-        //        }
-        //    }, 1000);
-
-        //} catch (error) {
-        //    console.error('Error:', error);
-        //    loading.style.display = 'none';
-        //    alert('Ошибка: ' + error.message);
-        //}
+        displayAccounts(responseData.accounts || []);
+        displayCredits(responseData.credits || []);
+        displayDeposits(responseData.deposits || []);
+        loading.style.display = 'none';
     });
 });
