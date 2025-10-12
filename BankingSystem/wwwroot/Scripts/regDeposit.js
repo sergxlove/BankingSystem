@@ -183,31 +183,6 @@
 
         depositDetails.scrollIntoView({ behavior: 'smooth' });
 
-        //const client = clientsDatabase.find(c =>
-        //    c.passportSeries === series && c.passportNumber === number
-        //);
-
-        //if (client) {
-        //    currentClientId = client.id;
-        //    clientIdSpan.textContent = client.id;
-        //    clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
-
-        //    const birthDate = new Date(client.birthDate);
-        //    const formattedDate = birthDate.toLocaleDateString('ru-RU');
-        //    clientBirthDateSpan.textContent = formattedDate;
-
-        //    displayAccounts(client.accounts);
-
-        //    updateInterestRate();
-        //    calculateDeposit();
-
-        //    clientInfo.style.display = 'block';
-        //    depositDetails.style.display = 'block';
-
-        //    depositDetails.scrollIntoView({ behavior: 'smooth' });
-        //} else {
-        //    alert('Клиент с указанными паспортными данными не найден!');
-        //}
     });
 
     form.addEventListener('submit', function (event) {
@@ -217,13 +192,6 @@
             alert('Сначала найдите клиента по паспортным данным!');
             return;
         }
-
-        //if (!selectedAccountId) {
-        //    document.getElementById('accountError').style.display = 'block';
-        //    isValid = false;
-        //} else {
-        //    document.getElementById('accountError').style.display = 'none';
-        //}
 
         if (!depositAmountInput.value || parseFloat(depositAmountInput.value) < 1000) {
             document.getElementById('amountError').style.display = 'block';

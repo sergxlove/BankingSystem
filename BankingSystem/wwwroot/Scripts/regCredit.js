@@ -153,33 +153,6 @@
         creditDetails.style.display = 'block';
 
         creditDetails.scrollIntoView({ behavior: 'smooth' });
-
-
-
-
-
-        //const client = clientsDatabase.find(c =>
-        //    c.passportSeries === series && c.passportNumber === number
-        //);
-
-        //if (client) {
-        //    currentClientId = client.id;
-        //    clientIdSpan.textContent = client.id;
-        //    clientNameSpan.textContent = `${client.lastName} ${client.firstName} ${client.secondName}`;
-
-        //    const birthDate = new Date(client.birthDate);
-        //    const formattedDate = birthDate.toLocaleDateString('ru-RU');
-        //    clientBirthDateSpan.textContent = formattedDate;
-
-        //    displayAccounts(client.accounts);
-
-        //    clientInfo.style.display = 'block';
-        //    creditDetails.style.display = 'block';
-
-        //    creditDetails.scrollIntoView({ behavior: 'smooth' });
-        //} else {
-        //    alert('Клиент с указанными паспортными данными не найден!');
-        //}
     });
 
     form.addEventListener('submit', function (event) {

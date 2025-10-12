@@ -1,189 +1,267 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('transferForm');
+﻿// Scripts/transact.js
+
+document.addEventListener('DOMContentLoaded', function () {
+    const transferForm = document.getElementById('transferForm');
     const successMessage = document.getElementById('successMessage');
-    const senderAccountSelect = document.getElementById('senderAccount');
-    const senderAccountInfo = document.getElementById('senderAccountInfo');
-    const receiverAccountInput = document.getElementById('receiverAccount');
-    const receiverAccountInfo = document.getElementById('receiverAccountInfo');
-    const transferAmountInput = document.getElementById('transferAmount');
 
-    const accountsDatabase = [
-        {
-            id: 'acc-001',
-            number: '4081 7810 0000 0000 0001',
+    // Элементы для счета отправителя
+    const senderAccountInput = document.querySelector('input[placeholder*="отправителя"]');
+    const senderAccountInfo = document.querySelector('.form-section:first-child .account-info');
+    const senderAccountNumber = document.querySelector('.form-section:first-child #receiverAccountNumber');
+    const senderAccountOwner = document.querySelector('.form-section:first-child #receiverAccountOwner');
+    const senderAccountType = document.querySelector('.form-section:first-child #receiverAccountType');
+    const senderAccountCurrency = document.querySelector('.form-section:first-child #receiverAccountCurrency');
+    const senderAccountError = document.querySelector('.form-section:first-child .error-message');
+
+    // Элементы для счета получателя
+    const receiverAccountInput = document.querySelector('input[placeholder*="получателя"]');
+    const receiverAccountInfo = document.querySelector('.form-section:nth-child(3) .account-info');
+    const receiverAccountNumber = document.querySelector('.form-section:nth-child(3) #receiverAccountNumber');
+    const receiverAccountOwner = document.querySelector('.form-section:nth-child(3) #receiverAccountOwner');
+    const receiverAccountType = document.querySelector('.form-section:nth-child(3) #receiverAccountType');
+    const receiverAccountCurrency = document.querySelector('.form-section:nth-child(3) #receiverAccountCurrency');
+    const receiverAccountError = document.querySelector('.form-section:nth-child(3) .error-message');
+
+    // Элементы суммы и комментария
+    const amountInput = document.getElementById('transferAmount');
+    const amountError = document.getElementById('amountError');
+    const commentInput = document.getElementById('transferComment');
+
+    // База данных счетов (в реальном приложении это будет API)
+    const accountsDatabase = {
+        '1234567890123456': {
+            owner: 'Иванов Иван Иванович',
             type: 'Расчетный',
-            balance: 15000,
             currency: 'RUB',
-            owner: 'Иван Петров Сергеевич'
+            balance: 50000.00
         },
-        {
-            id: 'acc-002',
-            number: '4081 7810 0000 0000 0002',
-            type: 'Сберегательный',
-            balance: 50000,
+        '6543210987654321': {
+            owner: 'Петров Петр Петрович',
+            type: 'Карточный',
             currency: 'RUB',
-            owner: 'Иван Петров Сергеевич'
+            balance: 25000.00
         },
-        {
-            id: 'acc-003',
-            number: '4081 7810 0000 0000 0003',
-            type: 'Расчетный',
-            balance: 25000,
+        '1111222233334444': {
+            owner: 'Сидорова Анна Сергеевна',
+            type: 'Накопительный',
             currency: 'RUB',
-            owner: 'Мария Иванова Александровна'
+            balance: 100000.00
         },
-        {
-            id: 'acc-004',
-            number: '4081 7810 0000 0000 0004',
-            type: 'Расчетный',
-            balance: 100000,
+        '5555666677778888': {
+            owner: 'Козлов Алексей Владимирович',
+            type: 'Кредитный',
             currency: 'RUB',
-            owner: 'Алексей Сидоров Владимирович'
+            balance: -5000.00
         }
-    ];
+    };
 
-    senderAccountSelect.addEventListener('change', function () {
-        const accountId = this.value;
+    // Валидация номера счета
+    function validateAccountNumber(accountNumber) {
+        const accountRegex = /^\d{16}$/;
+        return accountRegex.test(accountNumber);
+    }
 
-        if (accountId) {
-            const account = accountsDatabase.find(acc => acc.id === accountId);
+    // Поиск информации о счете
+    function getAccountInfo(accountNumber) {
+        return accountsDatabase[accountNumber] || null;
+    }
 
-            if (account) {
-                document.getElementById('senderAccountNumber').textContent = account.number;
-                document.getElementById('senderAccountType').textContent = account.type;
-                document.getElementById('senderAccountBalance').textContent = account.balance.toLocaleString('ru-RU') + ' ' + account.currency;
-                document.getElementById('senderAccountCurrency').textContent = account.currency;
+    // Показ информации о счете
+    function showAccountInfo(accountNumber, isSender = false) {
+        const accountInfo = getAccountInfo(accountNumber);
 
+        if (accountInfo) {
+            if (isSender) {
+                senderAccountNumber.textContent = accountNumber;
+                senderAccountOwner.textContent = accountInfo.owner;
+                senderAccountType.textContent = accountInfo.type;
+                senderAccountCurrency.textContent = accountInfo.currency;
                 senderAccountInfo.style.display = 'block';
+                hideError(senderAccountError);
+            } else {
+                receiverAccountNumber.textContent = accountNumber;
+                receiverAccountOwner.textContent = accountInfo.owner;
+                receiverAccountType.textContent = accountInfo.type;
+                receiverAccountCurrency.textContent = accountInfo.currency;
+                receiverAccountInfo.style.display = 'block';
+                hideError(receiverAccountError);
+            }
+            return true;
+        } else {
+            if (isSender) {
+                senderAccountInfo.style.display = 'none';
+                showError(senderAccountError, 'Счет не найден');
+            } else {
+                receiverAccountInfo.style.display = 'none';
+                showError(receiverAccountError, 'Счет не найден');
+            }
+            return false;
+        }
+    }
 
-                transferAmountInput.max = account.balance;
+    // Валидация суммы
+    function validateAmount(amount, senderAccountNumber) {
+        const numericAmount = parseFloat(amount);
+
+        if (isNaN(numericAmount) || numericAmount <= 0) {
+            showError(amountError, 'Введите корректную сумму');
+            return false;
+        }
+
+        // Проверка достаточности средств
+        const senderAccount = getAccountInfo(senderAccountNumber);
+        if (senderAccount && numericAmount > senderAccount.balance) {
+            showError(amountError, 'Недостаточно средств на счете');
+            return false;
+        }
+
+        hideError(amountError);
+        return true;
+    }
+
+    // Показ ошибки
+    function showError(errorElement, message) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+
+    // Скрытие ошибки
+    function hideError(errorElement) {
+        errorElement.style.display = 'none';
+    }
+
+    // Обработчик ввода номера счета отправителя
+    senderAccountInput.addEventListener('input', function () {
+        const accountNumber = this.value.trim();
+
+        if (accountNumber.length === 16) {
+            if (validateAccountNumber(accountNumber)) {
+                showAccountInfo(accountNumber, true);
+            } else {
+                showError(senderAccountError, 'Неверный формат номера счета');
+                senderAccountInfo.style.display = 'none';
             }
         } else {
+            hideError(senderAccountError);
             senderAccountInfo.style.display = 'none';
         }
     });
 
-    receiverAccountInput.addEventListener('blur', function () {
-        const accountNumber = this.value.replace(/\s/g, '');
+    // Обработчик ввода номера счета получателя
+    receiverAccountInput.addEventListener('input', function () {
+        const accountNumber = this.value.trim();
 
-        if (accountNumber.length === 20 && /^\d+$/.test(accountNumber)) {
-            this.value = accountNumber.replace(/(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4 $5');
-
-            const foundAccount = accountsDatabase.find(acc =>
-                acc.number.replace(/\s/g, '') === accountNumber
-            );
-
-            if (foundAccount) {
-                document.getElementById('receiverAccountNumber').textContent = foundAccount.number;
-                document.getElementById('receiverAccountOwner').textContent = foundAccount.owner;
-                document.getElementById('receiverAccountType').textContent = foundAccount.type;
-                document.getElementById('receiverAccountCurrency').textContent = foundAccount.currency;
-
-                receiverAccountInfo.style.display = 'block';
-                document.getElementById('receiverAccountError').style.display = 'none';
+        if (accountNumber.length === 16) {
+            if (validateAccountNumber(accountNumber)) {
+                showAccountInfo(accountNumber, false);
             } else {
-                document.getElementById('receiverAccountNumber').textContent = this.value;
-                document.getElementById('receiverAccountOwner').textContent = 'Внешний клиент';
-                document.getElementById('receiverAccountType').textContent = 'Неизвестно';
-                document.getElementById('receiverAccountCurrency').textContent = 'RUB';
-
-                receiverAccountInfo.style.display = 'block';
-                document.getElementById('receiverAccountError').style.display = 'none';
+                showError(receiverAccountError, 'Неверный формат номера счета');
+                receiverAccountInfo.style.display = 'none';
             }
-        } else if (accountNumber.length > 0) {
-            document.getElementById('receiverAccountError').style.display = 'block';
-            receiverAccountInfo.style.display = 'none';
         } else {
-            document.getElementById('receiverAccountError').style.display = 'none';
+            hideError(receiverAccountError);
             receiverAccountInfo.style.display = 'none';
         }
     });
 
-    receiverAccountInput.addEventListener('input', function (e) {
-        let value = e.target.value.replace(/\D/g, '');
+    // Обработчик ввода суммы
+    amountInput.addEventListener('input', function () {
+        const amount = this.value;
+        const senderAccount = senderAccountInput.value.trim();
 
-        if (value.length > 20) {
-            value = value.substring(0, 20);
-        }
-
-        if (value.length > 0) {
-            value = value.replace(/(\d{4})/g, '$1 ').trim();
-        }
-
-        e.target.value = value;
-    });
-
-    transferAmountInput.addEventListener('input', function () {
-        const amount = parseFloat(this.value) || 0;
-        const senderAccountId = senderAccountSelect.value;
-
-        if (senderAccountId) {
-            const senderAccount = accountsDatabase.find(acc => acc.id === senderAccountId);
-
-            if (senderAccount && amount > senderAccount.balance) {
-                document.getElementById('amountError').textContent = 'Недостаточно средств на счете';
-                document.getElementById('amountError').style.display = 'block';
-            } else if (amount <= 0) {
-                document.getElementById('amountError').textContent = 'Введите корректную сумму';
-                document.getElementById('amountError').style.display = 'block';
-            } else {
-                document.getElementById('amountError').style.display = 'none';
-            }
+        if (amount && senderAccount && validateAccountNumber(senderAccount)) {
+            validateAmount(amount, senderAccount);
         }
     });
 
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
+    // Обработчик отправки формы
+    transferForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const senderAccount = senderAccountInput.value.trim();
+        const receiverAccount = receiverAccountInput.value.trim();
+        const amount = amountInput.value;
+        const comment = commentInput.value.trim();
+
+        // Валидация всех полей
         let isValid = true;
 
-        if (!senderAccountSelect.value) {
-            document.getElementById('senderAccountError').style.display = 'block';
+        if (!validateAccountNumber(senderAccount)) {
+            showError(senderAccountError, 'Введите корректный номер счета отправителя');
             isValid = false;
-        } else {
-            document.getElementById('senderAccountError').style.display = 'none';
         }
 
-        const receiverAccount = receiverAccountInput.value.replace(/\s/g, '');
-        if (receiverAccount.length !== 20 || !/^\d+$/.test(receiverAccount)) {
-            document.getElementById('receiverAccountError').style.display = 'block';
+        if (!validateAccountNumber(receiverAccount)) {
+            showError(receiverAccountError, 'Введите корректный номер счета получателя');
             isValid = false;
-        } else {
-            document.getElementById('receiverAccountError').style.display = 'none';
         }
 
-        const amount = parseFloat(transferAmountInput.value) || 0;
-        const senderAccount = accountsDatabase.find(acc => acc.id === senderAccountSelect.value);
+        if (senderAccount === receiverAccount) {
+            showError(receiverAccountError, 'Нельзя переводить средства на тот же счет');
+            isValid = false;
+        }
 
-        if (!amount || amount <= 0) {
-            document.getElementById('amountError').textContent = 'Введите корректную сумму';
-            document.getElementById('amountError').style.display = 'block';
+        if (!validateAmount(amount, senderAccount)) {
             isValid = false;
-        } else if (senderAccount && amount > senderAccount.balance) {
-            document.getElementById('amountError').textContent = 'Недостаточно средств на счете';
-            document.getElementById('amountError').style.display = 'block';
-            isValid = false;
-        } else {
-            document.getElementById('amountError').style.display = 'none';
         }
 
         if (isValid) {
-            successMessage.innerHTML = `
-                        Перевод успешно выполнен!<br>
-                        Сумма: <strong>${amount.toLocaleString('ru-RU')} руб.</strong><br>
-                        Со счета: <strong>${document.getElementById('senderAccountNumber').textContent}</strong><br>
-                        На счет: <strong>${receiverAccountInput.value}</strong>
-                    `;
+            // Имитация выполнения перевода
+            performTransfer(senderAccount, receiverAccount, parseFloat(amount), comment);
+        }
+    });
 
-            successMessage.style.display = 'block';
-            form.reset();
+    // Функция выполнения перевода
+    function performTransfer(senderAccount, receiverAccount, amount, comment) {
+        // В реальном приложении здесь будет AJAX запрос к серверу
+        console.log('Выполняется перевод:', {
+            from: senderAccount,
+            to: receiverAccount,
+            amount: amount,
+            comment: comment,
+            timestamp: new Date().toISOString()
+        });
+
+        // Показ сообщения об успехе
+        successMessage.style.display = 'block';
+        successMessage.textContent = `Перевод на сумму ${amount.toFixed(2)} RUB выполнен успешно!`;
+
+        // Сброс формы
+        setTimeout(() => {
+            transferForm.reset();
             senderAccountInfo.style.display = 'none';
             receiverAccountInfo.style.display = 'none';
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
 
-            successMessage.scrollIntoView({ behavior: 'smooth' });
+    // Дополнительные улучшения UX
+    amountInput.addEventListener('focus', function () {
+        if (senderAccountInput.value.trim().length !== 16) {
+            showError(amountError, 'Сначала введите номер счета отправителя');
+        }
+    });
 
-            setTimeout(function () {
-                successMessage.style.display = 'none';
-            }, 5000);
+    // Форматирование ввода номера счета
+    [senderAccountInput, receiverAccountInput].forEach(input => {
+        input.addEventListener('input', function () {
+            // Удаляем все нецифровые символы
+            this.value = this.value.replace(/\D/g, '');
+
+            // Ограничиваем длину 16 символами
+            if (this.value.length > 16) {
+                this.value = this.value.slice(0, 16);
+            }
+        });
+    });
+
+    // Форматирование ввода суммы
+    amountInput.addEventListener('blur', function () {
+        if (this.value) {
+            const numericValue = parseFloat(this.value);
+            if (!isNaN(numericValue)) {
+                this.value = numericValue.toFixed(2);
+            }
         }
     });
 });

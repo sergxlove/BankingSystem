@@ -219,6 +219,22 @@
         document.getElementById('depositNumberError').style.display = 'none';
         loading.style.display = 'block';
 
+        const response = await fetch('/getDeposit', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                passportSeries: series,
+                passportNumber: number
+            })
+        });
+
+        const responseData = await response.json();
+
+
+
+
         try {
             setTimeout(() => {
 
