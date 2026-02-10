@@ -23,7 +23,8 @@ namespace BankingSystem
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<BankingSystemDbContext>(options =>
-                options.UseNpgsql("User ID=postgres;Password=123;Host=localhost;Port=5432;Database=db;"));
+                options.UseNpgsql("Host=localhost;Port=5432;Database=db;Username=postgres;Password=123"));
+                //options.UseSqlite($"Data Source={Path.Combine(Directory.GetCurrentDirectory(), "banking.db")}"));
             builder.Services.AddScoped<ITransactionsWork, TransactionsWork>();
             builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
             builder.Services.AddScoped<IAccountsService, AccountsService>();
@@ -82,32 +83,41 @@ namespace BankingSystem
             {
                 options.AddFixedWindowLimiter("GeneralPolicy", opt =>
                 {
-                    opt.PermitLimit = 100; 
-                    opt.Window = TimeSpan.FromMinutes(1); 
+                    opt.PermitLimit = 100;
+                    opt.Window = TimeSpan.FromMinutes(1);
                     opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                     opt.QueueLimit = 10;
                 });
                 options.AddFixedWindowLimiter("LoginPolicy", opt =>
                 {
-                    opt.PermitLimit = 5;  
+                    opt.PermitLimit = 5;
                     opt.Window = TimeSpan.FromMinutes(1);
                 });
                 options.AddTokenBucketLimiter("UploadPolicy", opt =>
                 {
-                    opt.TokenLimit = 10;    
+                    opt.TokenLimit = 10;
                     opt.ReplenishmentPeriod = TimeSpan.FromMinutes(1);
-                    opt.TokensPerPeriod = 2;   
+                    opt.TokensPerPeriod = 2;
                     opt.AutoReplenishment = true;
+                });
+            });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.SetIsOriginAllowed(origin => true)
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
             });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.WebHost.UseUrls("http://localhost:5001");
             var app = builder.Build();
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseCors("AllowAll");
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseStaticFiles();
