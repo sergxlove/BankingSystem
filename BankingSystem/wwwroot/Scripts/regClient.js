@@ -12,16 +12,25 @@
     const emailInput = document.getElementById('emailAddress');
     const addressInput = document.getElementById('addressRegistration');
 
+    const lastNameError = document.getElementById('lastNameError');
+    const firstNameError = document.getElementById('firstNameError');
+    const birthDateError = document.getElementById('birthDateError');
+    const passportSeriesError = document.getElementById('passportSeriesError');
+    const passportNumberError = document.getElementById('passportNumberError');
+    const phoneNumberError = document.getElementById('phoneNumberError');
+    const emailError = document.getElementById('emailError');
+    const addressError = document.getElementById('addressError');
+
     function validateName(name) {
         return name.length >= 2 && /^[a-zA-Zа-яА-ЯёЁ\s\-]+$/.test(name);
     }
 
     function validateBirthDate(date) {
+        if (!date) return false;
         const birthDate = new Date(date);
         const today = new Date();
         const minDate = new Date();
         minDate.setFullYear(today.getFullYear() - 120);
-
         return birthDate <= today && birthDate >= minDate;
     }
 
@@ -34,7 +43,8 @@
     }
 
     function validatePhone(phone) {
-        return /^(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/.test(phone);
+        const cleanedPhone = phone.replace(/\D/g, '');
+        return cleanedPhone.length === 11 && (cleanedPhone.startsWith('7') || cleanedPhone.startsWith('8'));
     }
 
     function validateEmail(email) {
@@ -43,6 +53,57 @@
 
     function validateAddress(address) {
         return address.length >= 10;
+    }
+
+    function validateForm() {
+        let isValid = true;
+
+        [lastNameError, firstNameError, birthDateError, passportSeriesError,
+            passportNumberError, phoneNumberError, emailError, addressError].forEach(error => {
+                error.style.display = 'none';
+            });
+
+        if (!validateName(lastNameInput.value.trim())) {
+            lastNameError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validateName(firstNameInput.value.trim())) {
+            firstNameError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validateBirthDate(birthDateInput.value)) {
+            birthDateError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validatePassportSeries(passportSeriesInput.value.trim())) {
+            passportSeriesError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validatePassportNumber(passportNumberInput.value.trim())) {
+            passportNumberError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validatePhone(phoneNumberInput.value.trim())) {
+            phoneNumberError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validateEmail(emailInput.value.trim())) {
+            emailError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!validateAddress(addressInput.value.trim())) {
+            addressError.style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     phoneNumberInput.addEventListener('input', function (e) {
@@ -67,52 +128,118 @@
         }
 
         e.target.value = value;
+
+        if (validatePhone(value)) {
+            phoneNumberError.style.display = 'none';
+        }
     });
 
     passportSeriesInput.addEventListener('input', function (e) {
         e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+
+        if (validatePassportSeries(e.target.value)) {
+            passportSeriesError.style.display = 'none';
+        }
     });
 
     passportNumberInput.addEventListener('input', function (e) {
         e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
+
+        if (validatePassportNumber(e.target.value)) {
+            passportNumberError.style.display = 'none';
+        }
     });
 
-    form.addEventListener('submit', function (event) {
+    firstNameInput.addEventListener('blur', function () {
+        if (!validateName(this.value.trim())) {
+            firstNameError.style.display = 'block';
+        } else {
+            firstNameError.style.display = 'none';
+        }
+    });
+
+    lastNameInput.addEventListener('blur', function () {
+        if (!validateName(this.value.trim())) {
+            lastNameError.style.display = 'block';
+        } else {
+            lastNameError.style.display = 'none';
+        }
+    });
+
+    birthDateInput.addEventListener('blur', function () {
+        if (!validateBirthDate(this.value)) {
+            birthDateError.style.display = 'block';
+        } else {
+            birthDateError.style.display = 'none';
+        }
+    });
+
+    emailInput.addEventListener('blur', function () {
+        if (!validateEmail(this.value.trim())) {
+            emailError.style.display = 'block';
+        } else {
+            emailError.style.display = 'none';
+        }
+    });
+
+    addressInput.addEventListener('blur', function () {
+        if (!validateAddress(this.value.trim())) {
+            addressError.style.display = 'block';
+        } else {
+            addressError.style.display = 'none';
+        }
+    });
+
+    form.addEventListener('submit', async function (event) {
         event.preventDefault();
-        
+
+        if (!validateForm()) {
+            alert('Пожалуйста, исправьте ошибки в форме');
+            return;
+        }
+
+        const formData = {
+            FirstName: firstNameInput.value.trim(),
+            LastName: lastNameInput.value.trim(),
+            SecondName: secondNameInput.value.trim() || null,
+            BirthDate: birthDateInput.value,
+            PassportSeries: passportSeriesInput.value.trim(),
+            PassportNumber: passportNumberInput.value.trim(),
+            PhoneNumber: phoneNumberInput.value.trim(),
+            EmailAddress: emailInput.value.trim(),
+            AddressRegistration: addressInput.value.trim()
+        };
+
         try {
-            const response = await fetch("/regClient", {
-                method: "POST",
+            const response = await fetch('/regClient', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    FirstName: firstNameInput,
-                    SecondName: secondNameInput,
-                    LastName: lastNameInput,
-                    BirthDate: birthDateInput,
-                    PassportSeries: passportSeriesInput,
-                    PassportNumber: passportNumberInput,
-                    PhoneNumber: phoneNumberInput,
-                    EmailAddres: emailInput,
-                    AddressRegistration: addressInput
-                })
+                body: JSON.stringify(formData)
             });
 
-            switch (response.status) {
-                case 200:
-                    alert('Клиент успешно доавлен');
-                    break;
-                case 400:
-                    alert(await response.text())
-                    break;
-                default:
-                    alert('Произошла ошибка');
-                    break;
+            if (response.ok) {
+                successMessage.style.display = 'block';
+                form.reset();
+
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+
+            } else if (response.status === 400) {
+                const errorText = await response.text();
+                alert('Ошибка: ' + errorText);
+            } else {
+                alert('Произошла ошибка сервера. Пожалуйста, попробуйте позже.');
             }
-        }
-        catch (error) {
-            alert('Ошибка соединения с сервером');
+
+        } catch (error) {
+            alert('Ошибка соединения с сервером. Проверьте интернет-соединение.');
         }
     });
 });

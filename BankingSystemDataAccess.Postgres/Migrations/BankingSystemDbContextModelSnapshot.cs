@@ -238,7 +238,7 @@ namespace BankingSystemDataAccess.Postgres.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = 77,
                             NumberCardLast = "2200100000000000"
                         });
                 });

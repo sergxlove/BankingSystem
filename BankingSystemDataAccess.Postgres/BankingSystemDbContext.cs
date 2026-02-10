@@ -7,7 +7,10 @@ namespace BankingSystemDataAccess.Postgres
     public class BankingSystemDbContext : DbContext
     {
         public BankingSystemDbContext(DbContextOptions<BankingSystemDbContext> options) 
-            : base(options) { }
+            : base(options) 
+        {
+            Database.EnsureCreated();
+        }
 
         public DbSet<AccountsEntity> Accounts { get; set; }
         public DbSet<ClientsEntity> Clients { get; set; }

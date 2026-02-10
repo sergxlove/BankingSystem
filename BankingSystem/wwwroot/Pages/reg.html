@@ -41,6 +41,173 @@
         <a href="index.html" class="back-link">← Назад на главную</a>
     </div>
 
-    <script src="../Scripts/reg.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('registrationForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            const successMessage = document.getElementById('successMessage');
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+
+            function setupPasswordToggle(toggleElement, inputElement) {
+                toggleElement.addEventListener('click', function () {
+                    if (inputElement.type === 'password') {
+                        inputElement.type = 'text';
+                        toggleElement.textContent = 'Скрыть';
+                    } else {
+                        inputElement.type = 'password';
+                        toggleElement.textContent = 'Показать';
+                    }
+                });
+            }
+
+            setupPasswordToggle(togglePassword, passwordInput);
+            setupPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                console.log('Начало отправки формы...');
+
+                let isValid = true;
+
+                usernameError.style.display = 'none';
+                passwordError.style.display = 'none';
+                confirmPasswordError.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                if (usernameInput.value.length < 4) {
+                    usernameError.style.display = 'block';
+                    isValid = false;
+                    console.log('Ошибка валидации: логин менее 4 символов');
+                }
+
+                if (passwordInput.value.length < 6) {
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                    console.log('Ошибка валидации: пароль менее 6 символов');
+                }
+
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordError.style.display = 'block';
+                    isValid = false;
+                    console.log('Ошибка валидации: пароли не совпадают');
+                }
+
+                if (!isValid) {
+                    console.log('Валидация не пройдена, отправка отменена');
+                    return;
+                }
+
+                const formData = {
+                    username: usernameInput.value.trim(),
+                    password: passwordInput.value,
+                    againPassword: confirmPasswordInput.value 
+                };
+
+                console.log('Отправляемые данные:', formData);
+
+                try {
+                    const response = await fetch('/reg', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData),
+                        credentials: 'include' 
+                    });
+
+
+                    if (response.ok) {
+                        console.log('Регистрация успешна!');
+                        successMessage.textContent = 'Регистрация прошла успешно! Вы будете перенаправлены...';
+                        successMessage.style.display = 'block';
+                        successMessage.style.color = 'green';
+
+                        form.reset();
+                        
+                        
+
+                    } else {
+                        let errorMessage = 'Ошибка сервера';
+
+                        try {
+                            const errorText = await response.text();
+                            console.log('Текст ошибки:', errorText);
+
+                            if (errorText) {
+                                try {
+                                    const errorData = JSON.parse(errorText);
+                                    errorMessage = errorData.message || errorData.title || errorText;
+                                } catch {
+                                    errorMessage = errorText;
+                                }
+                            } else {
+                                switch (response.status) {
+                                    case 400:
+                                        errorMessage = 'Некорректные данные';
+                                        break;
+                                    case 409:
+                                        errorMessage = 'Пользователь с таким логином уже существует';
+                                        break;
+                                    case 429:
+                                        errorMessage = 'Слишком много запросов. Попробуйте позже';
+                                        break;
+                                    case 500:
+                                        errorMessage = 'Внутренняя ошибка сервера';
+                                        break;
+                                }
+                            }
+                        } catch (parseError) {
+                            console.error('Ошибка при обработке ответа:', parseError);
+                        }
+
+                        showServerError(errorMessage);
+                    }
+                } catch (error) {
+                    console.error('Ошибка сети:', error);
+                    showServerError('Ошибка подключения к серверу. Проверьте соединение.');
+                }
+            });
+
+            function showServerError(message) {
+                successMessage.textContent = 'Ошибка: ' + message;
+                successMessage.style.display = 'block';
+                successMessage.style.color = 'red';
+
+                setTimeout(function () {
+                    successMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            usernameInput.addEventListener('input', function () {
+                if (usernameInput.value.length >= 4) {
+                    usernameError.style.display = 'none';
+                }
+            });
+
+            passwordInput.addEventListener('input', function () {
+                if (passwordInput.value.length >= 6) {
+                    passwordError.style.display = 'none';
+                }
+
+                if (confirmPasswordInput.value && passwordInput.value === confirmPasswordInput.value) {
+                    confirmPasswordError.style.display = 'none';
+                }
+            });
+
+            confirmPasswordInput.addEventListener('input', function () {
+                if (passwordInput.value === confirmPasswordInput.value) {
+                    confirmPasswordError.style.display = 'none';
+                }
+            });
+
+        });
+    </script>
 </body>
 </html>
