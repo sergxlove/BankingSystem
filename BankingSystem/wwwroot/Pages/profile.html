@@ -4,64 +4,368 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль клиента</title>
-    <link rel="stylesheet" href="../Styles/profile.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+            input:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+        .client-info {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #667eea;
+        }
+
+            .client-info h3 {
+                color: #333;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .client-detail {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+            .client-detail strong {
+                display: block;
+                color: #666;
+                font-size: 0.9em;
+                margin-bottom: 5px;
+            }
+
+            .client-detail span {
+                color: #333;
+                font-weight: 500;
+                font-size: 1.1em;
+            }
+
+        .info-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+            .info-section h3 {
+                color: #333;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                border-color: #667eea;
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+            }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background: #667eea20;
+            color: #667eea;
+        }
+
+        .card-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-label {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 3px;
+        }
+
+        .card-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+            .card-value.positive {
+                color: #28a745;
+            }
+
+            .card-value.negative {
+                color: #dc3545;
+            }
+
+        .id-badge {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #667eea;
+            background: #667eea10;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-closed {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Профиль клиента</h1>
+        <h1>👤 Профиль клиента</h1>
 
         <div class="form-section">
-            <div class="form-section-title">Поиск клиента</div>
+            <div class="form-section-title">🔍 Поиск клиента</div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="passportSeries">Серия паспорта *</label>
-                    <input type="text" id="passportSeries" name="passportSeries" maxlength="4" required>
+                    <input type="text" id="passportSeries" name="passportSeries" maxlength="4" placeholder="1234" required>
                     <div class="error-message" id="passportSeriesError">Серия должна содержать 4 цифры</div>
                 </div>
 
                 <div class="form-group">
                     <label for="passportNumber">Номер паспорта *</label>
-                    <input type="text" id="passportNumber" name="passportNumber" maxlength="6" required>
+                    <input type="text" id="passportNumber" name="passportNumber" maxlength="6" placeholder="567890" required>
                     <div class="error-message" id="passportNumberError">Номер должен содержать 6 цифр</div>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group" style="text-align: center;">
-                    <button type="button" id="findClientBtn">Найти клиента</button>
+                    <button type="button" id="findClientBtn">
+                        🔎 Найти клиента
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="client-info" id="clientInfo">
-            <h3>Информация о клиенте</h3>
-            <div class="client-details" id="clientDetails">
-            </div>
-        </div>
-
-        <div class="info-section" id="accountsSection" style="display: none;">
-            <h3>Счета</h3>
-            <div id="accountsList">
-            </div>
-        </div>
-
-        <div class="info-section" id="creditsSection" style="display: none;">
-            <h3>Кредиты</h3>
-            <div id="creditsList">
-            </div>
-        </div>
-
-        <div class="info-section" id="depositsSection" style="display: none;">
-            <h3>Вклады</h3>
-            <div id="depositsList">
-            </div>
+            <h3>📋 Информация о клиенте</h3>
+            <div class="client-details" id="clientDetails"></div>
         </div>
 
         <div class="loading" id="loading" style="display: none;">
-            Загрузка данных...
+            <span class="spinner"></span> Загрузка данных...
         </div>
 
-        <a href="index.html" class="back-link">← Назад на главную</a>
+        <div class="info-section" id="accountsSection">
+            <h3>💰 Счета</h3>
+            <div class="cards-grid" id="accountsList"></div>
+        </div>
+
+        <div class="info-section" id="creditsSection">
+            <h3>💳 Кредиты</h3>
+            <div class="cards-grid" id="creditsList"></div>
+        </div>
+
+        <div class="info-section" id="depositsSection">
+            <h3>📈 Вклады</h3>
+            <div class="cards-grid" id="depositsList"></div>
+        </div>
+
+        <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
     </div>
 
     <script>
@@ -82,10 +386,12 @@
 
             passportSeriesInput.addEventListener('input', function (e) {
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+                document.getElementById('passportSeriesError').style.display = 'none';
             });
 
             passportNumberInput.addEventListener('input', function (e) {
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
+                document.getElementById('passportNumberError').style.display = 'none';
             });
 
             function validatePassportSeries(series) {
@@ -96,176 +402,264 @@
                 return /^\d{6}$/.test(number);
             }
 
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-                return null;
+            function formatDate(dateString) {
+                if (!dateString) return 'Не указана';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
             }
 
-            async function makeAuthenticatedRequest(url) {
-                const token = getCookie('jwt');
-
-                if (!token) {
-                    throw new Error('JWT token not found');
-                }
-
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
+            function shortenUUID(uuid) {
+                if (!uuid) return 'Не указан';
+                return uuid.substring(0, 8) + '...' + uuid.substring(uuid.length - 4);
             }
 
             function displayClientData(client) {
                 clientDetails.innerHTML = `
-                    <div class="client-detail">
-                        <strong>ID клиента:</strong>
-                        <span>${client.id}</span>
-                    </div>
-                    <div class="client-detail">
-                        <strong>ФИО:</strong>
-                        <span>${client.lastName} ${client.firstName} ${client.secondName}</span>
-                    </div>
-                    <div class="client-detail">
-                        <strong>Дата рождения:</strong>
-                        <span>${new Date(client.birthDate).toLocaleDateString('ru-RU')}</span>
-                    </div>
-                    <div class="client-detail">
-                        <strong>Паспорт:</strong>
-                        <span>${client.passportSeries} ${client.passportNumber}</span>
-                    </div>
-                    <div class="client-detail">
-                        <strong>Телефон:</strong>
-                        <span>${client.phoneNumber}</span>
-                    </div>
-                    <div class="client-detail">
-                        <strong>Email:</strong>
-                        <span>${client.emailAddress}</span>
-                    </div>
-                `;
+                        <div class="client-detail">
+                            <strong>🆔 ID клиента:</strong>
+                            <span style="font-family: monospace;">${client.id || 'Не указан'}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>👤 ФИО:</strong>
+                            <span>${client.lastName || ''} ${client.firstName || ''} ${client.secondName || ''}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>📅 Дата рождения:</strong>
+                            <span>${formatDate(client.birthDate)}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>🪪 Паспорт:</strong>
+                            <span>${client.passportSeries || ''} ${client.passportNumber || ''}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>📞 Телефон:</strong>
+                            <span>${client.phoneNumber || 'Не указан'}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>📧 Email:</strong>
+                            <span>${client.emailAddress || 'Не указан'}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>🏠 Адрес:</strong>
+                            <span>${client.addressRegistration || 'Не указан'}</span>
+                        </div>
+                        <div class="client-detail">
+                            <strong>📅 Дата регистрации:</strong>
+                            <span>${formatDate(client.registrationDate)}</span>
+                        </div>
+                    `;
 
                 clientInfo.style.display = 'block';
             }
 
             function displayAccounts(accounts) {
-                if (accounts.length === 0) {
-                    accountsList.innerHTML = '<div class="no-data">Счета не найдены</div>';
-                }
-                else {
-                    accountsList.innerHTML = accounts.map(account => `
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Счет №${account.accountNumber}</div>
-                            <div class="card-badge">${account.accountType}</div>
+                if (!accounts || accounts.length === 0) {
+                    accountsList.innerHTML = '<div class="no-data">❌ Счета не найдены</div>';
+                } else {
+                    accountsList.innerHTML = accounts.map(account => {
+                        const balance = account.balance || 0;
+                        const balanceClass = balance > 0 ? 'positive' : balance < 0 ? 'negative' : '';
+                        const status = account.isActive ? '🟢 Активный' : '🔴 Закрыт';
+                        const statusClass = account.isActive ? 'status-active' : 'status-closed';
+                        const accountId = account.id || 'Не указан';
+                        const accountNumber = account.accountNumber || account.number || 'Не указан';
+                        const accountType = account.accountType || account.typeAccount || 'Не указан';
+                        const currency = account.currencyCode || account.currency || 'RUB';
+                        const clientId = account.clientId || account.ClientsId || 'Не указан';
+                        const openDate = account.openDate || account.dateStart || account.registrationDate || null;
+
+                        return `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">🏦 Счет</div>
+                        <div class="card-badge">${accountType}</div>
+                    </div>
+                    <div class="card-content">
+                        <!-- ID счета - выделено жирно и заметно -->
+                        <div class="card-item" style="grid-column: span 2; background: #667eea10; padding: 10px; border-radius: 8px; margin-bottom: 5px;">
+                            <div class="card-label" style="color: #667eea; font-weight: bold;">🆔 ID СЧЕТА</div>
+                            <div class="card-value" style="font-family: monospace; font-size: 1.1em; color: #333; word-break: break-all;">
+                                ${accountId}
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <div class="card-item">
-                                <div class="card-label">Баланс</div>
-                                <div class="card-value ${account.balance >= 0 ? 'positive' : 'negative'}">
-                                    ${account.balance.toLocaleString('ru-RU')} ${account.currencyCode}
-                                </div>
+                        
+                        <!-- Номер счета -->
+                        <div class="card-item">
+                            <div class="card-label">📋 Номер счета</div>
+                            <div class="card-value">${accountNumber}</div>
+                        </div>
+                        
+                        <!-- Баланс -->
+                        <div class="card-item">
+                            <div class="card-label">💰 Баланс</div>
+                            <div class="card-value ${balanceClass}">
+                                ${balance.toLocaleString('ru-RU')} ${currency}
                             </div>
-                            <div class="card-item">
-                                <div class="card-label">Валюта</div>
-                                <div class="card-value">${account.currencyCode}</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Тип счета</div>
-                                <div class="card-value">${account.accountType}</div>
-                            </div>
-                            <div class="card-item">
-                                <div class="card-label">Статус</div>
-                                <div class="card-value">${account.isActive ? 'Активный' : 'Закрыт'}</div>
+                        </div>
+                        
+                        <!-- Валюта -->
+                        <div class="card-item">
+                            <div class="card-label">💵 Валюта</div>
+                            <div class="card-value">${currency}</div>
+                        </div>
+                        
+                        <!-- Тип счета -->
+                        <div class="card-item">
+                            <div class="card-label">📊 Тип счета</div>
+                            <div class="card-value">${accountType}</div>
+                        </div>
+                        
+                        <!-- Статус -->
+                        <div class="card-item">
+                            <div class="card-label">⚡ Статус</div>
+                            <div class="card-value ${statusClass}">${status}</div>
+                        </div>
+                        
+                        <!-- Дата открытия -->
+                        <div class="card-item">
+                            <div class="card-label">📅 Дата открытия</div>
+                            <div class="card-value">${formatDate(openDate)}</div>
+                        </div>
+                        
+                        <!-- ID клиента -->
+                        <div class="card-item">
+                            <div class="card-label">👤 ID клиента</div>
+                            <div class="card-value" style="font-family: monospace; font-size: 0.9em; word-break: break-all;">
+                                ${clientId}
                             </div>
                         </div>
                     </div>
-                `).join('');
+                </div>
+            `;
+                    }).join('');
                 }
                 accountsSection.style.display = 'block';
             }
 
             function displayCredits(credits) {
-                if (credits.length === 0) {
-                    creditsList.innerHTML = '<div class="no-data">Кредиты не найдены</div>';
-                }
-                else {
-                    creditsList.innerHTML = credits.map(credit => `
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Кредит №${credit.id}</div>
-                                <div class="card-badge">${credit.paymentMonth}</div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-item">
-                                    <div class="card-label">Сумма кредита</div>
-                                    <div class="card-value">${credit.sumCredit.toLocaleString('ru-RU')} руб.</div>
+                if (!credits || credits.length === 0) {
+                    creditsList.innerHTML = '<div class="no-data">❌ Кредиты не найдены</div>';
+                } else {
+                    creditsList.innerHTML = credits.map(credit => {
+                        const status = credit.isActive ? '🟢 Активный' : '🔴 Закрыт';
+                        const statusClass = credit.isActive ? 'status-active' : 'status-closed';
+
+                        return `
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">💳 Кредит</div>
+                                        <div class="card-badge">${credit.paymentMonth ? credit.paymentMonth.toLocaleString('ru-RU') + ' ₽/мес' : ''}</div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-item">
+                                            <div class="card-label">🆔 ID кредита</div>
+                                            <div class="card-value" style="font-family: monospace; font-size: 0.9em;">
+                                                ${credit.id || 'Не указан'}
+                                                <span class="id-badge">${shortenUUID(credit.id)}</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">💰 Сумма кредита</div>
+                                            <div class="card-value">${(credit.sumCredit || 0).toLocaleString('ru-RU')} ₽</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📉 Остаток долга</div>
+                                            <div class="card-value">${(credit.leftCredit || 0).toLocaleString('ru-RU')} ₽</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📅 Срок</div>
+                                            <div class="card-value">${credit.termMonth || 0} мес.</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">💳 Ежемесячный платеж</div>
+                                            <div class="card-value">${(credit.paymentMonth || 0).toLocaleString('ru-RU')} ₽</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📅 Дата открытия</div>
+                                            <div class="card-value">${formatDate(credit.startDate)}</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📅 Дата закрытия</div>
+                                            <div class="card-value">${formatDate(credit.endDate)}</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">🏦 ID счета</div>
+                                            <div class="card-value" style="font-family: monospace; font-size: 0.9em;">
+                                                ${credit.accountId || 'Не указан'}
+                                            </div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">⚡ Статус</div>
+                                            <div class="card-value ${statusClass}">${status}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-item">
-                                    <div class="card-label">Остаток долга</div>
-                                    <div class="card-value">${credit.leftCredit.toLocaleString('ru-RU')} руб.</div>
-                                </div>
-                                <div class="card-item">
-                                    <div class="card-label">Срок</div>
-                                    <div class="card-value">${credit.termMonths} мес.</div>
-                                </div>
-                                <div class="card-item">
-                                    <div class="card-label">Ежемесячный платеж</div>
-                                    <div class="card-value">${credit.paymentMonth.toLocaleString('ru-RU')} руб.</div>
-                                </div>
-                                <div class="card-item">
-                                    <div class="card-label">Дата открытия</div>
-                                    <div class="card-value">${new Date(credit.startDate).toLocaleDateString('ru-RU')}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
+                            `;
+                    }).join('');
                 }
                 creditsSection.style.display = 'block';
             }
 
             function displayDeposits(deposits) {
-                if (deposits.length === 0) {
-                    depositsList.innerHTML = '<div class="no-data">Вклады не найдены</div>';
-                }
-                else {
-                    depositsList.innerHTML = deposits.map(deposit => `
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">Вклад №${deposit.id}</div>
-                                <div class="card-badge">${deposit.depositType}</div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-item">
-                                    <div class="card-label">Сумма вклада</div>
-                                    <div class="card-value positive">${deposit.sumDeposit.toLocaleString('ru-RU')} руб.</div>
+                if (!deposits || deposits.length === 0) {
+                    depositsList.innerHTML = '<div class="no-data">❌ Вклады не найдены</div>';
+                } else {
+                    depositsList.innerHTML = deposits.map(deposit => {
+                        const status = deposit.isActive ? '🟢 Активный' : '🔴 Закрыт';
+                        const statusClass = deposit.isActive ? 'status-active' : 'status-closed';
+
+                        return `
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">📈 Вклад</div>
+                                        <div class="card-badge">${deposit.percentYear || 0}%</div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-item">
+                                            <div class="card-label">🆔 ID вклада</div>
+                                            <div class="card-value" style="font-family: monospace; font-size: 0.9em;">
+                                                ${deposit.id || 'Не указан'}
+                                                <span class="id-badge">${shortenUUID(deposit.id)}</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">💰 Сумма вклада</div>
+                                            <div class="card-value positive">${(deposit.sumDeposit || 0).toLocaleString('ru-RU')} ₽</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📈 Процентная ставка</div>
+                                            <div class="card-value">${deposit.percentYear || 0}%</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📅 Срок</div>
+                                            <div class="card-value">${deposit.termMonth || 0} мес.</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📅 Дата открытия</div>
+                                            <div class="card-value">${formatDate(deposit.startDate)}</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">📅 Дата окончания</div>
+                                            <div class="card-value">${formatDate(deposit.endDate)}</div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">🏦 ID счета</div>
+                                            <div class="card-value" style="font-family: monospace; font-size: 0.9em;">
+                                                ${deposit.accountId || 'Не указан'}
+                                            </div>
+                                        </div>
+                                        <div class="card-item">
+                                            <div class="card-label">⚡ Статус</div>
+                                            <div class="card-value ${statusClass}">${status}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-item">
-                                    <div class="card-label">Процентная ставка</div>
-                                    <div class="card-value">${deposit.percentYear}%</div>
-                                </div>
-                                <div class="card-item">
-                                    <div class="card-label">Срок</div>
-                                    <div class="card-value">${deposit.termMonth} мес.</div>
-                                </div>
-                                <div class="card-item">
-                                    <div class="card-label">Дата открытия</div>
-                                    <div class="card-value">${new Date(deposit.startDate).toLocaleDateString('ru-RU')}</div>
-                                </div>
-                                <div class="card-item">
-                                    <div class="card-label">Дата закрытия</div>
-                                    <div class="card-value">${deposit.endDate ? new Date(deposit.endDate).toLocaleDateString('ru-RU') : 'Не определено'}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
+                            `;
+                    }).join('');
                 }
                 depositsSection.style.display = 'block';
             }
@@ -277,15 +671,11 @@
                 if (!validatePassportSeries(series)) {
                     document.getElementById('passportSeriesError').style.display = 'block';
                     return;
-                } else {
-                    document.getElementById('passportSeriesError').style.display = 'none';
                 }
 
                 if (!validatePassportNumber(number)) {
                     document.getElementById('passportNumberError').style.display = 'block';
                     return;
-                } else {
-                    document.getElementById('passportNumberError').style.display = 'none';
                 }
 
                 loading.style.display = 'block';
@@ -294,30 +684,36 @@
                 creditsSection.style.display = 'none';
                 depositsSection.style.display = 'none';
 
-                const response = await fetch('/getProfile', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        passportSeries: series,
-                        passportNumber: number
-                    })
-                });
+                try {
+                    const response = await fetch('/getProfile', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            passportSeries: series,
+                            passportNumber: number
+                        })
+                    });
 
-                if (!response.ok) {
-                    alert('Клиента не найден');
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || 'Клиент не найден');
+                    }
+
+                    const data = await response.json();
+
+                    displayClientData(data.client);
+                    displayAccounts(data.accounts || []);
+                    displayCredits(data.credits || []);
+                    displayDeposits(data.deposits || []);
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('❌ Ошибка: ' + error.message);
+                } finally {
                     loading.style.display = 'none';
-                    return;
                 }
-
-                const responseData = await response.json();
-
-                displayClientData(responseData.client);
-                displayAccounts(responseData.accounts || []);
-                displayCredits(responseData.credits || []);
-                displayDeposits(responseData.deposits || []);
-                loading.style.display = 'none';
             });
         });
     </script>

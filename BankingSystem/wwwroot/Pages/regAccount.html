@@ -4,55 +4,260 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Открытие счета</title>
-    <link rel="stylesheet" href="../Styles/regAccount.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+            input:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .search-button {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            width: auto;
+            padding: 12px 25px;
+        }
+
+        .client-info {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #667eea;
+        }
+
+            .client-info h3 {
+                color: #333;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+
+            .client-info p {
+                margin-bottom: 10px;
+                color: #555;
+            }
+
+            .client-info strong {
+                color: #333;
+            }
+
+        .account-details {
+            display: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #28a745;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background: #e9ecef;
+            color: #495057;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Открытие счета</h1>
+        <h1>📊 Открытие счета</h1>
 
         <form id="accountForm">
             <div class="form-section">
-                <div class="form-section-title">Поиск клиента</div>
+                <div class="form-section-title">🔍 Поиск клиента</div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="passportSeries">Серия паспорта *</label>
-                        <input type="text" id="passportSeries" name="passportSeries" maxlength="4" required>
+                        <input type="text" id="passportSeries" name="passportSeries" maxlength="4" placeholder="1234" required>
                         <div class="error-message" id="passportSeriesError">Серия должна содержать 4 цифры</div>
                     </div>
 
                     <div class="form-group">
                         <label for="passportNumber">Номер паспорта *</label>
-                        <input type="text" id="passportNumber" name="passportNumber" maxlength="6" required>
+                        <input type="text" id="passportNumber" name="passportNumber" maxlength="6" placeholder="567890" required>
                         <div class="error-message" id="passportNumberError">Номер должен содержать 6 цифр</div>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group" style="text-align: center;">
-                        <button type="button" id="findClientBtn" class="search-button">Найти клиента</button>
+                        <button type="button" id="findClientBtn" class="search-button">
+                            🔎 Найти клиента
+                        </button>
                     </div>
                 </div>
 
                 <div class="client-info" id="clientInfo">
-                    <h3>Информация о клиенте</h3>
-                    <p><strong>ID клиента:</strong> <span id="clientId"></span></p>
+                    <h3>📋 Информация о клиенте</h3>
+                    <p><strong>ID клиента:</strong> <span id="clientId" style="color: #667eea; font-weight: bold;"></span></p>
                     <p><strong>ФИО:</strong> <span id="clientName"></span></p>
                     <p><strong>Дата рождения:</strong> <span id="clientBirthDate"></span></p>
+                    <p><span class="badge">Клиент найден</span></p>
                 </div>
             </div>
 
             <div class="account-details" id="accountDetails">
                 <div class="form-section">
-                    <div class="form-section-title">Данные счета</div>
+                    <div class="form-section-title">💰 Данные счета</div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="accountType">Тип счета *</label>
                             <select id="accountType" name="accountType" required>
                                 <option value="">Выберите тип счета</option>
-                                <option value="Расчетный">Расчетный</option>
-                                <option value="Сберегательный">Сберегательный</option>
-                                <option value="Кредитный">Кредитный</option>
-                                <option value="Депозитный">Депозитный</option>
+                                <option value="Расчетный">💳 Расчетный</option>
+                                <option value="Сберегательный">🏦 Сберегательный</option>
+                                <option value="Кредитный">💵 Кредитный</option>
+                                <option value="Депозитный">📈 Депозитный</option>
                             </select>
                             <div class="error-message" id="accountTypeError">Выберите тип счета</div>
                         </div>
@@ -63,10 +268,10 @@
                             <label for="currencyCode">Валюта счета *</label>
                             <select id="currencyCode" name="currencyCode" required>
                                 <option value="">Выберите валюту</option>
-                                <option value="RUB">RUB (Российский рубль)</option>
-                                <option value="USD">USD (Доллар США)</option>
-                                <option value="EUR">EUR (Евро)</option>
-                                <option value="GBP">GBP (Фунт стерлингов)</option>
+                                <option value="RUB">🇷🇺 RUB (Российский рубль)</option>
+                                <option value="USD">🇺🇸 USD (Доллар США)</option>
+                                <option value="EUR">🇪🇺 EUR (Евро)</option>
+                                <option value="GBP">🇬🇧 GBP (Фунт стерлингов)</option>
                             </select>
                             <div class="error-message" id="currencyError">Выберите валюту счета</div>
                         </div>
@@ -75,21 +280,23 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="initialBalance">Начальный баланс *</label>
-                            <input type="number" id="initialBalance" name="initialBalance" min="0" step="0.01" required>
+                            <input type="number" id="initialBalance" name="initialBalance" min="0" step="0.01" placeholder="0.00" required>
                             <div class="error-message" id="balanceError">Введите корректную сумму</div>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit">Открыть счет</button>
+                <button type="submit" id="submitBtn">
+                    ✅ Открыть счет
+                </button>
             </div>
         </form>
 
         <div class="success-message" id="successMessage">
-            Счет успешно открыт!
+            🎉 Счет успешно открыт!
         </div>
 
-        <a href="index.html" class="back-link">← Назад на главную</a>
+        <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
     </div>
 
     <script>
@@ -99,6 +306,7 @@
             const clientInfo = document.getElementById('clientInfo');
             const accountDetails = document.getElementById('accountDetails');
             const successMessage = document.getElementById('successMessage');
+            const submitBtn = document.getElementById('submitBtn');
 
             const passportSeriesInput = document.getElementById('passportSeries');
             const passportNumberInput = document.getElementById('passportNumber');
@@ -126,35 +334,23 @@
                 return /^\d{6}$/.test(number);
             }
 
-            const clientsDatabase = [
-                {
-                    id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-                    firstName: 'Иван',
-                    lastName: 'Петров',
-                    secondName: 'Сергеевич',
-                    birthDate: '1985-05-15',
-                    passportSeries: '1234',
-                    passportNumber: '567890'
-                },
-                {
-                    id: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
-                    firstName: 'Мария',
-                    lastName: 'Иванова',
-                    secondName: 'Александровна',
-                    birthDate: '1990-12-22',
-                    passportSeries: '4321',
-                    passportNumber: '098765'
-                },
-                {
-                    id: 'c3d4e5f6-g7h8-9012-cdef-345678901234',
-                    firstName: 'Алексей',
-                    lastName: 'Сидоров',
-                    secondName: 'Владимирович',
-                    birthDate: '1978-08-03',
-                    passportSeries: '1111',
-                    passportNumber: '222222'
-                }
-            ];
+            function formatDate(dateString) {
+                if (!dateString) return 'Не указана';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU');
+            }
+
+            function showLoading(button, text) {
+                const originalText = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = `<span class="spinner"></span>${text}`;
+                return originalText;
+            }
+
+            function hideLoading(button, originalText) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
 
             findClientBtn.addEventListener('click', async function () {
                 const series = passportSeriesInput.value;
@@ -174,45 +370,54 @@
                     document.getElementById('passportNumberError').style.display = 'none';
                 }
 
-                const response = await fetch('/getShortClient', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        passportSeries: series,
-                        passportNumber: number
-                    })
-                });
-                if (response.ok) {
-                    const responseData = await response.json();
-                    clientIdSpan.textContent = responseData.id;
-                    clientNameSpan.textContent = responseData.name;
+                const originalBtnText = showLoading(findClientBtn, 'Поиск...');
 
-                    clientBirthDateSpan.textContent = responseData.dateBirth;
+                try {
+                    const response = await fetch('/getShortClient', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            passportSeries: series,
+                            passportNumber: number
+                        })
+                    });
 
-                    clientInfo.style.display = 'block';
-                    accountDetails.style.display = 'block';
+                    if (response.ok) {
+                        const responseData = await response.json();
 
-                    accountDetails.scrollIntoView({ behavior: 'smooth' });
-                }
-                else {
-                    alert(await response.text());
+                        clientIdSpan.textContent = responseData.id;
+                        clientNameSpan.textContent = responseData.name;
+                        clientBirthDateSpan.textContent = formatDate(responseData.dateBirth);
+
+                        clientInfo.style.display = 'block';
+                        accountDetails.style.display = 'block';
+
+                        accountDetails.scrollIntoView({ behavior: 'smooth' });
+
+                        successMessage.style.display = 'none';
+                    } else {
+                        const errorText = await response.text();
+                        alert('❌ Ошибка: ' + errorText);
+                        clientInfo.style.display = 'none';
+                        accountDetails.style.display = 'none';
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка соединения с сервером');
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading(findClientBtn, originalBtnText);
                 }
             });
 
-            function generateAccountNumber() {
-                const prefix = '408';
-                const random = Math.floor(1000000000000 + Math.random() * 9000000000000);
-                return prefix + random.toString().substring(0, 17);
-            }
-
             form.addEventListener('submit', async function (event) {
                 event.preventDefault();
+
                 let isValid = true;
 
-                if (clientIdSpan.textContent === '') {
-                    alert('Сначала найдите клиента по паспортным данным!');
+                if (!clientIdSpan.textContent) {
+                    alert('⚠️ Сначала найдите клиента по паспортным данным!');
                     return;
                 }
 
@@ -237,41 +442,74 @@
                     document.getElementById('balanceError').style.display = 'none';
                 }
 
-                if (isValid) {
-                    const accountNumber = generateAccountNumber();
+                if (!isValid) {
+                    return;
+                }
+
+                const originalSubmitText = showLoading(submitBtn, 'Открытие счета...');
+
+                try {
+                    const requestData = {
+                        ClientsId: clientIdSpan.textContent,
+                        AccountType: accountTypeSelect.value,
+                        Balance: parseFloat(initialBalanceInput.value || 0).toFixed(2),
+                        CurrencyCode: currencyCodeSelect.value
+                    };
+
+                    console.log('Sending request:', requestData);
 
                     const response = await fetch('/regAccount', {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
-                            ClientsId: clientIdSpan.textContent,
-                            AccountType: accountTypeSelect.options[accountTypeSelect.selectedIndex].text,
-                            Balance: parseFloat(initialBalanceInput.value).toFixed(2),
-                            CurrencyCode: currencyCodeSelect.value
-                        })
+                        body: JSON.stringify(requestData)
                     });
 
                     if (response.ok) {
-                        const successAlert =
-                            "✅ СЧЕТ УСПЕШНО ОТКРЫТ!\n\n" +
-                            `📋 Номер счета: ${accountNumber}\n` +
-                            `📊 Тип счета: ${accountTypeSelect.options[accountTypeSelect.selectedIndex].text}\n` +
-                            `💰 Валюта: ${currencyCodeSelect.value}\n` +
-                            `💳 Начальный баланс: ${parseFloat(initialBalanceInput.value).toFixed(2)}`;
+                        successMessage.style.display = 'block';
+                        successMessage.innerHTML = '✅ Счет успешно открыт! Номер счета будет сгенерирован автоматически.';
 
-                        alert(successAlert);
                         form.reset();
                         clientInfo.style.display = 'none';
                         accountDetails.style.display = 'none';
-                    }
-                    else {
-                        alert(await response.text);
-                    }
 
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 5000);
+
+                        alert('✅ СЧЕТ УСПЕШНО ОТКРЫТ!\n\n' +
+                            `📊 Тип счета: ${accountTypeSelect.options[accountTypeSelect.selectedIndex].text}\n` +
+                            `💰 Валюта: ${currencyCodeSelect.value}\n` +
+                            `💳 Начальный баланс: ${parseFloat(initialBalanceInput.value).toFixed(2)}\n\n` +
+                            `Номер счета будет сгенерирован автоматически.`);
+                    } else {
+                        const errorText = await response.text();
+                        alert('❌ Ошибка открытия счета: ' + (errorText || 'Неизвестная ошибка'));
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка соединения с сервером');
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading(submitBtn, originalSubmitText);
                 }
             });
+
+            const inputs = [passportSeriesInput, passportNumberInput, accountTypeSelect, currencyCodeSelect, initialBalanceInput];
+            inputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    const errorDiv = this.nextElementSibling;
+                    if (errorDiv && errorDiv.classList.contains('error-message')) {
+                        errorDiv.style.display = 'none';
+                    }
+                });
+            });
+
+            setInterval(() => {
+                if (successMessage.style.display === 'block') {
+                    successMessage.style.display = 'none';
+                }
+            }, 5000);
         });
     </script>
 </body>

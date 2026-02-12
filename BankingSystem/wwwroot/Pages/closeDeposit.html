@@ -4,68 +4,390 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Закрытие вклада</title>
-    <link rel="stylesheet" href="../Styles/closeDeposit.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+            input:focus, select:focus, textarea:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .deposit-info {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #667eea;
+        }
+
+            .deposit-info h3 {
+                color: #333;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+
+        .deposit-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .deposit-detail {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+            .deposit-detail strong {
+                display: block;
+                color: #666;
+                font-size: 0.9em;
+                margin-bottom: 5px;
+            }
+
+            .deposit-detail span {
+                color: #333;
+                font-weight: 500;
+                font-size: 1.1em;
+            }
+
+        .positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        .calculation-results {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #28a745;
+        }
+
+            .calculation-results h4 {
+                color: #333;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #28a745;
+                padding-bottom: 10px;
+            }
+
+        .calculation-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+
+        .calculation-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .calculation-value {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .penalty-warning {
+            background: #fff3cd;
+            border: 2px solid #856404;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+            .penalty-warning h4 {
+                margin-bottom: 10px;
+                color: #856404;
+            }
+
+        .requirements-list {
+            background: #f8d7da;
+            border: 2px solid #721c24;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+            .requirements-list h4 {
+                margin-bottom: 10px;
+                color: #721c24;
+            }
+
+            .requirements-list ul {
+                margin-left: 20px;
+            }
+
+            .requirements-list li {
+                margin-bottom: 5px;
+            }
+
+        .warning-message, .info-message, .success-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .warning-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .confirmation-checkbox {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+            .confirmation-checkbox input {
+                width: auto;
+                margin-right: 10px;
+            }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Закрытие вклада</h1>
+        <h1>📉 Закрытие вклада</h1>
 
         <div class="form-section">
-            <div class="form-section-title">Поиск вклада</div>
+            <div class="form-section-title">🔍 Поиск вклада</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="depositNumber">Номер вклада *</label>
-                    <input type="text" id="depositNumber" name="depositNumber" placeholder="Введите номер вклада" required>
-                    <div class="error-message" id="depositNumberError">Введите корректный номер вклада</div>
+                    <label for="depositId">ID вклада *</label>
+                    <input type="text" id="depositId" name="depositId" placeholder="Введите ID вклада" required>
+                    <div class="error-message" id="depositIdError">Введите корректный ID вклада</div>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group" style="text-align: center;">
-                    <button type="button" id="findDepositBtn">Найти вклад</button>
+                    <button type="button" id="findDepositBtn">
+                        🔎 Найти вклад
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="deposit-info" id="depositInfo">
-            <h3>Информация о вкладе</h3>
-            <div class="deposit-details" id="depositDetails">
-            </div>
+            <h3>📋 Информация о вкладе</h3>
+            <div class="deposit-details" id="depositDetails"></div>
         </div>
 
         <div class="calculation-results" id="calculationResults">
-            <h4>Расчет при закрытии</h4>
+            <h4>🧮 Расчет при закрытии</h4>
             <div class="calculation-item">
                 <span class="calculation-label">Основная сумма:</span>
-                <span class="calculation-value" id="principalAmount">0 руб.</span>
+                <span class="calculation-value" id="principalAmount">0 ₽</span>
             </div>
             <div class="calculation-item">
                 <span class="calculation-label">Начисленные проценты:</span>
-                <span class="calculation-value" id="interestAmount">0 руб.</span>
+                <span class="calculation-value" id="interestAmount">0 ₽</span>
             </div>
             <div class="calculation-item">
                 <span class="calculation-label">Штраф за досрочное закрытие:</span>
-                <span class="calculation-value" id="penaltyAmount">0 руб.</span>
+                <span class="calculation-value" id="penaltyAmount">0 ₽</span>
             </div>
-            <div class="calculation-item" style="border-top: 1px solid #2ecc71; padding-top: 10px;">
+            <div class="calculation-item" style="border-top: 1px solid #28a745; padding-top: 10px;">
                 <span class="calculation-label">Итого к выплате:</span>
-                <span class="calculation-value" id="totalAmount">0 руб.</span>
+                <span class="calculation-value" id="totalAmount">0 ₽</span>
             </div>
         </div>
 
         <div class="penalty-warning" id="penaltyWarning">
             <h4>⚠️ Внимание!</h4>
-            <p>При досрочном закрытии вклада применяется штраф в размере <span id="penaltyPercent">0%</span> от начисленных процентов.</p>
+            <p>При досрочном закрытии вклада проценты начисляются по ставке до востребования (1% годовых).</p>
         </div>
 
-        <div class="requirements-list" id="requirementsList" style="display: none;">
+        <div class="requirements-list" id="requirementsList">
             <h4>⚠️ Требования для закрытия вклада:</h4>
-            <ul id="requirementsItems">
-            </ul>
+            <ul id="requirementsItems"></ul>
+        </div>
+
+        <div class="warning-message" id="warningMessage"></div>
+        <div class="info-message" id="infoMessage"></div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <span class="spinner"></span> Выполнение операции...
         </div>
 
         <div class="form-section" id="closeDepositSection" style="display: none;">
-            <div class="form-section-title">Закрытие вклада</div>
+            <div class="form-section-title">📝 Закрытие вклада</div>
 
             <div class="form-row">
                 <div class="form-group">
@@ -74,7 +396,6 @@
                         <option value="">Выберите причину</option>
                         <option value="maturity">Окончание срока</option>
                         <option value="early">Досрочное закрытие</option>
-                        <option value="financial">Финансовая необходимость</option>
                         <option value="other">Другая причина</option>
                     </select>
                     <div class="error-message" id="reasonError">Выберите причину закрытия</div>
@@ -101,33 +422,17 @@
             <div class="confirmation-checkbox">
                 <input type="checkbox" id="confirmationCheckbox" name="confirmationCheckbox">
                 <label for="confirmationCheckbox">Я подтверждаю, что ознакомлен с условиями закрытия вклада и хочу продолжить</label>
+                <div class="error-message" id="confirmationError">Необходимо подтверждение</div>
             </div>
-            <div class="error-message" id="confirmationError">Необходимо подтверждение</div>
 
-            <div class="form-row">
-                <div class="form-group" style="text-align: center;">
-                    <button type="button" id="closeDepositBtn" disabled>Закрыть вклад</button>
-                </div>
-            </div>
+            <button type="button" id="closeDepositBtn" disabled>
+                ✅ Закрыть вклад
+            </button>
         </div>
 
-        <div class="warning-message" id="warningMessage">
-            Невозможно закрыть вклад
-        </div>
+        <div class="success-message" id="successMessage"></div>
 
-        <div class="info-message" id="infoMessage">
-            Информация о вкладе
-        </div>
-
-        <div class="loading" id="loading" style="display: none;">
-            Выполнение операции...
-        </div>
-
-        <div class="success-message" id="successMessage">
-            Вклад успешно закрыт!
-        </div>
-
-        <a href="index.html" class="back-link">← Назад на главную</a>
+        <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
     </div>
 
     <script>
@@ -145,7 +450,7 @@
             const calculationResults = document.getElementById('calculationResults');
             const penaltyWarning = document.getElementById('penaltyWarning');
 
-            const depositNumberInput = document.getElementById('depositNumber');
+            const depositIdInput = document.getElementById('depositId');
             const depositDetails = document.getElementById('depositDetails');
             const requirementsItems = document.getElementById('requirementsItems');
             const destinationAccountSelect = document.getElementById('destinationAccount');
@@ -153,50 +458,33 @@
             let currentDeposit = null;
             let clientAccounts = [];
 
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-                return null;
-            }
+            depositIdInput.addEventListener('input', function () {
+                document.getElementById('depositIdError').style.display = 'none';
+            });
 
-            async function makeAuthenticatedRequest(url, method = 'GET', data = null) {
-                const token = getCookie('jwt');
-
-                if (!token) {
-                    throw new Error('JWT token not found');
-                }
-
-                const options = {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                };
-
-                if (data) {
-                    options.body = JSON.stringify(data);
-                }
-
-                const response = await fetch(url, options);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
+            function formatDate(dateString) {
+                if (!dateString) return 'Не указана';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
             }
 
             function checkDepositClosable(deposit) {
                 const requirements = [];
 
                 if (deposit.isBlocked) {
-                    requirements.push('Вклад не должен быть заблокирован');
+                    requirements.push('❌ Вклад заблокирован');
                 }
 
                 if (deposit.isClosed) {
-                    requirements.push('Вклад уже закрыт');
+                    requirements.push('❌ Вклад уже закрыт');
+                }
+
+                if (deposit.isActive === false) {
+                    requirements.push('❌ Вклад не активен');
                 }
 
                 return {
@@ -206,14 +494,14 @@
             }
 
             function calculateClosingAmount(deposit, isEarly = false) {
-                const principal = deposit.amount;
-                const interestRate = deposit.interestRate;
-                const startDate = new Date(deposit.startDate);
-                const endDate = new Date(deposit.endDate);
+                const principal = deposit.sumDeposit || deposit.amount || 0;
+                const interestRate = deposit.percentYear || deposit.interestRate || 0;
+                const startDate = new Date(deposit.startDate || deposit.dateStart);
+                const endDate = new Date(deposit.endDate || deposit.dateEnd);
                 const currentDate = new Date();
 
-                const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-                const passedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+                const totalDays = Math.max(1, Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)));
+                const passedDays = Math.max(0, Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24)));
 
                 let interest = 0;
                 let penalty = 0;
@@ -221,7 +509,8 @@
                 if (isEarly) {
                     const demandRate = 0.01;
                     interest = principal * demandRate * (passedDays / 365);
-                    penalty = principal * (interestRate / 100) * (passedDays / 365) - interest;
+                    const fullInterest = principal * (interestRate / 100) * (passedDays / 365);
+                    penalty = Math.max(0, fullInterest - interest);
                 } else {
                     interest = principal * (interestRate / 100) * (totalDays / 365);
                 }
@@ -241,80 +530,85 @@
 
             function displayDepositInfo(deposit) {
                 const today = new Date();
-                const endDate = new Date(deposit.endDate);
+                const endDate = new Date(deposit.endDate || deposit.dateEnd);
                 const isMatured = today >= endDate;
+                const isActive = deposit.isActive !== false;
 
                 depositDetails.innerHTML = `
-                    <div class="deposit-detail">
-                        <strong>Номер вклада:</strong>
-                        <span>${deposit.depositNumber}</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Тип вклада:</strong>
-                        <span>${deposit.depositType}</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Сумма вклада:</strong>
-                        <span class="positive">${deposit.amount.toLocaleString('ru-RU')} руб.</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Процентная ставка:</strong>
-                        <span>${deposit.interestRate}% годовых</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Срок вклада:</strong>
-                        <span>${deposit.termMonths} месяцев</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Дата открытия:</strong>
-                        <span>${new Date(deposit.startDate).toLocaleDateString('ru-RU')}</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Дата окончания:</strong>
-                        <span>${new Date(deposit.endDate).toLocaleDateString('ru-RU')}</span>
-                    </div>
-                    <div class="deposit-detail">
-                        <strong>Статус:</strong>
-                        <span class="${isMatured ? 'positive' : 'warning'}">${isMatured ? 'Срок истек' : 'Действующий'}</span>
-                    </div>
-                `;
+                        <div class="deposit-detail">
+                            <strong>ID вклада:</strong>
+                            <span style="font-family: monospace;">${deposit.id || 'Не указан'}</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>ID клиента:</strong>
+                            <span style="font-family: monospace;">${deposit.clientId || deposit.ClientId || 'Не указан'}</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>ID счета:</strong>
+                            <span style="font-family: monospace;">${deposit.accountId || deposit.AccountId || 'Не указан'}</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>Сумма вклада:</strong>
+                            <span class="positive">${(deposit.sumDeposit || deposit.amount || 0).toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>Процентная ставка:</strong>
+                            <span>${deposit.percentYear || deposit.interestRate || 0}%</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>Срок:</strong>
+                            <span>${deposit.termMonth || deposit.termMonths || 0} мес.</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>Дата открытия:</strong>
+                            <span>${formatDate(deposit.startDate || deposit.dateStart)}</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>Дата окончания:</strong>
+                            <span>${formatDate(deposit.endDate || deposit.dateEnd)}</span>
+                        </div>
+                        <div class="deposit-detail">
+                            <strong>Статус:</strong>
+                            <span class="${isMatured ? 'positive' : 'warning'}">
+                                ${isMatured ? '✅ Срок истек' : isActive ? '🟢 Действующий' : '🔴 Неактивен'}
+                            </span>
+                        </div>
+                    `;
 
                 depositInfo.style.display = 'block';
 
                 if (isMatured) {
                     infoMessage.style.display = 'block';
-                    infoMessage.textContent = 'Срок вклада истек. Вы можете закрыть вклад без штрафных санкций.';
+                    infoMessage.textContent = '✅ Срок вклада истек. Вы можете закрыть вклад без штрафных санкций.';
+                    infoMessage.style.background = '#d4edda';
+                    infoMessage.style.color = '#155724';
+                    infoMessage.style.border = '1px solid #c3e6cb';
                 } else {
                     infoMessage.style.display = 'block';
-                    infoMessage.textContent = 'Вклад действующий. При досрочном закрытии могут применяться штрафные санкции.';
+                    infoMessage.textContent = '⚠️ Вклад действующий. При досрочном закрытии проценты будут начислены по ставке до востребования (1% годовых).';
+                    infoMessage.style.background = '#fff3cd';
+                    infoMessage.style.color = '#856404';
+                    infoMessage.style.border = '1px solid #ffeeba';
                 }
             }
 
             function displayCalculations(calculation) {
-                document.getElementById('principalAmount').textContent = `${calculation.principal.toLocaleString('ru-RU')} руб.`;
-                document.getElementById('interestAmount').textContent = `${calculation.interest.toLocaleString('ru-RU')} руб.`;
-                document.getElementById('penaltyAmount').textContent = `${calculation.penalty.toLocaleString('ru-RU')} руб.`;
-                document.getElementById('totalAmount').textContent = `${calculation.totalAmount.toLocaleString('ru-RU')} руб.`;
+                document.getElementById('principalAmount').textContent = `${calculation.principal.toLocaleString('ru-RU')} ₽`;
+                document.getElementById('interestAmount').textContent = `${calculation.interest.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`;
+                document.getElementById('penaltyAmount').textContent = `${calculation.penalty.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`;
+                document.getElementById('totalAmount').textContent = `${calculation.totalAmount.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`;
 
                 calculationResults.style.display = 'block';
-
-                if (calculation.isEarly && calculation.penalty > 0) {
-                    document.getElementById('penaltyPercent').textContent = '50%';
-                    penaltyWarning.style.display = 'block';
-                } else {
-                    penaltyWarning.style.display = 'none';
-                }
+                penaltyWarning.style.display = calculation.isEarly && calculation.penalty > 0 ? 'block' : 'none';
             }
 
             function displayRequirements(requirements) {
                 if (requirements.length > 0) {
-                    requirementsItems.innerHTML = requirements.map(req =>
-                        `<li>${req}</li>`
-                    ).join('');
+                    requirementsItems.innerHTML = requirements.map(req => `<li>${req}</li>`).join('');
                     requirementsList.style.display = 'block';
                     closeDepositSection.style.display = 'none';
                     warningMessage.style.display = 'block';
-                    warningMessage.textContent = 'Невозможно закрыть вклад. Выполните следующие требования:';
+                    warningMessage.textContent = '❌ Невозможно закрыть вклад. Выполните следующие требования:';
                 } else {
                     requirementsList.style.display = 'none';
                     closeDepositSection.style.display = 'block';
@@ -324,89 +618,95 @@
 
             async function loadClientAccounts(clientId) {
                 try {
-                    const accounts = [
-                        { id: 'acc-001', number: '4081 7810 0000 0000 0001', balance: 15000, currency: 'RUB' },
-                        { id: 'acc-002', number: '4081 7810 0000 0000 0002', balance: 50000, currency: 'RUB' }
-                    ];
+                    const response = await fetch('/getShortAccounts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ Id: clientId })
+                    });
 
-                    destinationAccountSelect.innerHTML = '<option value="">Выберите счет</option>' +
-                        accounts.map(acc =>
-                            `<option value="${acc.id}">${acc.number} (${acc.balance.toLocaleString('ru-RU')} ${acc.currency})</option>`
-                        ).join('');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-                    clientAccounts = accounts;
+                    const data = await response.json();
 
+                    destinationAccountSelect.innerHTML = '<option value="">Выберите счет</option>';
+
+                    if (data && data.length > 0) {
+                        data.forEach(account => {
+                            const option = document.createElement('option');
+                            option.value = account.id;
+                            option.textContent = `${account.number} • Баланс: ${account.balance.toLocaleString('ru-RU')} ${account.currency}`;
+                            destinationAccountSelect.appendChild(option);
+                        });
+                        clientAccounts = data;
+                    } else {
+                        destinationAccountSelect.innerHTML = '<option value="">Нет доступных счетов</option>';
+                    }
                 } catch (error) {
                     console.error('Error loading accounts:', error);
+                    destinationAccountSelect.innerHTML = '<option value="">Ошибка загрузки счетов</option>';
                 }
             }
 
             findDepositBtn.addEventListener('click', async function () {
-                const depositNumber = depositNumberInput.value.trim();
+                const depositId = depositIdInput.value.trim();
 
-                if (!depositNumber) {
-                    document.getElementById('depositNumberError').style.display = 'block';
+                if (!depositId) {
+                    document.getElementById('depositIdError').style.display = 'block';
+                    document.getElementById('depositIdError').textContent = 'Введите ID вклада';
                     return;
                 }
 
-                document.getElementById('depositNumberError').style.display = 'none';
+                document.getElementById('depositIdError').style.display = 'none';
                 loading.style.display = 'block';
 
-                const response = await fetch('/getDeposit', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        passportSeries: series,
-                        passportNumber: number
-                    })
-                });
-
-                const responseData = await response.json();
-
-
-
-
                 try {
-                    setTimeout(() => {
+                    const response = await fetch('/getDeposit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ Id: depositId })
+                    });
 
-                        const depositData = {
-                            id: 'dep-' + depositNumber,
-                            depositNumber: depositNumber,
-                            depositType: 'Накопительный',
-                            amount: 100000,
-                            interestRate: 6.5,
-                            termMonths: 12,
-                            startDate: '2024-01-15',
-                            endDate: '2025-01-15',
-                            isBlocked: false,
-                            isClosed: false,
-                            clientId: 'client-123'
-                        };
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || 'Вклад не найден');
+                    }
 
-                        currentDeposit = depositData;
+                    const depositData = await response.json();
+                    currentDeposit = depositData;
 
-                        displayDepositInfo(depositData);
+                    displayDepositInfo(depositData);
+                    await loadClientAccounts(depositData.clientId || depositData.ClientId);
 
-                        loadClientAccounts(depositData.clientId);
+                    const closableCheck = checkDepositClosable(depositData);
+                    displayRequirements(closableCheck.requirements);
 
-                        const closableCheck = checkDepositClosable(depositData);
-                        displayRequirements(closableCheck.requirements);
+                    const today = new Date();
+                    const endDate = new Date(depositData.endDate || depositData.dateEnd);
+                    const isEarly = today < endDate;
+                    const calculation = calculateClosingAmount(depositData, isEarly);
+                    displayCalculations(calculation);
 
-                        const today = new Date();
-                        const endDate = new Date(depositData.endDate);
-                        const isEarly = today < endDate;
-                        const calculation = calculateClosingAmount(depositData, isEarly);
-                        displayCalculations(calculation);
+                    confirmationCheckbox.checked = false;
+                    closeDepositBtn.disabled = true;
 
-                        loading.style.display = 'none';
-                    }, 1000);
+                    loading.style.display = 'none';
+                    successMessage.style.display = 'none';
 
                 } catch (error) {
                     console.error('Error:', error);
                     loading.style.display = 'none';
-                    alert('Ошибка при поиске вклада: ' + error.message);
+                    depositInfo.style.display = 'none';
+                    calculationResults.style.display = 'none';
+                    closeDepositSection.style.display = 'none';
+
+                    document.getElementById('depositIdError').style.display = 'block';
+                    document.getElementById('depositIdError').textContent = '❌ ' + (error.message || 'Вклад не найден');
                 }
             });
 
@@ -421,51 +721,98 @@
                 if (!reason) {
                     document.getElementById('reasonError').style.display = 'block';
                     return;
+                } else {
+                    document.getElementById('reasonError').style.display = 'none';
                 }
 
                 if (!destinationAccount) {
                     document.getElementById('accountError').style.display = 'block';
                     return;
+                } else {
+                    document.getElementById('accountError').style.display = 'none';
                 }
 
                 if (!confirmationCheckbox.checked) {
                     document.getElementById('confirmationError').style.display = 'block';
                     return;
+                } else {
+                    document.getElementById('confirmationError').style.display = 'none';
                 }
-
-                document.getElementById('reasonError').style.display = 'none';
-                document.getElementById('accountError').style.display = 'none';
-                document.getElementById('confirmationError').style.display = 'none';
 
                 loading.style.display = 'block';
 
                 try {
-                    setTimeout(() => {
+                    const deleteData = {
+                        Id: currentDeposit.id || currentDeposit.depositId
+                    };
 
-                        loading.style.display = 'none';
-                        closeDepositSection.style.display = 'none';
-                        successMessage.style.display = 'block';
+                    const response = await fetch('/deleteDeposit', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(deleteData)
+                    });
 
-                        const today = new Date();
-                        const endDate = new Date(currentDeposit.endDate);
-                        const isEarly = today < endDate;
-                        const calculation = calculateClosingAmount(currentDeposit, isEarly);
+                    const responseText = await response.text();
 
-                        successMessage.innerHTML = `
-                            Вклад успешно закрыт!<br>
-                            Номер вклада: <strong>${currentDeposit.depositNumber}</strong><br>
-                            Сумма к зачислению: <strong>${calculation.totalAmount.toLocaleString('ru-RU')} руб.</strong><br>
-                            Счет зачисления: <strong>${destinationAccountSelect.options[destinationAccountSelect.selectedIndex].text}</strong><br>
-                            Дата закрытия: <strong>${new Date().toLocaleDateString('ru-RU')}</strong>
+                    if (!response.ok) {
+                        throw new Error(responseText || `HTTP error! status: ${response.status}`);
+                    }
+
+                    loading.style.display = 'none';
+                    closeDepositSection.style.display = 'none';
+
+                    const calculation = calculateClosingAmount(
+                        currentDeposit,
+                        reason === 'early'
+                    );
+
+                    successMessage.innerHTML = `
+                            ✅ ВКЛАД УСПЕШНО ЗАКРЫТ!<br><br>
+                            📋 Номер вклада: <strong>${currentDeposit.id || currentDeposit.depositId}</strong><br>
+                            💰 Сумма к зачислению: <strong>${calculation.totalAmount.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽</strong><br>
+                            💳 Счет зачисления: <strong>${destinationAccountSelect.options[destinationAccountSelect.selectedIndex]?.text.split(' • ')[0] || 'Не указан'}</strong><br>
+                            📅 Дата закрытия: <strong>${new Date().toLocaleDateString('ru-RU')}</strong><br>
+                            📌 Причина: <strong>${document.getElementById('closingReason').options[document.getElementById('closingReason').selectedIndex]?.text || 'Не указана'}</strong>
                         `;
 
-                    }, 2000);
+                    successMessage.style.display = 'block';
+
+                    depositIdInput.value = '';
+                    depositInfo.style.display = 'none';
+                    calculationResults.style.display = 'none';
+                    penaltyWarning.style.display = 'none';
+                    confirmationCheckbox.checked = false;
+                    closeDepositBtn.disabled = true;
 
                 } catch (error) {
                     console.error('Error:', error);
                     loading.style.display = 'none';
-                    alert('Ошибка при закрытии вклада: ' + error.message);
+
+                    if (response && response.ok) {
+                        successMessage.innerHTML = `
+                                ✅ ВКЛАД УСПЕШНО ЗАКРЫТ!<br><br>
+                                📋 Номер вклада: <strong>${currentDeposit.id || currentDeposit.depositId}</strong><br>
+                                📅 Дата закрытия: <strong>${new Date().toLocaleDateString('ru-RU')}</strong>
+                            `;
+                        successMessage.style.display = 'block';
+                        closeDepositSection.style.display = 'none';
+                    } else {
+                        alert('❌ Ошибка при закрытии вклада: ' + (error.message || 'Неизвестная ошибка'));
+                    }
                 }
+            });
+
+            document.getElementById('closingReason').addEventListener('change', function () {
+                document.getElementById('reasonError').style.display = 'none';
+            });
+
+            destinationAccountSelect.addEventListener('change', function () {
+                document.getElementById('accountError').style.display = 'none';
+            });
+
+            document.getElementById('closingComments').addEventListener('input', function () {
             });
         });
     </script>

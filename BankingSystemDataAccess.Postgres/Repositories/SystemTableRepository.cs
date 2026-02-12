@@ -16,7 +16,7 @@ namespace BankingSystemDataAccess.Postgres.Repositories
         {
             var data = await _context.SystemTable
                 .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == 1);
+                .FirstOrDefaultAsync(a => a.Id == 77);
             if (data is null) return string.Empty;
             long numberCard = Convert.ToInt64(data.NumberCardLast);
             numberCard++;
@@ -25,7 +25,7 @@ namespace BankingSystemDataAccess.Postgres.Repositories
             data.NumberCardLast = numberCardStr;
             await _context.SystemTable
                 .AsNoTracking()
-                .Where(a => a.Id == 1)
+                .Where(a => a.Id == 77)
                 .ExecuteUpdateAsync(s => s.SetProperty(s => s.NumberCardLast, numberCardStr));
             return numberCardStr;
         }

@@ -41,5 +41,12 @@ namespace BankingSystemDataAccess.Postgres.Repositories
             if (user == null) return false;
             return Users.VerifyPassword(password, user.HashPassword);
         }
+
+        public async Task<bool> CheckAsync(string username, CancellationToken token)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(a => a.Username == username, token);
+            if(user is null) return false;
+            return true;
+        }
     }
 }

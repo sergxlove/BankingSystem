@@ -6,7 +6,9 @@ using BankingSystemApplication.Services;
 using BankingSystemCore.Abstractions;
 using BankingSystemCore.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 
 namespace BankingSystem.Endpoints
 {
@@ -60,6 +62,10 @@ namespace BankingSystem.Endpoints
                     var user = Users.Create(Guid.NewGuid(), request.Username, request.Password,
                         "user", passwordHasher);
                     if (!user.IsSuccess) return Results.BadRequest(user.Error);
+                    if(await userService.CheckAsync(user.Value.Username, token))
+                    {
+                        return Results.BadRequest("Данный пользователь уже есть");
+                    }
                     var result = await userService.CreateAsync(user.Value, token);
                     var claims = new List<Claim>()
                     {
@@ -91,6 +97,11 @@ namespace BankingSystem.Endpoints
                         request.PassportNumber, request.PhoneNumber, request.EmailAddress, 
                         request.AddressRegistration, DateOnly.FromDateTime(DateTime.UtcNow));
                     if (!client.IsSuccess) return Results.BadRequest(client.Error);
+                    if(await clientService.CheckAsync(client.Value.PassportSeries, 
+                        client.Value.PassportNumber, token))
+                    {
+                        return Results.BadRequest("Данный кллиент уже существует");
+                    }
                     var result = await clientService.CreateAsync(client.Value, token);
                     if(result == client.Value.Id) return Results.Ok();
                     return Results.InternalServerError();
@@ -222,8 +233,9 @@ namespace BankingSystem.Endpoints
                     {
                         shortAccounts.Add(new()
                         {
+                            Id = account.Id,
                             Number = account.AccountNumber,
-                            TypeAccount = account.AccountNumber,
+                            TypeAccount = account.AccountType,
                             Currency = account.CurrencyCode,
                             Balance = account.Balance,
                         });
@@ -404,6 +416,42 @@ namespace BankingSystem.Endpoints
                 return Results.Ok();
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
+
+            app.MapGet("/api/backup/create", async () =>
+            {
+                string fileName = $"backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql";
+                string containerName = "postgres-container";
+                try
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "docker",
+                            Arguments = $"exec {containerName} pg_dump -U postgres -d db",
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            StandardOutputEncoding = Encoding.UTF8
+                        }
+                    };
+                    process.Start();
+                    string output = await process.StandardOutput.ReadToEndAsync();
+                    string error = await process.StandardError.ReadToEndAsync();
+                    await process.WaitForExitAsync();
+                    if (process.ExitCode != 0)
+                    {
+                        return Results.BadRequest($"Ошибка pg_dump: {error}");
+                    }
+                    var fileBytes = Encoding.UTF8.GetBytes(output);
+                    return Results.File(fileBytes, "application/octet-stream", fileName);
+                }
+                catch (Exception ex)
+                {
+                    return Results.BadRequest($"Ошибка: {ex.Message}");
+                }
+            }).RequireAuthorization("OnlyForAuthUser");
 
             return app;
         }

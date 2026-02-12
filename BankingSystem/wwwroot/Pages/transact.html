@@ -70,17 +70,15 @@
             Перевод успешно выполнен!
         </div>
 
-        <a href="index.html" class="back-link">← Назад на главную</a>
+        <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
     </div>
 
     <script>
-        // Scripts/transact.js
 
         document.addEventListener('DOMContentLoaded', function () {
             const transferForm = document.getElementById('transferForm');
             const successMessage = document.getElementById('successMessage');
 
-            // Элементы для счета отправителя
             const senderAccountInput = document.querySelector('input[placeholder*="отправителя"]');
             const senderAccountInfo = document.querySelector('.form-section:first-child .account-info');
             const senderAccountNumber = document.querySelector('.form-section:first-child #receiverAccountNumber');
@@ -89,7 +87,6 @@
             const senderAccountCurrency = document.querySelector('.form-section:first-child #receiverAccountCurrency');
             const senderAccountError = document.querySelector('.form-section:first-child .error-message');
 
-            // Элементы для счета получателя
             const receiverAccountInput = document.querySelector('input[placeholder*="получателя"]');
             const receiverAccountInfo = document.querySelector('.form-section:nth-child(3) .account-info');
             const receiverAccountNumber = document.querySelector('.form-section:nth-child(3) #receiverAccountNumber');
@@ -98,12 +95,10 @@
             const receiverAccountCurrency = document.querySelector('.form-section:nth-child(3) #receiverAccountCurrency');
             const receiverAccountError = document.querySelector('.form-section:nth-child(3) .error-message');
 
-            // Элементы суммы и комментария
             const amountInput = document.getElementById('transferAmount');
             const amountError = document.getElementById('amountError');
             const commentInput = document.getElementById('transferComment');
 
-            // База данных счетов (в реальном приложении это будет API)
             const accountsDatabase = {
                 '1234567890123456': {
                     owner: 'Иванов Иван Иванович',
@@ -131,18 +126,15 @@
                 }
             };
 
-            // Валидация номера счета
             function validateAccountNumber(accountNumber) {
                 const accountRegex = /^\d{16}$/;
                 return accountRegex.test(accountNumber);
             }
 
-            // Поиск информации о счете
             function getAccountInfo(accountNumber) {
                 return accountsDatabase[accountNumber] || null;
             }
 
-            // Показ информации о счете
             function showAccountInfo(accountNumber, isSender = false) {
                 const accountInfo = getAccountInfo(accountNumber);
 
@@ -175,7 +167,6 @@
                 }
             }
 
-            // Валидация суммы
             function validateAmount(amount, senderAccountNumber) {
                 const numericAmount = parseFloat(amount);
 
@@ -184,7 +175,6 @@
                     return false;
                 }
 
-                // Проверка достаточности средств
                 const senderAccount = getAccountInfo(senderAccountNumber);
                 if (senderAccount && numericAmount > senderAccount.balance) {
                     showError(amountError, 'Недостаточно средств на счете');
@@ -195,18 +185,15 @@
                 return true;
             }
 
-            // Показ ошибки
             function showError(errorElement, message) {
                 errorElement.textContent = message;
                 errorElement.style.display = 'block';
             }
 
-            // Скрытие ошибки
             function hideError(errorElement) {
                 errorElement.style.display = 'none';
             }
 
-            // Обработчик ввода номера счета отправителя
             senderAccountInput.addEventListener('input', function () {
                 const accountNumber = this.value.trim();
 
@@ -223,7 +210,6 @@
                 }
             });
 
-            // Обработчик ввода номера счета получателя
             receiverAccountInput.addEventListener('input', function () {
                 const accountNumber = this.value.trim();
 
@@ -240,7 +226,6 @@
                 }
             });
 
-            // Обработчик ввода суммы
             amountInput.addEventListener('input', function () {
                 const amount = this.value;
                 const senderAccount = senderAccountInput.value.trim();
@@ -250,7 +235,6 @@
                 }
             });
 
-            // Обработчик отправки формы
             transferForm.addEventListener('submit', function (e) {
                 e.preventDefault();
 
@@ -259,7 +243,6 @@
                 const amount = amountInput.value;
                 const comment = commentInput.value.trim();
 
-                // Валидация всех полей
                 let isValid = true;
 
                 if (!validateAccountNumber(senderAccount)) {
@@ -282,14 +265,11 @@
                 }
 
                 if (isValid) {
-                    // Имитация выполнения перевода
                     performTransfer(senderAccount, receiverAccount, parseFloat(amount), comment);
                 }
             });
 
-            // Функция выполнения перевода
             function performTransfer(senderAccount, receiverAccount, amount, comment) {
-                // В реальном приложении здесь будет AJAX запрос к серверу
                 console.log('Выполняется перевод:', {
                     from: senderAccount,
                     to: receiverAccount,
@@ -298,11 +278,9 @@
                     timestamp: new Date().toISOString()
                 });
 
-                // Показ сообщения об успехе
                 successMessage.style.display = 'block';
                 successMessage.textContent = `Перевод на сумму ${amount.toFixed(2)} RUB выполнен успешно!`;
 
-                // Сброс формы
                 setTimeout(() => {
                     transferForm.reset();
                     senderAccountInfo.style.display = 'none';
@@ -311,27 +289,22 @@
                 }, 3000);
             }
 
-            // Дополнительные улучшения UX
             amountInput.addEventListener('focus', function () {
                 if (senderAccountInput.value.trim().length !== 16) {
                     showError(amountError, 'Сначала введите номер счета отправителя');
                 }
             });
 
-            // Форматирование ввода номера счета
             [senderAccountInput, receiverAccountInput].forEach(input => {
                 input.addEventListener('input', function () {
-                    // Удаляем все нецифровые символы
                     this.value = this.value.replace(/\D/g, '');
 
-                    // Ограничиваем длину 16 символами
                     if (this.value.length > 16) {
                         this.value = this.value.slice(0, 16);
                     }
                 });
             });
 
-            // Форматирование ввода суммы
             amountInput.addEventListener('blur', function () {
                 if (this.value) {
                     const numericValue = parseFloat(this.value);
