@@ -9,5 +9,6 @@ namespace BankingSystemDataAccess.Postgres.Abstractions
         Task<Clients?> GetAsync(string passportSeries, string passportNumber, CancellationToken token);
         Task<Guid> GetIdAsync(string passportSeries, string passportNumber, CancellationToken token);
         Task<int> UpdateAsync(Clients clients, CancellationToken token);
+        Task<bool> CheckAsync(string passportSeries, string passportNumber, CancellationToken token);
     }
 }

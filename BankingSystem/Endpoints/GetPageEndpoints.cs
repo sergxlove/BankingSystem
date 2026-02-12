@@ -27,6 +27,13 @@
                 context.Response.ContentType = "text/html; charset=utf-8";
                 await context.Response.SendFileAsync("wwwroot/Pages/reg.html");
             }).RequireRateLimiting("GeneralPolicy");
+
+            app.MapGet("/backup", async (HttpContext context) =>
+            {
+                context.Response.ContentType = "text/html; charset=utf-8";
+                await context.Response.SendFileAsync("wwwroot/Pages/backup.html");
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
             return app;
         }
     }

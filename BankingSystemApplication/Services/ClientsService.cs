@@ -35,5 +35,10 @@ namespace BankingSystemApplication.Services
         {
             return await _repository.UpdateAsync(clients, token);
         }
+        public async Task<bool> CheckAsync(string passportSeries, string passportNumber,
+            CancellationToken token)
+        {
+            return await _repository.CheckAsync(passportSeries, passportNumber, token);
+        }
     }
 }

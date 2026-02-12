@@ -20,5 +20,9 @@ namespace BankingSystemApplication.Services
         {
             return await _repository.VerifyAsync(username, password);
         }
+        public async Task<bool> CheckAsync(string username, CancellationToken token)
+        {
+            return await _repository.CheckAsync(username, token);
+        }
     }
 }

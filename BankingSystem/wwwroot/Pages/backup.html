@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бэкап БД</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .message {
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+
+            .message.success {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .message.error {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+
+            .message.info {
+                background-color: #d1ecf1;
+                color: #0c5460;
+                border: 1px solid #bee5eb;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #666;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Бэкап БД</h1>
+
+        <button id="backupBtn" onclick="createBackup()">
+            🔄 Создать и скачать бэкап
+        </button>
+
+        <div id="spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p style="color: #666;">Создание и загрузка бэкапа...</p>
+        </div>
+
+        <div id="message"></div>
+        <div id="fileInfo" class="file-info" style="display: none;"></div>
+
+        <a href="/Pages/index.html" class="back-link">← На главную</a>
+    </div>
+
+    <script>
+        const backupBtn = document.getElementById('backupBtn');
+        const spinner = document.getElementById('spinner');
+        const messageDiv = document.getElementById('message');
+        const fileInfo = document.getElementById('fileInfo');
+
+        async function createBackup() {
+            try {
+                backupBtn.disabled = true;
+                spinner.style.display = 'block';
+                messageDiv.innerHTML = '';
+                fileInfo.style.display = 'none';
+
+                const response = await fetch('/api/backup/create', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Не авторизован. Выполните вход');
+                    } else if (response.status === 403) {
+                        throw new Error('Доступ запрещен');
+                    } else {
+                        const errorText = await response.text();
+                        throw new Error(errorText || 'Ошибка сервера');
+                    }
+                }
+
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let fileName = `backup_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.sql`;
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                    if (match && match[1]) {
+                        fileName = match[1].replace(/['"]/g, '');
+                    }
+                }
+
+                const blob = await response.blob();
+
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = fileName;
+                link.style.display = 'none';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                window.URL.revokeObjectURL(downloadUrl);
+
+                const fileSize = (blob.size / 1024).toFixed(2);
+                fileInfo.style.display = 'block';
+                fileInfo.innerHTML = `
+                        <strong>✅ Файл скачан:</strong><br>
+                        📄 ${fileName}<br>
+                        💾 ${fileSize} KB
+                    `;
+
+                showMessage('✅ Бэкап успешно создан и скачан!', 'success');
+
+            } catch (error) {
+                showMessage('❌ Ошибка: ' + error.message, 'error');
+                console.error('Backup error:', error);
+            } finally {
+                backupBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        function setAuthToken(token) {
+            localStorage.setItem('token', token);
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+
+        function showMessage(text, type) {
+            messageDiv.className = 'message ' + type;
+            messageDiv.textContent = text;
+
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+                messageDiv.className = '';
+            }, 5000);
+        }
+
+    </script>
+</body>
+</html>

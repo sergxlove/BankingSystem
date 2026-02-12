@@ -4,57 +4,355 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оформление кредита</title>
-    <link rel="stylesheet" href="../Styles/regCredit.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+            input:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .search-button {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            width: auto;
+            padding: 12px 25px;
+        }
+
+        .client-info {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #667eea;
+        }
+
+            .client-info h3 {
+                color: #333;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+
+            .client-info p {
+                margin-bottom: 10px;
+                color: #555;
+            }
+
+            .client-info strong {
+                color: #333;
+            }
+
+        .credit-details {
+            display: none;
+        }
+
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .account-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .account-card:hover {
+                border-color: #667eea;
+                transform: translateX(5px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+            }
+
+            .account-card.selected {
+                background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+                border-color: #667eea;
+                border-width: 2px;
+            }
+
+        .account-number {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .account-type {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .account-balance {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .month-slider {
+            width: 100%;
+            margin: 10px 0;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            outline: none;
+        }
+
+            .month-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 25px;
+                height: 25px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+                .month-slider::-webkit-slider-thumb:hover {
+                    transform: scale(1.1);
+                }
+
+        .slider-value {
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #28a745;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .no-accounts {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-style: italic;
+            background: white;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Оформление кредита</h1>
+        <h1>💳 Оформление кредита</h1>
 
         <form id="creditForm">
             <div class="form-section">
-                <div class="form-section-title">Поиск клиента</div>
+                <div class="form-section-title">🔍 Поиск клиента</div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="passportSeries">Серия паспорта *</label>
-                        <input type="text" id="passportSeries" name="passportSeries" maxlength="4" required>
+                        <input type="text" id="passportSeries" name="passportSeries" maxlength="4" placeholder="1234" required>
                         <div class="error-message" id="passportSeriesError">Серия должна содержать 4 цифры</div>
                     </div>
 
                     <div class="form-group">
                         <label for="passportNumber">Номер паспорта *</label>
-                        <input type="text" id="passportNumber" name="passportNumber" maxlength="6" required>
-                        <div class="error-message" id="passportNumberError">Номер должен содержать 6 цифр</div>
+                        <input type="text" id="passportNumber" name="passportNumber" maxlength="6" placeholder="567890" required>
+                        <div class="error-message" id="passportNumberError">Номер должен содержать 6 цифры</div>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group" style="text-align: center;">
-                        <button type="button" id="findClientBtn" class="search-button">Найти клиента</button>
+                        <button type="button" id="findClientBtn" class="search-button">
+                            🔎 Найти клиента
+                        </button>
                     </div>
                 </div>
 
                 <div class="client-info" id="clientInfo">
-                    <h3>Информация о клиенте</h3>
-                    <p><strong>ID клиента:</strong> <span id="clientId"></span></p>
+                    <h3>📋 Информация о клиенте</h3>
+                    <p><strong>ID клиента:</strong> <span id="clientId" style="color: #667eea; font-weight: bold;"></span></p>
                     <p><strong>ФИО:</strong> <span id="clientName"></span></p>
                     <p><strong>Дата рождения:</strong> <span id="clientBirthDate"></span></p>
+                    <p><span class="badge">Клиент найден</span></p>
                 </div>
             </div>
 
             <div class="credit-details" id="creditDetails">
                 <div class="form-section">
-                    <div class="form-section-title">Выбор счета для кредита</div>
-                    <div id="accountsList">
+                    <div class="form-section-title">🏦 Выбор счета для кредита</div>
+                    <div class="accounts-list" id="accountsList">
                     </div>
                     <div class="error-message" id="accountError">Выберите счет для кредитования</div>
                 </div>
 
                 <div class="form-section">
-                    <div class="form-section-title">Параметры кредита</div>
+                    <div class="form-section-title">📊 Параметры кредита</div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="creditAmount">Сумма кредита *</label>
-                            <input type="number" id="creditAmount" name="creditAmount" min="1000" step="1000" required>
+                            <input type="number" id="creditAmount" name="creditAmount" min="1000" step="1000" placeholder="100000" required>
                             <div class="error-message" id="amountError">Минимальная сумма кредита: 1 000 руб.</div>
                         </div>
                     </div>
@@ -70,30 +368,31 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Ежемесячный платеж:</label>
-                            <div id="monthlyPayment" style="font-size: 1.2em; color: #667eea; font-weight: bold; text-align: center;">
+                            <label>📅 Ежемесячный платеж:</label>
+                            <div id="monthlyPayment" style="font-size: 1.3em; color: #667eea; font-weight: bold; text-align: center;">
                                 —
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Общая сумма выплат:</label>
-                            <div id="totalPayment" style="font-size: 1.2em; color: #2ecc71; font-weight: bold; text-align: center;">
+                            <label>💰 Общая сумма выплат:</label>
+                            <div id="totalPayment" style="font-size: 1.3em; color: #2ecc71; font-weight: bold; text-align: center;">
                                 —
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit">Оформить кредит</button>
+                <button type="submit" id="submitBtn">
+                    ✅ Оформить кредит
+                </button>
             </div>
         </form>
 
         <div class="success-message" id="successMessage">
-            Кредит успешно оформлен!
         </div>
 
-        <a href="index.html" class="back-link">← Назад на главную</a>
+        <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
     </div>
 
     <script>
@@ -107,6 +406,7 @@
             const monthlyPaymentElement = document.getElementById('monthlyPayment');
             const totalPaymentElement = document.getElementById('totalPayment');
             const termValueElement = document.getElementById('termValue');
+            const submitBtn = document.getElementById('submitBtn');
 
             const passportSeriesInput = document.getElementById('passportSeries');
             const passportNumberInput = document.getElementById('passportNumber');
@@ -119,6 +419,7 @@
 
             let selectedAccountId = null;
             let currentClientId = null;
+            let selectedAccountNumber = null;
 
             passportSeriesInput.addEventListener('input', function (e) {
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
@@ -139,14 +440,14 @@
                 const amount = parseFloat(creditAmountInput.value) || 0;
                 const term = parseInt(creditTermInput.value);
 
-                if (amount > 0 && term > 0) {
+                if (amount >= 1000 && term > 0) {
                     const monthlyRate = 0.12 / 12;
                     const annuityRatio = monthlyRate * Math.pow(1 + monthlyRate, term) / (Math.pow(1 + monthlyRate, term) - 1);
                     const monthlyPayment = amount * annuityRatio;
                     const totalPayment = monthlyPayment * term;
 
-                    monthlyPaymentElement.textContent = monthlyPayment.toFixed(2) + ' руб.';
-                    totalPaymentElement.textContent = totalPayment.toFixed(2) + ' руб.';
+                    monthlyPaymentElement.textContent = monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+                    totalPaymentElement.textContent = totalPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
                 } else {
                     monthlyPaymentElement.textContent = '—';
                     totalPaymentElement.textContent = '—';
@@ -161,22 +462,52 @@
                 return /^\d{6}$/.test(number);
             }
 
+            function formatDate(dateString) {
+                if (!dateString) return 'Не указана';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            }
+
+            function showLoading(button, text) {
+                const originalText = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = `<span class="spinner"></span>${text}`;
+                return originalText;
+            }
+
+            function hideLoading(button, originalText) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+
             function displayAccounts(accounts) {
                 accountsList.innerHTML = '';
 
-                if (accounts.length === 0) {
-                    accountsList.innerHTML = '<p>У клиента нет открытых счетов</p>';
+                if (!accounts || accounts.length === 0) {
+                    accountsList.innerHTML = '<div class="no-accounts">❌ У клиента нет открытых счетов</div>';
                     return;
                 }
 
-                accounts.forEach(account => {
+                accounts.forEach((account, index) => {
                     const accountElement = document.createElement('div');
                     accountElement.className = 'account-card';
+                    accountElement.setAttribute('data-account-index', index);
+
+                    const accountId = account.id || account.accountId || account.number || `account-${index}`;
+                    const accountNumber = account.number || account.accountNumber || 'Номер не указан';
+                    const accountType = account.typeAccount || account.accountType || 'Неизвестный тип';
+                    const currency = account.currency || account.currencyCode || 'RUB';
+                    const balance = account.balance || 0;
+
                     accountElement.innerHTML = `
-                        <div class="account-number">${account.number}</div>
-                        <div class="account-type">${account.typeAccount} • ${account.currency}</div>
-                        <div class="account-balance">Баланс: ${account.balance.toLocaleString('ru-RU')} ${account.currency}</div>
-                    `;
+                            <div class="account-number">🏦 ${accountNumber}</div>
+                            <div class="account-type">${accountType} • ${currency}</div>
+                            <div class="account-balance">💰 Баланс: ${balance.toLocaleString('ru-RU')} ${currency}</div>
+                        `;
 
                     accountElement.addEventListener('click', function () {
                         document.querySelectorAll('.account-card').forEach(card => {
@@ -184,14 +515,20 @@
                         });
 
                         this.classList.add('selected');
-                        selectedAccountId = account.id;
+
+                        selectedAccountId = accountId;
+                        selectedAccountNumber = accountNumber;
+
+                        document.getElementById('accountError').style.display = 'none';
+
+                        console.log('Выбран счет:', { id: selectedAccountId, number: selectedAccountNumber });
                     });
 
                     accountsList.appendChild(accountElement);
                 });
             }
 
-            findClientBtn.addEventListener('click', function () {
+            findClientBtn.addEventListener('click', async function () {
                 const series = passportSeriesInput.value;
                 const number = passportNumberInput.value;
 
@@ -209,101 +546,195 @@
                     document.getElementById('passportNumberError').style.display = 'none';
                 }
 
-                const response = await fetch('/getShortClient', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        passportSeries: series,
-                        passportNumber: number
-                    })
-                });
+                const originalBtnText = showLoading(findClientBtn, 'Поиск клиента...');
 
-                if (!response.ok) {
-                    alert('Клиент с указанными паспортными данными не найден!');
+                try {
+                    const clientResponse = await fetch('/getShortClient', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            passportSeries: series,
+                            passportNumber: number
+                        })
+                    });
+
+                    if (!clientResponse.ok) {
+                        const errorText = await clientResponse.text();
+                        throw new Error(errorText || 'Клиент не найден');
+                    }
+
+                    const clientData = await clientResponse.json();
+
+                    const accountsResponse = await fetch('/getShortAccounts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            Id: clientData.id
+                        })
+                    });
+
+                    if (!accountsResponse.ok) {
+                        const errorText = await accountsResponse.text();
+                        throw new Error(errorText || 'Не удалось загрузить счета');
+                    }
+
+                    const accountsData = await accountsResponse.json();
+
+                    currentClientId = clientData.id;
+                    clientIdSpan.textContent = clientData.id;
+                    clientNameSpan.textContent = clientData.name || 'Не указано';
+                    clientBirthDateSpan.textContent = formatDate(clientData.dateBirth);
+
+                    displayAccounts(accountsData);
+
+                    selectedAccountId = null;
+                    selectedAccountNumber = null;
+
+                    clientInfo.style.display = 'block';
+                    creditDetails.style.display = 'block';
+
+                    creditDetails.scrollIntoView({ behavior: 'smooth' });
+
+                    successMessage.style.display = 'none';
+
+                } catch (error) {
+                    alert('❌ Ошибка: ' + error.message);
+                    console.error('Error:', error);
+                    clientInfo.style.display = 'none';
+                    creditDetails.style.display = 'none';
+                } finally {
+                    hideLoading(findClientBtn, originalBtnText);
                 }
-                const responseData = await response.json();
-
-                const responseAccount = await fetch('/getShortAccounts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        Id: responseData.id
-                    })
-                });
-
-                if (!responseAccount.ok) {
-                    alert('Не удалось найти счета клиента!');
-                }
-
-                const responseAccountData = await responseAccount.json();
-
-                currentClientId = responseData.id;
-                clientIdSpan.textContent = responseData.id;
-                clientNameSpan.textContent = responseData.name;
-                clientBirthDateSpan.textContent = responseData.dateBirth;
-
-                displayAccounts(responseAccountData);
-
-                clientInfo.style.display = 'block';
-                creditDetails.style.display = 'block';
-
-                creditDetails.scrollIntoView({ behavior: 'smooth' });
             });
 
-            form.addEventListener('submit', function (event) {
+            form.addEventListener('submit', async function (event) {
                 event.preventDefault();
                 let isValid = true;
 
                 if (!currentClientId) {
-                    alert('Сначала найдите клиента по паспортным данным!');
+                    alert('⚠️ Сначала найдите клиента по паспортным данным!');
                     return;
                 }
 
                 if (!selectedAccountId) {
                     document.getElementById('accountError').style.display = 'block';
+                    console.log('Счет не выбран');
                     isValid = false;
                 } else {
                     document.getElementById('accountError').style.display = 'none';
+                    console.log('Выбран счет ID:', selectedAccountId);
                 }
 
-                if (!creditAmountInput.value || parseFloat(creditAmountInput.value) < 1000) {
+                const creditAmount = parseFloat(creditAmountInput.value);
+                if (!creditAmount || creditAmount < 1000) {
                     document.getElementById('amountError').style.display = 'block';
                     isValid = false;
                 } else {
                     document.getElementById('amountError').style.display = 'none';
                 }
 
-                if (isValid) {
-                    successMessage.innerHTML = `
-                        Кредит успешно оформлен!<br>
-                        ID клиента: <strong>${currentClientId}</strong><br>
-                        ID счета: <strong>${selectedAccountId}</strong><br>
-                        Сумма кредита: <strong>${parseFloat(creditAmountInput.value).toLocaleString('ru-RU')} руб.</strong><br>
-                        Срок: <strong>${creditTermInput.value} месяцев</strong>
-                    `;
+                const term = parseInt(creditTermInput.value);
+                if (!term || term < 3 || term > 60) {
+                    document.getElementById('termError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('termError').style.display = 'none';
+                }
 
-                    successMessage.style.display = 'block';
-                    form.reset();
-                    clientInfo.style.display = 'none';
-                    creditDetails.style.display = 'none';
-                    selectedAccountId = null;
-                    currentClientId = null;
+                if (!isValid) {
+                    return;
+                }
 
-                    monthlyPaymentElement.textContent = '—';
-                    totalPaymentElement.textContent = '—';
-                    termValueElement.textContent = '12';
+                const originalSubmitText = showLoading(submitBtn, 'Оформление кредита...');
 
-                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                try {
+                    const monthlyRate = 0.12 / 12;
+                    const annuityRatio = monthlyRate * Math.pow(1 + monthlyRate, term) / (Math.pow(1 + monthlyRate, term) - 1);
+                    const monthlyPayment = creditAmount * annuityRatio;
 
-                    setTimeout(function () {
-                        successMessage.style.display = 'none';
-                    }, 5000);
+                    const requestData = {
+                        ClientsID: currentClientId,
+                        AccountId: selectedAccountId,
+                        SumCredit: creditAmount,
+                        TermMonth: term
+                    };
+
+                    console.log('Sending credit request:', requestData);
+
+                    const response = await fetch('/regCredit', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (response.ok) {
+                        successMessage.innerHTML = `
+                                ✅ КРЕДИТ УСПЕШНО ОФОРМЛЕН!<br><br>
+                                👤 Клиент: <strong>${clientNameSpan.textContent}</strong><br>
+                                💳 Счет: <strong>${selectedAccountNumber || 'Не указан'}</strong><br>
+                                💰 Сумма кредита: <strong>${creditAmount.toLocaleString('ru-RU')} ₽</strong><br>
+                                📅 Срок: <strong>${term} месяцев</strong><br>
+                                📊 Ежемесячный платеж: <strong>${monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ₽</strong><br>
+                            `;
+                        successMessage.style.display = 'block';
+
+                        form.reset();
+                        clientInfo.style.display = 'none';
+                        creditDetails.style.display = 'none';
+
+                        selectedAccountId = null;
+                        currentClientId = null;
+                        selectedAccountNumber = null;
+
+                        monthlyPaymentElement.textContent = '—';
+                        totalPaymentElement.textContent = '—';
+                        termValueElement.textContent = '12';
+
+                        successMessage.scrollIntoView({ behavior: 'smooth' });
+
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 7000);
+
+                    } else {
+                        const errorText = await response.text();
+                        alert('❌ Ошибка оформления кредита: ' + (errorText || 'Неизвестная ошибка'));
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка соединения с сервером');
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading(submitBtn, originalSubmitText);
                 }
             });
+
+            passportSeriesInput.addEventListener('input', function () {
+                document.getElementById('passportSeriesError').style.display = 'none';
+            });
+
+            passportNumberInput.addEventListener('input', function () {
+                document.getElementById('passportNumberError').style.display = 'none';
+            });
+
+            creditAmountInput.addEventListener('input', function () {
+                document.getElementById('amountError').style.display = 'none';
+            });
+
+            creditTermInput.addEventListener('input', function () {
+                document.getElementById('termError').style.display = 'none';
+            });
+
+            setInterval(() => {
+                if (successMessage.style.display === 'block') {
+                    successMessage.style.display = 'none';
+                }
+            }, 7000);
         });
     </script>
 </body>
