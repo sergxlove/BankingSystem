@@ -1,5 +1,6 @@
 ﻿using BankingSystemCore.Models;
 using BankingSystemDataAccess.Postgres.Abstractions;
+using BankingSystemDataAccess.Postgres.Dto;
 using BankingSystemDataAccess.Postgres.Models;
 using BankingSystemDataAccess.Postgres.Services;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,53 @@ namespace BankingSystemDataAccess.Postgres.Repositories
                     && a.PassportNumber == SimpleEncryptionService.Encrypt(passportNumber));
             if (client is null) return false;
             return true;
+        }
+
+        public async Task<List<ClientBalanceDto>> GetClientsByBalanceRangeAsync
+            (decimal minBalance, decimal maxBalance, CancellationToken token)
+        {
+            var query = from client in _context.Clients
+                        join account in _context.Accounts on client.Id equals account.ClientsId into accounts
+                        select new
+                        {
+                            FullName = client.LastName + " " + client.FirstName + " " + client.SecondName,
+                            TotalBalance = accounts.Sum(a => a.Balance)
+                        };
+            var result = await query
+                .Where(x => x.TotalBalance >= minBalance && x.TotalBalance <= maxBalance)
+                .Select(x => new ClientBalanceDto
+                {
+                    FullName = x.FullName,
+                    Balance = x.TotalBalance
+                })
+                .OrderByDescending(x => x.Balance)
+                .ToListAsync(token);
+
+            return result;
+        }
+
+        public async Task<List<ClientCreditDto>> GetBorrowersByMonthsLeftAsync(int maxMonthsLeft,
+            CancellationToken token)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+            // PostgreSQL: вычисляем разницу в месяцах между сегодня и датой окончания
+            var query = from credit in _context.Credits
+                        join client in _context.Clients on credit.ClientId equals client.Id
+                        where credit.IsActive && credit.EndDate >= today
+                        //let monthsLeft = EF.Functions.DateDiffMonth(today, credit.EndDate)
+                        //where monthsLeft < maxMonthsLeft
+                        select new ClientCreditDto
+                        {
+                            FullName = client.LastName + " " + client.FirstName + " " + client.SecondName,
+                            LeftCredit = credit.LeftCreadit
+                        };
+
+            var result = await query
+                .OrderBy(x => x.LeftCredit)
+                .ToListAsync();
+
+            return result;
         }
     }
 }

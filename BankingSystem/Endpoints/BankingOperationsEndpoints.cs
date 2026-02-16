@@ -453,6 +453,50 @@ namespace BankingSystem.Endpoints
                 }
             }).RequireAuthorization("OnlyForAuthUser");
 
+            app.MapPost("/api/clients/balance-range", async (HttpContext context,
+                [FromBody] BalanceRequest request,
+                [FromServices] IClientsService clientService,
+                CancellationToken token) =>
+            {
+                if (request.MinBalance < 0 || request.MaxBalance < 0)
+                {
+                    return Results.BadRequest("Баланс не может быть отрицательным");
+                }
+
+                if (request.MinBalance > request.MaxBalance)
+                {
+                    return Results.BadRequest("Минимальный баланс не может быть больше максимального");
+                }
+
+                var result = await clientService.GetClientsByBalanceRangeAsync(request.MinBalance,
+                    request.MaxBalance, token);
+
+                if (result == null || result.Count == 0)
+                {
+                    return Results.NotFound("Клиенты в указанном диапазоне не найдены");
+                }
+
+                return Results.Ok(result);
+            }).RequireAuthorization("OnlyForAuthUser");
+
+            app.MapPost("/api/credits/borrowers-by-months", async (HttpContext context,
+                [FromBody] MonthsLeftRequest request,
+                [FromServices] IClientsService clientService,
+                CancellationToken token) =>
+            {
+                if (request.MaxMonthsLeft <= 0)
+                {
+                    return Results.BadRequest("Количество месяцев должно быть больше 0");
+                }
+                var result = await clientService.GetBorrowersByMonthsLeftAsync(request.MaxMonthsLeft, token);
+                if (result == null || result.Count == 0)
+                {
+                    return Results.NotFound("Заемщики с указанным сроком не найдены");
+                }
+
+                return Results.Ok(result);
+            }).RequireAuthorization("OnlyForAuthUser");
+
             return app;
         }
     }

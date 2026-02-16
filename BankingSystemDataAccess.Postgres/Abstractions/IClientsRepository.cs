@@ -1,4 +1,5 @@
 ﻿using BankingSystemCore.Models;
+using BankingSystemDataAccess.Postgres.Dto;
 
 namespace BankingSystemDataAccess.Postgres.Abstractions
 {
@@ -10,5 +11,7 @@ namespace BankingSystemDataAccess.Postgres.Abstractions
         Task<Guid> GetIdAsync(string passportSeries, string passportNumber, CancellationToken token);
         Task<int> UpdateAsync(Clients clients, CancellationToken token);
         Task<bool> CheckAsync(string passportSeries, string passportNumber, CancellationToken token);
+        Task<List<ClientBalanceDto>> GetClientsByBalanceRangeAsync(decimal minBalance, decimal maxBalance, CancellationToken token);
+        Task<List<ClientCreditDto>> GetBorrowersByMonthsLeftAsync(int maxMonthsLeft, CancellationToken token);
     }
 }

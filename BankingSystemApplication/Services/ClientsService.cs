@@ -1,6 +1,7 @@
 ﻿using BankingSystemApplication.Abstractions;
 using BankingSystemCore.Models;
 using BankingSystemDataAccess.Postgres.Abstractions;
+using BankingSystemDataAccess.Postgres.Dto;
 
 namespace BankingSystemApplication.Services
 {
@@ -39,6 +40,18 @@ namespace BankingSystemApplication.Services
             CancellationToken token)
         {
             return await _repository.CheckAsync(passportSeries, passportNumber, token);
+        }
+
+        public async Task<List<ClientBalanceDto>> GetClientsByBalanceRangeAsync
+            (decimal minBalance, decimal maxBalance, CancellationToken token)
+        {
+            return await _repository.GetClientsByBalanceRangeAsync(minBalance, maxBalance, token);
+        }
+
+        public async Task<List<ClientCreditDto>> GetBorrowersByMonthsLeftAsync(int maxMonthsLeft,
+            CancellationToken token)
+        {
+            return await _repository.GetBorrowersByMonthsLeftAsync (maxMonthsLeft, token);
         }
     }
 }

@@ -34,6 +34,20 @@
                 await context.Response.SendFileAsync("wwwroot/Pages/backup.html");
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
+
+            app.MapGet("/clients/balance", async (HttpContext context) =>
+            {
+                context.Response.ContentType = "text/html; charset=utf-8";
+                await context.Response.SendFileAsync("wwwroot/Pages/getClientBalance.html");
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
+
+            app.MapGet("/clients/credit", async (HttpContext context) =>
+            {
+                context.Response.ContentType = "text/html; charset=utf-8";
+                await context.Response.SendFileAsync("wwwroot/Pages/getClientCredit.html");
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
             return app;
         }
     }
