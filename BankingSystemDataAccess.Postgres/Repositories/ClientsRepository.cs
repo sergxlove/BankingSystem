@@ -137,22 +137,23 @@ namespace BankingSystemDataAccess.Postgres.Repositories
         public async Task<List<ClientCreditDto>> GetBorrowersByMonthsLeftAsync(int maxMonthsLeft,
             CancellationToken token)
         {
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            var today = DateTime.Today.ToString("yyyy-MM-dd");
 
-            // PostgreSQL: вычисляем разницу в месяцах между сегодня и датой окончания
-            var query = from credit in _context.Credits
-                        join client in _context.Clients on credit.ClientId equals client.Id
-                        where credit.IsActive && credit.EndDate >= today
-                        //let monthsLeft = EF.Functions.DateDiffMonth(today, credit.EndDate)
-                        //where monthsLeft < maxMonthsLeft
-                        select new ClientCreditDto
-                        {
-                            FullName = client.LastName + " " + client.FirstName + " " + client.SecondName,
-                            LeftCredit = credit.LeftCreadit
-                        };
+            var sql = $@"
+                        SELECT 
+                            c.""LastName"" || ' ' || c.""FirstName"" || ' ' || c.""SecondName"" AS FullName,
+                            cr.""LeftCreadit"" AS LeftCredit
+                        FROM public.""Credits"" cr
+                        INNER JOIN public.""Clients"" c ON cr.""ClientId"" = c.""Id""
+                        WHERE cr.""IsActive"" = true 
+                            AND cr.""EndDate"" >= '{today}'::date
+                            AND (EXTRACT(YEAR FROM age(cr.""EndDate"", '{today}'::date)) * 12 + 
+                                 EXTRACT(MONTH FROM age(cr.""EndDate"", '{today}'::date))) < {maxMonthsLeft}
+                        ORDER BY cr.""LeftCreadit""
+                    ";
 
-            var result = await query
-                .OrderBy(x => x.LeftCredit)
+            var result = await _context.Database
+                .SqlQueryRaw<ClientCreditDto>(sql)
                 .ToListAsync();
 
             return result;

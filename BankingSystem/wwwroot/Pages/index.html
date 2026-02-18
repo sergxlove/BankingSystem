@@ -4,7 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Банковская система - Главная</title>
-    <link rel="stylesheet" href="../Styles/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+            .nav-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+                background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            }
+
+            .nav-link:active {
+                transform: translateY(0);
+            }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -12,14 +88,17 @@
         <h1>Банковская система</h1>
 
         <div class="nav-links">
-            <a href="regClient.html" class="nav-link">Регистрация клиента</a>
-            <a href="regAccount.html" class="nav-link">Открытие счета</a>
-            <a href="regCredit.html" class="nav-link">Оформление кредита</a>
-            <a href="regDeposit.html" class="nav-link">Оформление вклада</a>
-            <a href="transact.html" class="nav-link">Перевод средств</a>
-            <a href="profile.html" class="nav-link">Профиль клиента</a>
-            <a href="closeAccounts.html" class="nav-link">Закрытие счета</a>
-            <a href="closeDeposit.html" class="nav-link">Закрытие вклада</a>
+            <a href="/page/client/reg" class="nav-link">Регистрация клиента</a>
+            <a href="/page/account/reg" class="nav-link">Открытие счета</a>
+            <a href="/page/credit/reg" class="nav-link">Оформление кредита</a>
+            <a href="/page/deposit/reg" class="nav-link">Оформление вклада</a>
+            <a href="/page/transact" class="nav-link">Перевод средств</a>
+            <a href="/page/profile" class="nav-link">Профиль клиента</a>
+            <a href="/page/account/close" class="nav-link">Закрытие счета</a>
+            <a href="/page/deposit/close" class="nav-link">Закрытие вклада</a>
+            <a href="/page/clients/balance" class="nav-link">Поиск по балансу</a>
+            <a href="/page/clients/credit" class="nav-link">Поиск заемщиков</a>
+            <a href="/page/backup" class="nav-link">Управление бэкапами</a>
         </div>
     </div>
 </body>

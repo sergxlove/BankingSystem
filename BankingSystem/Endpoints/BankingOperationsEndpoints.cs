@@ -5,6 +5,7 @@ using BankingSystemApplication.Requests;
 using BankingSystemApplication.Services;
 using BankingSystemCore.Abstractions;
 using BankingSystemCore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -28,9 +29,10 @@ namespace BankingSystem.Endpoints
                         return Results.BadRequest("login or password is empty");
                     if (!await userService.VerifyAsync(request.Username, request.Password))
                         return Results.BadRequest("no auth");
+                    string userRole = await userService.GetRoleAsync(request.Username, token);
                     var claims = new List<Claim>()
                     {
-                        new Claim(ClaimTypes.Role, "user"),
+                        new Claim(ClaimTypes.Role, userRole),
                     };
                     var jwttoken = jwtService.GenerateToken(new JwtRequest()
                     {
@@ -358,7 +360,7 @@ namespace BankingSystem.Endpoints
                 {
                     if (request is null) return Results.BadRequest("request is empty");
                     var result = await accountsService.DeleteAsync(request.Id, token);
-                    if (result == 0) return Results.BadRequest("account not deleted");
+                    if (result == 0) return Results.BadRequest("Счет не был удален, так как он либо отсутствует, либо баланс не равен 0");
                     return Results.Ok();
                 }
                 catch
