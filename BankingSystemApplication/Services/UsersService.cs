@@ -24,5 +24,9 @@ namespace BankingSystemApplication.Services
         {
             return await _repository.CheckAsync(username, token);
         }
+        public async Task<string> GetRoleAsync(string username, CancellationToken token)
+        {
+            return await _repository.GetRoleAsync(username, token);
+        }
     }
 }

@@ -104,6 +104,17 @@ namespace BankingSystemDataAccess.Postgres.Repositories
 
         public async Task<int> DeleteAsync(Guid id, CancellationToken token)
         {
+            AccountsEntity? account = await _context.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+            if (account is null)
+            {
+                return 0;
+            }
+            if (account.Balance != 0)
+            {
+                return 0;
+            }
             return await _context.Accounts
                 .AsNoTracking()
                 .Where(a => a.Id == id)

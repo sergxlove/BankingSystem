@@ -72,11 +72,19 @@ namespace BankingSystem
             {
                 options.AddPolicy("OnlyForAdmin", policy =>
                 {
-                    policy.RequireClaim(ClaimTypes.Role, "admin");
+                    policy.RequireRole("admin");
                 });
                 options.AddPolicy("OnlyForAuthUser", policy =>
                 {
-                    policy.RequireClaim(ClaimTypes.Role, "user");
+                    policy.RequireRole("oper", "admin", "credit");
+                });
+                options.AddPolicy("OnlyForOper", policy =>
+                {
+                    policy.RequireRole("oper", "admin");
+                });
+                options.AddPolicy("OnlyForCredit", policy =>
+                {
+                    policy.RequireRole("credit", "admin");
                 });
             });
             builder.Services.AddRateLimiter(options =>

@@ -48,5 +48,12 @@ namespace BankingSystemDataAccess.Postgres.Repositories
             if(user is null) return false;
             return true;
         }
+
+        public async Task<string> GetRoleAsync(string username, CancellationToken token)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(a => a.Username == username, token);
+            if (user is null) return "user";
+            return user.Role;
+        }
     }
 }

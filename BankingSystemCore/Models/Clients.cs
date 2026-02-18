@@ -40,9 +40,21 @@
             if (string.IsNullOrWhiteSpace(addressRegistration))
                 return ResultModel<Clients>.Failure("Registration address is required");
 
+            if (!IsOver18(birthDate))
+                return ResultModel<Clients>.Failure("Client must be at least 18 years old");
+
             return ResultModel<Clients>.Success(new Clients(id, firstName, secondName, lastName,
                 birthDate, passportSeries, passportNumber, phoneNumber, emailAddress, 
                 addressRegistration, dateRegistration));
+        }
+
+        private static bool IsOver18(DateOnly birthDate)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var age = today.Year - birthDate.Year;
+            if (birthDate > today.AddYears(-age))
+                age--;
+            return age >= 18;
         }
 
         private Clients(Guid id, string firstName, string secondName, string lastName, 
