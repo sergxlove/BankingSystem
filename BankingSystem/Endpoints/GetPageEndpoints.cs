@@ -105,6 +105,13 @@
             }).RequireAuthorization("OnlyForOper")
             .RequireRateLimiting("GeneralPolicy");
 
+            app.MapGet("/page/manager", async (HttpContext context) =>
+            {
+                context.Response.ContentType = "text/html; charset=utf-8";
+                await context.Response.SendFileAsync("wwwroot/Pages/managers.html");
+            }).RequireAuthorization("OnlyForManager")
+            .RequireRateLimiting("GeneralPolicy");
+
             return app;
         }
     }

@@ -20,6 +20,7 @@ namespace BankingSystemDataAccess.Postgres
         public DbSet<TransactionsEntity> Transactions { get; set; }
         public DbSet<UsersEntity> Users { get; set; }
         public DbSet<SystemTableEntity> SystemTable { get; set; }
+        public DbSet<ManagersEntity> Managers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +36,7 @@ namespace BankingSystemDataAccess.Postgres
             modelBuilder.ApplyConfiguration(new TransactionsConfigurations());
             modelBuilder.ApplyConfiguration(new UsersConfigurations());
             modelBuilder.ApplyConfiguration(new SystemTableConfigurations());
+            modelBuilder.ApplyConfiguration(new ManagersConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

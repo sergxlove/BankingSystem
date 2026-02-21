@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Привязка клиента к менеджеру</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+            input:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .search-button {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            width: auto;
+            padding: 12px 25px;
+            margin: 0 auto;
+            display: inline-block;
+        }
+
+        .client-info {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #667eea;
+        }
+
+            .client-info h3 {
+                color: #333;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+
+            .client-info p {
+                margin-bottom: 10px;
+                color: #555;
+            }
+
+            .client-info strong {
+                color: #333;
+            }
+
+        .manager-details {
+            display: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #28a745;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .button-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        .manager-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 Привязка клиента к менеджеру</h1>
+
+        <form id="bindForm">
+            <div class="form-section">
+                <div class="form-section-title">🔍 Поиск клиента по паспорту</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="passportSeries">Серия паспорта *</label>
+                        <input type="text" id="passportSeries" name="passportSeries" maxlength="4" placeholder="1234" required>
+                        <div class="error-message" id="passportSeriesError">Серия должна содержать 4 цифры</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passportNumber">Номер паспорта *</label>
+                        <input type="text" id="passportNumber" name="passportNumber" maxlength="6" placeholder="567890" required>
+                        <div class="error-message" id="passportNumberError">Номер должен содержать 6 цифр</div>
+                    </div>
+                </div>
+
+                <div class="button-wrapper">
+                    <button type="button" id="findClientBtn" class="search-button">
+                        🔎 Найти клиента
+                    </button>
+                </div>
+
+                <div class="client-info" id="clientInfo">
+                    <h3>📋 Информация о клиенте</h3>
+                    <p><strong>ID клиента:</strong> <span id="clientId" style="color: #667eea; font-weight: bold;"></span></p>
+                    <p><strong>ФИО:</strong> <span id="clientName"></span></p>
+                    <p><strong>Дата рождения:</strong> <span id="clientBirthDate"></span></p>
+                    <p><strong>Текущий менеджер:</strong> <span id="currentManager">не привязан</span></p>
+                    <p><span class="badge" id="clientStatusBadge">Клиент найден</span></p>
+                </div>
+            </div>
+
+            <div class="manager-details" id="managerDetails">
+                <div class="form-section">
+                    <div class="form-section-title">👤 Логин менеджера</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="managerLogin">Логин менеджера *</label>
+                            <input type="text" id="managerLogin" name="managerLogin" placeholder="manager@bank.ru" required>
+                            <div class="error-message" id="managerLoginError">Введите логин менеджера</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    🔗 Привязать клиента к менеджеру
+                </button>
+            </div>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            ✅ Клиент успешно привязан к менеджеру!
+        </div>
+
+        <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('bindForm');
+            const findClientBtn = document.getElementById('findClientBtn');
+            const clientInfo = document.getElementById('clientInfo');
+            const managerDetails = document.getElementById('managerDetails');
+            const successMessage = document.getElementById('successMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            const passportSeriesInput = document.getElementById('passportSeries');
+            const passportNumberInput = document.getElementById('passportNumber');
+            const managerLoginInput = document.getElementById('managerLogin');
+            const clientIdSpan = document.getElementById('clientId');
+            const clientNameSpan = document.getElementById('clientName');
+            const clientBirthDateSpan = document.getElementById('clientBirthDate');
+            const currentManagerSpan = document.getElementById('currentManager');
+
+            passportSeriesInput.addEventListener('input', function (e) {
+                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+            });
+
+            passportNumberInput.addEventListener('input', function (e) {
+                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
+            });
+
+            function validatePassportSeries(series) {
+                return /^\d{4}$/.test(series);
+            }
+
+            function validatePassportNumber(number) {
+                return /^\d{6}$/.test(number);
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return 'Не указана';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU');
+            }
+
+            function showLoading(button, text) {
+                const originalText = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = `<span class="spinner"></span>${text}`;
+                return originalText;
+            }
+
+            function hideLoading(button, originalText) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+
+            findClientBtn.addEventListener('click', async function () {
+                const series = passportSeriesInput.value;
+                const number = passportNumberInput.value;
+
+                document.getElementById('passportSeriesError').style.display = 'none';
+                document.getElementById('passportNumberError').style.display = 'none';
+
+                if (!validatePassportSeries(series)) {
+                    document.getElementById('passportSeriesError').style.display = 'block';
+                    return;
+                }
+
+                if (!validatePassportNumber(number)) {
+                    document.getElementById('passportNumberError').style.display = 'block';
+                    return;
+                }
+
+                const originalBtnText = showLoading(findClientBtn, 'Поиск...');
+
+                try {
+                    const response = await fetch('/getShortClient', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            passportSeries: series,
+                            passportNumber: number
+                        })
+                    });
+
+                    if (response.ok) {
+                        const clientData = await response.json();
+
+                        clientIdSpan.textContent = clientData.id;
+                        clientNameSpan.textContent = clientData.name; 
+                        clientBirthDateSpan.textContent = formatDate(clientData.dateBirth); 
+                        currentManagerSpan.textContent = 'информация отсутствует'; 
+
+                        clientInfo.style.display = 'block';
+                        managerDetails.style.display = 'block';
+
+                        managerLoginInput.value = '';
+
+                        managerDetails.scrollIntoView({ behavior: 'smooth' });
+
+                        successMessage.style.display = 'none';
+                    } else {
+                        const errorText = await response.text();
+                        alert('❌ Ошибка: ' + (errorText || 'Клиент не найден'));
+                        clientInfo.style.display = 'none';
+                        managerDetails.style.display = 'none';
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка соединения с сервером: ' + error.message);
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading(findClientBtn, originalBtnText);
+                }
+            });
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                if (!clientIdSpan.textContent) {
+                    alert('⚠️ Сначала найдите клиента по паспортным данным!');
+                    return;
+                }
+
+                const managerLogin = managerLoginInput.value.trim();
+                if (!managerLogin) {
+                    document.getElementById('managerLoginError').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('managerLoginError').style.display = 'none';
+                }
+
+                const originalSubmitText = showLoading(submitBtn, 'Привязка...');
+
+                try {
+                    const bindData = {
+                        passportSeries: passportSeriesInput.value,
+                        passportNumber: passportNumberInput.value,
+                        loginManager: managerLogin 
+                    };
+
+                    console.log('Отправка данных на /linkManager:', bindData);
+
+                    const response = await fetch('/linkManager', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bindData)
+                    });
+
+                    if (response.ok) {
+                        currentManagerSpan.textContent = managerLogin;
+
+                        successMessage.style.display = 'block';
+                        successMessage.innerHTML = `✅ Клиент ${clientNameSpan.textContent} успешно привязан к менеджеру ${managerLogin}!`;
+
+                        submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)';
+                        setTimeout(() => {
+                            submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                        }, 1000);
+
+                        managerLoginInput.value = '';
+
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 5000);
+                    } else {
+                        const errorText = await response.text();
+                        alert('❌ Ошибка привязки: ' + (errorText || 'Неизвестная ошибка'));
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка соединения с сервером: ' + error.message);
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading(submitBtn, originalSubmitText);
+                }
+            });
+
+            passportSeriesInput.addEventListener('input', function () {
+                document.getElementById('passportSeriesError').style.display = 'none';
+            });
+
+            passportNumberInput.addEventListener('input', function () {
+                document.getElementById('passportNumberError').style.display = 'none';
+            });
+
+            managerLoginInput.addEventListener('input', function () {
+                document.getElementById('managerLoginError').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

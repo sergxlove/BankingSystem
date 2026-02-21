@@ -43,6 +43,8 @@ namespace BankingSystem
             builder.Services.AddScoped<ISystemTableRepository, SystemTableRepository>();
             builder.Services.AddScoped<ISystemTableService, SystemTableService>();
             builder.Services.AddScoped<ITransactMoneyService, TransactMoneyService>();
+            builder.Services.AddScoped<IManagersRepository,  ManagersRepository>();
+            builder.Services.AddScoped<IManagersService, ManagersService>();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -76,7 +78,7 @@ namespace BankingSystem
                 });
                 options.AddPolicy("OnlyForAuthUser", policy =>
                 {
-                    policy.RequireRole("oper", "admin", "credit");
+                    policy.RequireRole("oper", "admin", "credit", "manager");
                 });
                 options.AddPolicy("OnlyForOper", policy =>
                 {
@@ -85,6 +87,10 @@ namespace BankingSystem
                 options.AddPolicy("OnlyForCredit", policy =>
                 {
                     policy.RequireRole("credit", "admin");
+                });
+                options.AddPolicy("OnlyForManager", policy =>
+                {
+                    policy.RequireRole("manager", "admin");
                 });
             });
             builder.Services.AddRateLimiter(options =>

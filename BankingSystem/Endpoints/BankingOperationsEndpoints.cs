@@ -2,10 +2,8 @@
 using BankingSystem.Response;
 using BankingSystemApplication.Abstractions;
 using BankingSystemApplication.Requests;
-using BankingSystemApplication.Services;
 using BankingSystemCore.Abstractions;
 using BankingSystemCore.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -33,6 +31,7 @@ namespace BankingSystem.Endpoints
                     var claims = new List<Claim>()
                     {
                         new Claim(ClaimTypes.Role, userRole),
+                        new Claim(ClaimTypes.Email, request.Username),
                     };
                     var jwttoken = jwtService.GenerateToken(new JwtRequest()
                     {
@@ -72,6 +71,7 @@ namespace BankingSystem.Endpoints
                     var claims = new List<Claim>()
                     {
                         new Claim(ClaimTypes.Role, "user"),
+                        new Claim(ClaimTypes.Email, request.Username),
                     };
                     var jwttoken = jwtService.GenerateToken(new JwtRequest()
                     {
@@ -162,6 +162,31 @@ namespace BankingSystem.Endpoints
                 }
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
+
+            app.MapPost("/linkManager", async (HttpContext context,
+                [FromBody] ManagerRequest request, 
+                [FromServices] IClientsService clientsService, 
+                [FromServices] IManagersService managerService,
+                CancellationToken token) =>
+            {
+                try
+                {
+                    if (request.PassportSeries == string.Empty || request.PassportNumber == string.Empty
+                        || request.LoginManager == string.Empty)
+                        return Results.BadRequest("data is empty");
+                    var manager = Managers.Create(Guid.NewGuid(), request.PassportSeries,
+                        request.PassportNumber, request.LoginManager);
+                    if(!string.IsNullOrEmpty(manager.Error)) return Results.BadRequest(manager.Error);
+                    await managerService.AddAsync(manager.Value, token);
+                    return Results.Ok();
+                }
+                catch
+                {
+                    return Results.InternalServerError();
+                }
+            }).RequireAuthorization("OnlyForAuthUser")
+            .RequireRateLimiting("GeneralPolicy");
+
 
             app.MapPost("/getFullClient", async (HttpContext context, 
                 [FromBody] GetClientRequest request, 
