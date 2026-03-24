@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11527.330 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingSystem", "BankingSystem\BankingSystem.csproj", "{F2A080F7-1FB1-41C8-B3B6-82077E816891}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingSystemApplication", "BankingSystemApplication\BankingSystemApplication.csproj", "{0C250477-4D0C-4A31-B763-4C0E1798A7D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingSystemDataAccess.Postgres", "BankingSystemDataAccess.Postgres\BankingSystemDataAccess.Postgres.csproj", "{CA700344-9AB2-440A-BE60-2ED3651B685F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingSystem.Tests", "BankingSystem.Tests\BankingSystem.Tests.csproj", "{DCC07824-E42B-4141-B15E-718A690465DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{CA700344-9AB2-440A-BE60-2ED3651B685F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA700344-9AB2-440A-BE60-2ED3651B685F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA700344-9AB2-440A-BE60-2ED3651B685F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCC07824-E42B-4141-B15E-718A690465DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCC07824-E42B-4141-B15E-718A690465DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCC07824-E42B-4141-B15E-718A690465DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCC07824-E42B-4141-B15E-718A690465DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -165,7 +165,6 @@ namespace BankingSystem.Endpoints
 
             app.MapPost("/linkManager", async (HttpContext context,
                 [FromBody] ManagerRequest request, 
-                [FromServices] IClientsService clientsService, 
                 [FromServices] IManagersService managerService,
                 CancellationToken token) =>
             {
@@ -187,6 +186,20 @@ namespace BankingSystem.Endpoints
             }).RequireAuthorization("OnlyForAuthUser")
             .RequireRateLimiting("GeneralPolicy");
 
+            app.MapPost("/unlinkManager", async (HttpContext context,
+                [FromBody] ManagerRequest request,
+                [FromServices] IManagersService managerService,
+                CancellationToken token) =>
+            {
+                if (request.PassportSeries == string.Empty || request.PassportNumber == string.Empty
+                        || request.LoginManager == string.Empty)
+                    return Results.BadRequest("data is empty");
+                var manager = Managers.Create(Guid.NewGuid(), request.PassportSeries,
+                    request.PassportNumber, request.LoginManager);
+                if (!string.IsNullOrEmpty(manager.Error)) return Results.BadRequest(manager.Error);
+                await managerService.DeleteAsync(manager.Value, token);
+                return Results.Ok();
+            });
 
             app.MapPost("/getFullClient", async (HttpContext context, 
                 [FromBody] GetClientRequest request, 
@@ -347,15 +360,23 @@ namespace BankingSystem.Endpoints
                 [FromServices] IAccountsService accountsService,
                 [FromServices] IDepositsService depositService,
                 [FromServices] ICreditsService creditService, 
+                [FromServices] IManagersService managersService,
                 CancellationToken token) =>
             {
                 try
                 {
+                    var userEmail = context.User.FindFirst(ClaimTypes.Email)?.Value;
                     if (request is null) return Results.BadRequest("request is empty");
                     var client = await clientService.GetAsync(request.PassportSeries,
                         request.PassportNumber, token);
                     if (client is null) return Results.BadRequest("client is not found");
                     var idClient = client.Id;
+
+                    string needEmail = await managersService.GetLoginAsync(request.PassportSeries,
+                        request.PassportNumber, token);
+                    if (userEmail != "admin" && userEmail != needEmail) 
+                        return Results.BadRequest("Нет доступа");
+
                     if (idClient == Guid.Empty) return Results.BadRequest("client is not found");
                     var accounts = await accountsService.GetListAsync(idClient, token);
                     var deposits = await depositService.GetListAsync(idClient, token);
