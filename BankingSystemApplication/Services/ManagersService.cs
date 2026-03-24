@@ -26,7 +26,7 @@ namespace BankingSystemApplication.Services
         public async Task<string> GetLoginAsync(string passportSeries, string passportNumber,
             CancellationToken token)
         {
-            return await GetLoginAsync(passportSeries, passportNumber, token);
+            return await _repository.GetLoginAsync(passportSeries, passportNumber, token);
         }
     }
 }

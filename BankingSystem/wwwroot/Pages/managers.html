@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Привязка клиента к менеджеру</title>
+    <title>Привязка/отвязка менеджера</title>
     <style>
         * {
             margin: 0;
@@ -96,6 +96,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: bold;
+            margin-bottom: 10px;
         }
 
             button:hover {
@@ -221,11 +222,30 @@
             margin-top: 15px;
             border-left: 4px solid #28a745;
         }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+            .button-group button {
+                flex: 1;
+                margin-bottom: 0;
+            }
+
+        .unlink-button {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+            .unlink-button:hover {
+                box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+            }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>👥 Привязка клиента к менеджеру</h1>
+        <h1>👥 Управление менеджером клиента</h1>
 
         <form id="bindForm">
             <div class="form-section">
@@ -272,14 +292,19 @@
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn">
-                    🔗 Привязать клиента к менеджеру
-                </button>
+                <div class="button-group">
+                    <button type="submit" id="submitBtn" class="link-button">
+                        🔗 Привязать менеджера
+                    </button>
+                    <button type="button" id="unlinkBtn" class="unlink-button">
+                        ❌ Отвязать менеджера
+                    </button>
+                </div>
             </div>
         </form>
 
         <div class="success-message" id="successMessage">
-            ✅ Клиент успешно привязан к менеджеру!
+            ✅ Операция успешно выполнена!
         </div>
 
         <a href="/Pages/index.html" class="back-link">← Назад на главную</a>
@@ -289,6 +314,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('bindForm');
             const findClientBtn = document.getElementById('findClientBtn');
+            const unlinkBtn = document.getElementById('unlinkBtn');
             const clientInfo = document.getElementById('clientInfo');
             const managerDetails = document.getElementById('managerDetails');
             const successMessage = document.getElementById('successMessage');
@@ -370,9 +396,9 @@
                         const clientData = await response.json();
 
                         clientIdSpan.textContent = clientData.id;
-                        clientNameSpan.textContent = clientData.name; 
-                        clientBirthDateSpan.textContent = formatDate(clientData.dateBirth); 
-                        currentManagerSpan.textContent = 'информация отсутствует'; 
+                        clientNameSpan.textContent = clientData.name;
+                        clientBirthDateSpan.textContent = formatDate(clientData.dateBirth);
+                        currentManagerSpan.textContent = 'информация отсутствует';
 
                         clientInfo.style.display = 'block';
                         managerDetails.style.display = 'block';
@@ -418,7 +444,7 @@
                     const bindData = {
                         passportSeries: passportSeriesInput.value,
                         passportNumber: passportNumberInput.value,
-                        loginManager: managerLogin 
+                        loginManager: managerLogin
                     };
 
                     console.log('Отправка данных на /linkManager:', bindData);
@@ -434,19 +460,9 @@
                     if (response.ok) {
                         currentManagerSpan.textContent = managerLogin;
 
-                        successMessage.style.display = 'block';
-                        successMessage.innerHTML = `✅ Клиент ${clientNameSpan.textContent} успешно привязан к менеджеру ${managerLogin}!`;
-
-                        submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)';
-                        setTimeout(() => {
-                            submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                        }, 1000);
+                        showSuccessMessage(`✅ Клиент ${clientNameSpan.textContent} успешно привязан к менеджеру ${managerLogin}!`);
 
                         managerLoginInput.value = '';
-
-                        setTimeout(() => {
-                            successMessage.style.display = 'none';
-                        }, 5000);
                     } else {
                         const errorText = await response.text();
                         alert('❌ Ошибка привязки: ' + (errorText || 'Неизвестная ошибка'));
@@ -458,6 +474,84 @@
                     hideLoading(submitBtn, originalSubmitText);
                 }
             });
+
+            unlinkBtn.addEventListener('click', async function () {
+                if (!clientIdSpan.textContent) {
+                    alert('⚠️ Сначала найдите клиента по паспортным данным!');
+                    return;
+                }
+
+                const managerLogin = managerLoginInput.value.trim();
+                if (!managerLogin) {
+                    alert('⚠️ Введите логин менеджера для отвязки');
+                    document.getElementById('managerLoginError').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('managerLoginError').style.display = 'none';
+                }
+
+                if (!confirm(`Вы уверены, что хотите отвязать менеджера ${managerLogin} от клиента ${clientNameSpan.textContent}?`)) {
+                    return;
+                }
+
+                const originalBtnText = showLoading(unlinkBtn, 'Отвязка...');
+
+                try {
+                    const unlinkData = {
+                        passportSeries: passportSeriesInput.value,
+                        passportNumber: passportNumberInput.value,
+                        loginManager: managerLogin
+                    };
+
+                    console.log('Отправка данных на /unlinkManager:', unlinkData);
+
+                    const response = await fetch('/unlinkManager', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(unlinkData)
+                    });
+
+                    if (response.ok) {
+                        currentManagerSpan.textContent = 'не привязан';
+
+                        showSuccessMessage(`✅ Менеджер ${managerLogin} успешно отвязан от клиента ${clientNameSpan.textContent}!`);
+
+                        managerLoginInput.value = '';
+                    } else {
+                        const errorText = await response.text();
+                        alert('❌ Ошибка отвязки: ' + (errorText || 'Неизвестная ошибка'));
+                    }
+                } catch (error) {
+                    alert('❌ Ошибка соединения с сервером: ' + error.message);
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading(unlinkBtn, originalBtnText);
+                }
+            });
+
+            function showSuccessMessage(message) {
+                successMessage.style.display = 'block';
+                successMessage.innerHTML = message;
+
+                const activeButton = document.activeElement;
+                if (activeButton && activeButton.id === 'submitBtn') {
+                    submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)';
+                    setTimeout(() => {
+                        submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    }, 1000);
+                } else if (activeButton && activeButton.id === 'unlinkBtn') {
+                    unlinkBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)';
+                    setTimeout(() => {
+                        unlinkBtn.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+                    }, 1000);
+                }
+
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
+            }
 
             passportSeriesInput.addEventListener('input', function () {
                 document.getElementById('passportSeriesError').style.display = 'none';
