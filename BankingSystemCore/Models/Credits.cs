@@ -17,6 +17,26 @@
             DateOnly startDate, DateOnly endDate, decimal paymentMonth, decimal leftCredit,
             bool isActive)
         {
+            if (id == Guid.Empty)
+                return ResultModel<Credits>.Failure("Credit ID cannot be empty");
+
+            if (clientId == Guid.Empty)
+                return ResultModel<Credits>.Failure("Client ID cannot be empty");
+
+            if (accountId == Guid.Empty)
+                return ResultModel<Credits>.Failure("Account ID cannot be empty");
+
+            if (sumCredit <= 0)
+                return ResultModel<Credits>.Failure("Credit amount must be greater than zero");
+
+            if (termMonth <= 0)
+                return ResultModel<Credits>.Failure("Term must be greater than zero");
+            if (endDate <= startDate)
+                return ResultModel<Credits>.Failure("End date must be after start date");
+
+            if (paymentMonth <= 0)
+                return ResultModel<Credits>.Failure("Monthly payment must be greater than zero");
+
             return ResultModel<Credits>.Success(new Credits(id, clientId, accountId, sumCredit, termMonth, startDate, endDate, paymentMonth, leftCredit, isActive));
         }
 

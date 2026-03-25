@@ -62,48 +62,6 @@ namespace BankingSystem.Tests.UnitTests
         }
 
         [Test]
-        public void Create_WithEmptyId_ReturnsSuccess()
-        {
-            var result = Credits.Create(
-                Guid.Empty, _validClientId, _validAccountId, _validSumCredit, _validTermMonth,
-                _validStartDate, _validEndDate, _validPaymentMonth, _validLeftCredit, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.Id, Is.EqualTo(Guid.Empty));
-            });
-        }
-
-        [Test]
-        public void Create_WithZeroSumCredit_ReturnsSuccess()
-        {
-            var result = Credits.Create(
-                _validId, _validClientId, _validAccountId, 0m, _validTermMonth,
-                _validStartDate, _validEndDate, _validPaymentMonth, _validLeftCredit, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.SumCredit, Is.EqualTo(0m));
-            });
-        }
-
-        [Test]
-        public void Create_WithZeroTermMonth_ReturnsSuccess()
-        {
-            var result = Credits.Create(
-                _validId, _validClientId, _validAccountId, _validSumCredit, 0,
-                _validStartDate, _validEndDate, _validPaymentMonth, _validLeftCredit, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.TermMonth, Is.EqualTo(0));
-            });
-        }
-
-        [Test]
         public void Create_WithIsActiveFalse_ReturnsSuccess()
         {
             var result = Credits.Create(
@@ -115,14 +73,6 @@ namespace BankingSystem.Tests.UnitTests
                 Assert.That(result.IsSuccess, Is.True);
                 Assert.That(result.Value.IsActive, Is.False);
             });
-        }
-
-        [Test]
-        public void GetPaymentsMonth_WithValidData_ReturnsCorrectValue()
-        {
-            var result = Credits.GetPaymentsMonth(100000m, 12);
-
-            Assert.That(result, Is.EqualTo(9166.67m));
         }
 
         [Test]

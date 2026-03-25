@@ -9,6 +9,12 @@
         public static ResultModel<OperationsTransactions> Create(Guid id,  
             string typeOperation, string description)
         {
+            if (id == Guid.Empty)
+                return ResultModel<OperationsTransactions>.Failure("Operation ID cannot be empty");
+
+            if (string.IsNullOrWhiteSpace(typeOperation))
+                return ResultModel<OperationsTransactions>.Failure("Operation type is required");
+
             return ResultModel<OperationsTransactions>.Success(new OperationsTransactions(id,
                 typeOperation, description));
         }
