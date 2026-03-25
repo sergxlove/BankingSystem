@@ -59,62 +59,6 @@ namespace BankingSystem.Tests.UnitTests
         }
 
         [Test]
-        public void Create_WithEmptyId_ReturnsSuccess()
-        {
-            var result = Deposits.Create(
-                Guid.Empty, _validClientId, _validAccountId, _validSumDeposit, _validTermMonth,
-                _validStartDate, _validEndDate, _validPercentYear, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.Id, Is.EqualTo(Guid.Empty));
-            });
-        }
-
-        [Test]
-        public void Create_WithZeroSumDeposit_ReturnsSuccess()
-        {
-            var result = Deposits.Create(
-                _validId, _validClientId, _validAccountId, 0m, _validTermMonth,
-                _validStartDate, _validEndDate, _validPercentYear, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.SumDeposit, Is.EqualTo(0m));
-            });
-        }
-
-        [Test]
-        public void Create_WithZeroTermMonth_ReturnsSuccess()
-        {
-            var result = Deposits.Create(
-                _validId, _validClientId, _validAccountId, _validSumDeposit, 0,
-                _validStartDate, _validEndDate, _validPercentYear, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.TermMonth, Is.EqualTo(0));
-            });
-        }
-
-        [Test]
-        public void Create_WithZeroPercentYear_ReturnsSuccess()
-        {
-            var result = Deposits.Create(
-                _validId, _validClientId, _validAccountId, _validSumDeposit, _validTermMonth,
-                _validStartDate, _validEndDate, 0, _validIsActive);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.IsSuccess, Is.True);
-                Assert.That(result.Value.PercentYear, Is.EqualTo(0));
-            });
-        }
-
-        [Test]
         public void Create_WithIsActiveFalse_ReturnsSuccess()
         {
             var result = Deposits.Create(

@@ -10,6 +10,18 @@
         public static ResultModel<Managers> Create(Guid id, string clientSeries, string clientNumbers, 
             string loginManager)
         {
+            if (id == Guid.Empty)
+                return ResultModel<Managers>.Failure("Manager ID cannot be empty");
+
+            if (string.IsNullOrWhiteSpace(clientSeries))
+                return ResultModel<Managers>.Failure("Client series is required");
+
+            if (string.IsNullOrWhiteSpace(clientNumbers))
+                return ResultModel<Managers>.Failure("Client numbers is required");
+
+            if (string.IsNullOrWhiteSpace(loginManager))
+                return ResultModel<Managers>.Failure("Login is required");
+
             return ResultModel<Managers>.Success(new Managers(id, clientSeries, clientNumbers, 
                 loginManager));
         }

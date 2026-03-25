@@ -25,6 +25,7 @@ namespace BankingSystemCore.Models
 
             if (string.IsNullOrWhiteSpace(role))
                 return ResultModel<Users>.Failure("Поле Роль не должно быть пустым");
+
             return ResultModel<Users>.Success(new Users(id, username,
                 passwordHasherService.Hash(password), role, passwordHasherService));
         }

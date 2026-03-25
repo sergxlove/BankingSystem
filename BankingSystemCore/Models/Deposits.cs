@@ -17,6 +17,24 @@
             decimal sumDeposit, int termMonth, DateOnly startDate, DateOnly endDate,
             int percentYear, bool isActive)
         {
+            if (id == Guid.Empty)
+                return ResultModel<Deposits>.Failure("Deposit ID cannot be empty");
+
+            if (clientId == Guid.Empty)
+                return ResultModel<Deposits>.Failure("Client ID cannot be empty");
+
+            if (accountId == Guid.Empty)
+                return ResultModel<Deposits>.Failure("Account ID cannot be empty");
+
+            if (sumDeposit <= 0)
+                return ResultModel<Deposits>.Failure("Deposit amount must be greater than zero");
+
+            if (termMonth <= 0)
+                return ResultModel<Deposits>.Failure("Term must be greater than zero");
+
+            if (percentYear <= 0)
+                return ResultModel<Deposits>.Failure("Interest rate must be greater than zero");
+
             return ResultModel<Deposits>.Success(new Deposits(id, clientId, accountId, sumDeposit, 
                 termMonth, startDate, endDate, percentYear, isActive));
         }
